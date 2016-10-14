@@ -1,3 +1,16 @@
 <resources>
-    <string name="app_name">ClientManager_1.0</string>
+    <string name="app_name">Client Manager</string>
+
+    <!-- Dialog -->
+    <string name="please_wait">Please wait</string>
+
+    <!-- Sign in -->
+    <string name="welcome_msg">Welcome to the Client Manager app</string>
+    <string name="sign_in_msg">Please sign in with your google account</string>
+
+    <!-- Sign out, disconnect account -->
+    <string name="menu_sign_out">Sign out</string>
+    <string name="menu_disconnect_account">Disconnect account</string>
+
+    <string name="main_activity">Main Activity</string>
 </resources>
