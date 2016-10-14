@@ -2,6 +2,7 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.Menu;
@@ -60,6 +61,9 @@ public class MainActivity extends SignInActivity {
         }
     }
 
+    /*
+    * Returning of user back to sign in activity
+    * */
     private void backToSignInActivity() {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
@@ -67,10 +71,11 @@ public class MainActivity extends SignInActivity {
     }
 
     private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(MyApplication.getInstance().getGoogleApiClient()).setResultCallback(
+        Auth.GoogleSignInApi.revokeAccess(MyApplication.getInstance().getGoogleApiClient())
+                .setResultCallback(
                 new ResultCallback<Status>() {
                     @Override
-                    public void onResult(Status status) {
+                    public void onResult(@NonNull Status status) {
                         updateUI(false);
                     }
                 });
