@@ -11,4 +11,6 @@
     <!-- Sign out, disconnect account -->
     <string name="menu_sign_out">Sign out</string>
     <string name="menu_disconnect_account">Disconnect account</string>
+
+    <string name="main_activity">Main Activity</string>
 </resources>
