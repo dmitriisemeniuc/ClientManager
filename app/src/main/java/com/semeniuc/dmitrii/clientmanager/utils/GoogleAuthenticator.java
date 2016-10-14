@@ -6,17 +6,18 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
+import com.semeniuc.dmitrii.clientmanager.model.User;
 
 public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String LOG_TAG = GoogleAuthenticator.class.getSimpleName();
-    public static final boolean DEBUG = Constants.DEBUG;
 
     private GoogleSignInOptions mGso;
 
@@ -43,12 +44,20 @@ public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedLi
                 .build();
         // Set googleAPiClient object visible for the app
         MyApplication.getInstance().setGoogleApiClient(googleApiClient);
-        if (null == MyApplication.getInstance().getGoogleApiClient()) {
-            if (DEBUG) Log.e(LOG_TAG, "GoogleApiClient is NULL");
-        }
     }
 
     public OptionalPendingResult<GoogleSignInResult> getOptionalPendingResult() {
         return Auth.GoogleSignInApi.silentSignIn(MyApplication.getInstance().getGoogleApiClient());
+    }
+
+    /*
+    * Set signed user data to the global user object
+    * */
+    public void setUserDetails(@NonNull GoogleSignInAccount account){
+        User user = new User();
+        user.setId(account.getId());
+        user.setName(account.getDisplayName());
+        user.setEmail(account.getEmail());
+        MyApplication.getInstance().setUser(user);
     }
 }

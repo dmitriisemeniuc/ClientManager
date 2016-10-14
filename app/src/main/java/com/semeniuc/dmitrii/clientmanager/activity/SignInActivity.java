@@ -3,11 +3,15 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -28,7 +32,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private GoogleAuthenticator mGoogleAuthenticator;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.i(LOG_TAG, "onCreate()");
         setContentView(LAYOUT);
@@ -68,6 +72,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    /*
+    * Checking if the user is signed in previously
+    * */
     private void silentSignIn() {
         if (DEBUG) Log.i(LOG_TAG, "silentSignIn()");
         OptionalPendingResult<GoogleSignInResult> opr = mGoogleAuthenticator.getOptionalPendingResult();
@@ -84,7 +91,7 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
             showProgressDialog();
             opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
-                public void onResult(GoogleSignInResult googleSignInResult) {
+                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
                     hideProgressDialog();
                     handleSignInResult(googleSignInResult);
                 }
@@ -92,12 +99,15 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * Handling of sign in result
+     */
     private void handleSignInResult(GoogleSignInResult result) {
         if (DEBUG) Log.i(LOG_TAG, "handleSignInResult()");
         if (result.isSuccess()) {
             if (DEBUG) Log.i(LOG_TAG, "Sign in is success!");
-            // Store user id, user name and email.
-            // TODO: Set user details
+            // Store user id, user name and email to the global User object
+            setUserDetails(result);
             // Show authenticated UI
             updateUI(true);
         } else {
@@ -106,21 +116,40 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
+    /*
+    * Setting of signed user to global User object
+    * */
+    private void setUserDetails(@NonNull GoogleSignInResult result) {
+        GoogleSignInAccount account = result.getSignInAccount();
+        mGoogleAuthenticator.setUserDetails(account);
+        if (DEBUG)
+            Toast.makeText(this, "Signed in as: " + MyApplication.getInstance().getUser().getName(),
+                    Toast.LENGTH_SHORT).show();
+    }
+
     private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(MyApplication.getInstance().getGoogleApiClient());
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(
+                MyApplication.getInstance().getGoogleApiClient());
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    /*
+    * Sign out from google account
+    * */
     protected void signOut() {
-        Auth.GoogleSignInApi.signOut(MyApplication.getInstance().getGoogleApiClient()).setResultCallback(
-                new ResultCallback<Status>() {
+        Auth.GoogleSignInApi.signOut(
+                MyApplication.getInstance().getGoogleApiClient())
+                .setResultCallback(new ResultCallback<Status>() {
                     @Override
-                    public void onResult(Status status) {
+                    public void onResult(@NonNull Status status) {
                         updateUI(false);
                     }
                 });
     }
 
+    /*
+    * Updating of UI. If true => goes to MainActivity
+    * */
     protected void updateUI(boolean update) {
         if (DEBUG) Log.i(LOG_TAG, "updateUI()");
         if (update) {
@@ -135,6 +164,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(intent);
     }
 
+    /*
+    * Showing of dialog during of sign in process
+    * */
     private void showProgressDialog() {
         if (null == mProgressDialog) {
             mProgressDialog = new ProgressDialog(this);
@@ -145,6 +177,9 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         if (DEBUG) Log.i(LOG_TAG, "show Dialog");
     }
 
+    /*
+    * Hiding of dialog after the sign in process is done
+    * */
     private void hideProgressDialog() {
         if (null != mProgressDialog && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
