@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/mainBackground"
+    tools:context=".activity.SignInActivity">
+
+    <RelativeLayout
+        android:id="@+id/signin_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/welcome_msg"
+            android:text="@string/welcome_msg"
+            android:textSize="@dimen/big_text"
+            style="@style/SignIn"/>
+
+        <TextView
+            android:id="@+id/sign_in_msg"
+            android:layout_below="@+id/welcome_msg"
+            android:text="@string/sign_in_msg"
+            android:textSize="@dimen/standard_text"
+            style="@style/SignIn"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
+            android:layout_below="@+id/sign_in_msg"
+            app:buttonSize="wide"
+            style="@style/SignIn"/>
+
+    </RelativeLayout>
+</RelativeLayout>
