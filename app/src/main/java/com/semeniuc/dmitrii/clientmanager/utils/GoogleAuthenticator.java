@@ -55,7 +55,7 @@ public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedLi
     * */
     public void setUserDetails(@NonNull GoogleSignInAccount account){
         User user = new User();
-        user.setId(account.getId());
+        user.setGoogleId(account.getId());
         user.setName(account.getDisplayName());
         user.setEmail(account.getEmail());
         MyApplication.getInstance().setUser(user);
