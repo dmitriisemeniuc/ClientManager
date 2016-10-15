@@ -33,7 +33,8 @@ public class SignInActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
 
-    @OnClick(R.id.sign_in_button) void submitSignIn() {
+    @OnClick(R.id.sign_in_button)
+    void submitSignIn() {
         signIn();
     }
 
@@ -122,8 +123,9 @@ public class SignInActivity extends AppCompatActivity {
     * Setting of signed user to global User object
     * */
     private void setUserDetails(@NonNull GoogleSignInResult result) {
+        if (DEBUG) Log.i(LOG_TAG, "setUserDetails()");
         GoogleSignInAccount account = result.getSignInAccount();
-        if(null != account){
+        if (null != account) {
             mGoogleAuthenticator.setUserDetails(account);
             if (DEBUG)
                 Toast.makeText(this, "Signed in as: " + MyApplication.getInstance().getUser().getName(),

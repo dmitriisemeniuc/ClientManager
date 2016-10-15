@@ -77,6 +77,16 @@ public class UserRepository implements Crud {
         return user;
     }
 
+    public List<User> findByEmail(String email) {
+        List<User> users = null;
+        try {
+            users = helper.getUserDao().queryForEq("email", email);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
     @Override
     public List<?> findAll() {
         List<User> items = null;
