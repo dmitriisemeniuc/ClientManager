@@ -1,6 +1,7 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,8 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.utils.IUserSaver;
+import com.semeniuc.dmitrii.clientmanager.utils.UserSaverImpl;
 
 public class MainActivity extends SignInActivity {
 
@@ -24,6 +27,9 @@ public class MainActivity extends SignInActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
+
+        // Save Global user to DB
+        new SaveUser().execute();
     }
 
     @Override
@@ -79,5 +85,17 @@ public class MainActivity extends SignInActivity {
                         updateUI(false);
                     }
                 });
+    }
+
+    private class SaveUser extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            if (DEBUG) Log.i(LOG_TAG, "doInBackground()");
+            IUserSaver userSaver = new UserSaverImpl();
+            userSaver.saveGlobalUserToDb();
+            return null;
+        }
+
     }
 }
