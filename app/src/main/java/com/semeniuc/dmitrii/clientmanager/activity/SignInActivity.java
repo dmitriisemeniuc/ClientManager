@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -21,7 +20,10 @@ import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.GoogleAuthenticator;
 
-public class SignInActivity extends AppCompatActivity implements View.OnClickListener {
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+public class SignInActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_signin;
     public static final String LOG_TAG = SignInActivity.class.getSimpleName();
@@ -31,14 +33,20 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
 
+    @OnClick(R.id.sign_in_button) void submitSignIn() {
+        signIn();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (DEBUG) Log.i(LOG_TAG, "onCreate()");
         setContentView(LAYOUT);
 
-        // Button listeners
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        ButterKnife.bind(this);
+
+ /*       // Button listeners
+        findViewById(R.id.sign_in_button).setOnClickListener(this);*/
 
         mGoogleAuthenticator = new GoogleAuthenticator();
         mGoogleAuthenticator.createGoogleSignInOptions();
@@ -63,13 +71,10 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn();
-                break;
-        }
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(
+                MyApplication.getInstance().getGoogleApiClient());
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     /*
@@ -121,16 +126,12 @@ public class SignInActivity extends AppCompatActivity implements View.OnClickLis
     * */
     private void setUserDetails(@NonNull GoogleSignInResult result) {
         GoogleSignInAccount account = result.getSignInAccount();
-        mGoogleAuthenticator.setUserDetails(account);
-        if (DEBUG)
-            Toast.makeText(this, "Signed in as: " + MyApplication.getInstance().getUser().getName(),
-                    Toast.LENGTH_SHORT).show();
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(
-                MyApplication.getInstance().getGoogleApiClient());
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        if(null != account){
+            mGoogleAuthenticator.setUserDetails(account);
+            if (DEBUG)
+                Toast.makeText(this, "Signed in as: " + MyApplication.getInstance().getUser().getName(),
+                        Toast.LENGTH_SHORT).show();
+        }
     }
 
     /*
