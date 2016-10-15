@@ -48,7 +48,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -67,7 +66,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             if (DEBUG) Log.e(LOG_TAG, "exception during onUpgrade", e);
             throw new RuntimeException(e);
         }
-
     }
 
     public Dao<User, Integer> getUserDao() {
