@@ -26,6 +26,8 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.0'
     compile 'com.google.gms:google-services:3.0.0'
     compile 'com.google.android.gms:play-services-auth:9.2.1'
+    compile 'com.j256.ormlite:ormlite-core:4.48'
+    compile 'com.j256.ormlite:ormlite-android:4.48'
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }
