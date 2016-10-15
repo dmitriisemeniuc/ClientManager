@@ -45,9 +45,6 @@ public class SignInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
- /*       // Button listeners
-        findViewById(R.id.sign_in_button).setOnClickListener(this);*/
-
         mGoogleAuthenticator = new GoogleAuthenticator();
         mGoogleAuthenticator.createGoogleSignInOptions();
         mGoogleAuthenticator.setGoogleApiClient(this, this);
