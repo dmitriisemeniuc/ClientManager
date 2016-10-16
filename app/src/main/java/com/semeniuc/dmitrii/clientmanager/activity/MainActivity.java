@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -62,8 +63,14 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         switch (view.getId()) {
             case R.id.add_appointment_fab_menu:
                 startAppointmentActivity();
+                collapseFabMenu();
                 break;
         }
+    }
+
+    private void collapseFabMenu() {
+        FloatingActionMenu fabMenu = (FloatingActionMenu)findViewById(R.id.fab_menu);
+        fabMenu.close(false);
     }
 
     private void setOnClickListeners() {
