@@ -7,5 +7,8 @@
     <color name="textSecondary">#757575</color>
     <color name="icons">#212121</color>
     <color name="divider">#BDBDBD</color>
+    <color name="blue_grey_500">#607D8B</color>
     <color name="mainBackground">#F5F5F5</color>
+    <color name="colorRipple">#99FFFFFF</color>
+    <color name="menu_shadowColor">#66000000</color>
 </resources>

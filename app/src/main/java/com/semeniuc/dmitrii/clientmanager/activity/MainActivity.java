@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.api.ResultCallback;
@@ -18,7 +19,7 @@ import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.utils.IUserSaver;
 import com.semeniuc.dmitrii.clientmanager.utils.UserSaverImpl;
 
-public class MainActivity extends SignInActivity {
+public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static final int LAYOUT = R.layout.activity_main;
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -28,6 +29,7 @@ public class MainActivity extends SignInActivity {
         super.onCreate(savedInstanceState);
         setContentView(LAYOUT);
 
+        setOnClickListeners();
         // Save Global user to DB
         new SaveUser().execute();
     }
@@ -55,6 +57,24 @@ public class MainActivity extends SignInActivity {
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.add_appointment_fab_menu:
+                startAppointmentActivity();
+                break;
+        }
+    }
+
+    private void setOnClickListeners() {
+        findViewById(R.id.add_appointment_fab_menu).setOnClickListener(this);
+    }
+
+    private void startAppointmentActivity() {
+        Intent intent = new Intent(this, AppointmentActivity.class);
+        startActivity(intent);
+    }
+
     protected void signOut() {
         super.signOut();
         backToSignInActivity();
@@ -79,12 +99,12 @@ public class MainActivity extends SignInActivity {
     private void revokeAccess() {
         Auth.GoogleSignInApi.revokeAccess(MyApplication.getInstance().getGoogleApiClient())
                 .setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        updateUI(false);
-                    }
-                });
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                                updateUI(false);
+                            }
+                        });
     }
 
     private class SaveUser extends AsyncTask<Void, Void, Void> {
@@ -96,6 +116,5 @@ public class MainActivity extends SignInActivity {
             userSaver.saveGlobalUserToDb();
             return null;
         }
-
     }
 }

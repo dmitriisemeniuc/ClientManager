@@ -16,5 +16,22 @@
         <item name="android:textColor">@color/colorPrimaryDark</item>
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
+    
+    <style name="fabMenu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_alignParentBottom">true</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">@dimen/fab_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fab_margin</item>
+        <item name="android:layout_marginLeft">@dimen/fab_margin</item>
+    </style>
+
+    <style name="addAppointmentFabMenu">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/ic_add_appointment</item>
+    </style>
+
 
 </resources>

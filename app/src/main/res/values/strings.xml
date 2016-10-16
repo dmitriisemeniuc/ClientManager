@@ -13,4 +13,6 @@
     <string name="menu_disconnect_account">Disconnect account</string>
 
     <string name="main_activity">Main Activity</string>
+    <string name="label_add_appointment">Add appointment</string>
+    <string name="appointment">Appointment</string>
 </resources>
