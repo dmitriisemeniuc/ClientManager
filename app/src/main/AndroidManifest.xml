@@ -27,6 +27,13 @@
             android:theme="@style/Theme.AppCompat.Light">
         </activity>
 
+        <activity
+            android:name=".activity.AppointmentActivity"
+            android:label="@string/appointment"
+            android:theme="@style/Theme.AppCompat.Light"
+            android:parentActivityName=".activity.MainActivity">
+        </activity>
+
     </application>
 
 </manifest>
