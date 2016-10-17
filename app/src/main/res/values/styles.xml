@@ -33,5 +33,14 @@
         <item name="android:src">@drawable/ic_add_appointment</item>
     </style>
 
+    <style name="appointmentFormField">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColorHint">@color/colorPrimary</item>
+        <item name="android:maxLength">100</item>
+        <item name="android:inputType">text</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
 
 </resources>

@@ -21,6 +21,8 @@ public class Appointment {
     @DatabaseField
     private String service;
     @DatabaseField
+    private String info;
+    @DatabaseField
     private Timestamp time;
 
     public long getId() {
@@ -69,6 +71,14 @@ public class Appointment {
 
     public void setService(String service) {
         this.service = service;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 
     public Timestamp getTime() {

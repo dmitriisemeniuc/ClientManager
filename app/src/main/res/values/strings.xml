@@ -15,4 +15,14 @@
     <string name="main_activity">Main Activity</string>
     <string name="label_add_appointment">Add appointment</string>
     <string name="appointment">Appointment</string>
+    <string name="appointment_name_hint">Appointment name</string>
+    <string name="appointment_client_name">Client name</string>
+    <string name="appointment_phone_number">Phone number</string>
+    <string name="appointment_service">Service</string>
+    <string name="choose_date">Choose date</string>
+    <string name="date_label">Date:</string>
+    <string name="appointment_info">Info</string>
+    <string name="save">Save</string>
+    <string name="fill_the_form">Fill the form</string>
+    <string name="field_is_required">Field is required</string>
 </resources>
