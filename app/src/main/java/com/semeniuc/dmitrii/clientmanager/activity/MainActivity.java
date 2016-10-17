@@ -69,7 +69,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void collapseFabMenu() {
-        FloatingActionMenu fabMenu = (FloatingActionMenu)findViewById(R.id.fab_menu);
+        FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
         fabMenu.close(false);
     }
 
