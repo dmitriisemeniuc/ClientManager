@@ -6,14 +6,14 @@
     android:orientation="vertical">
 
     <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_name"
+        android:id="@+id/appointment_title"
         style="@style/appointmentFormField"
-        android:hint="@string/appointment_name_hint" />
+        android:hint="@string/appointment_title_hint" />
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/appointment_client_name"
         style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_name"
+        android:layout_below="@+id/appointment_title"
         android:hint="@string/appointment_client_name" />
 
     <android.support.v7.widget.AppCompatEditText
@@ -42,23 +42,26 @@
         android:maxLines="6"
         android:minLines="2" />
 
-    <android.support.v7.widget.AppCompatImageView
-        android:id="@+id/appointment_calendar_icon"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appointment_info"
-        android:layout_marginStart="@dimen/activity_vertical_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:src="@mipmap/ic_calendar" />
+        android:padding="@dimen/activity_vertical_margin"
+        android:layout_below="@+id/appointment_info">
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_calendar_date"
-        android:layout_width="wrap_content"
-        style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_info"
-        android:layout_margin="10dp"
-        android:layout_toEndOf="@+id/appointment_calendar_icon"
-        android:hint="@string/choose_date"
-        android:textSize="16sp" />
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/appointment_calendar_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_calendar"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/appointment_calendar_date"
+            android:layout_width="wrap_content"
+            style="@style/appointmentFormField"
+            android:layout_toEndOf="@+id/appointment_calendar_icon"
+            android:textSize="16sp"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
 
 </RelativeLayout>

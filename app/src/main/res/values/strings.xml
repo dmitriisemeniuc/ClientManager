@@ -15,14 +15,19 @@
     <string name="main_activity">Main Activity</string>
     <string name="label_add_appointment">Add appointment</string>
     <string name="appointment">Appointment</string>
-    <string name="appointment_name_hint">Appointment name</string>
+    <string name="appointment_title_hint">Appointment title</string>
     <string name="appointment_client_name">Client name</string>
     <string name="appointment_phone_number">Phone number</string>
     <string name="appointment_service">Service</string>
-    <string name="choose_date">Choose date</string>
     <string name="date_label">Date:</string>
     <string name="appointment_info">Info</string>
     <string name="save">Save</string>
     <string name="fill_the_form">Fill the form</string>
     <string name="field_is_required">Field is required</string>
+    <string name="appointment_saved">Appointment saved</string>
+    <string name="saving_failed">Saving failed</string>
+    <string name="appointment_with_title">Appointment with title</string>
+    <string name="and_with_client">and with client</string>
+    <string name="already_exists">already exists</string>
+    <string name="cannot_save_appointment">Cannot save an appointment</string>
 </resources>

@@ -1,9 +1,10 @@
 package com.semeniuc.dmitrii.clientmanager.repository;
 
 import android.content.Context;
-import android.database.SQLException;
 import android.util.Log;
 
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
@@ -77,6 +78,23 @@ public class AppointmentRepository implements Crud {
             e.printStackTrace();
         }
         return appointment;
+    }
+
+    public List<Appointment> findByTitleAndClientName(String title, String clientName) {
+        List<Appointment> appointments = null;
+        try{
+            QueryBuilder<Appointment, Integer> queryBuilder = helper.getAppointmentDao().queryBuilder();
+            Where where = queryBuilder.where();
+            // The Appointment title must be equals to title
+            where.eq(Appointment.APPOINTMENT_TITLE_FIELD_NAME, title);
+            where.and();
+            // The appointment clientName must be equals to clientName
+            where.eq(Appointment.CLIENT_NAME_FIELD_NAME, clientName);
+            appointments = queryBuilder.query();
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return appointments;
     }
 
     @Override
