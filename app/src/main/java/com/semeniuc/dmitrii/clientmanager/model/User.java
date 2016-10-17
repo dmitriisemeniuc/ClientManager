@@ -6,14 +6,22 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class User {
 
+    public static final String USER_GOOGLE_ID_FIELD_NAME = "google_id";
+    public static final String USER_NAME_FIELD_NAME = "name";
+    public static final String USER_EMAIL_FIELD_NAME = "email";
+
     @DatabaseField(generatedId = true)
     private long id;
-    @DatabaseField
+    @DatabaseField(canBeNull = false, columnName = USER_GOOGLE_ID_FIELD_NAME, unique = true)
     private String googleId;
-    @DatabaseField
+    @DatabaseField(canBeNull = false, columnName = USER_NAME_FIELD_NAME)
     private String name;
-    @DatabaseField
+    @DatabaseField(canBeNull = false, columnName = USER_EMAIL_FIELD_NAME, unique = true)
     private String email;
+
+    public User(){
+
+    }
 
     public long getId() {
         return id;

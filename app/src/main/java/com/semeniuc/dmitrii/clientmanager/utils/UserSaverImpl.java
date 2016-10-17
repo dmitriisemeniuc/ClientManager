@@ -18,15 +18,17 @@ public class UserSaverImpl implements IUserSaver {
         UserRepository userRepo = new UserRepository(MyApplication.getInstance().getApplicationContext());
         User user = MyApplication.getInstance().getUser();
         List<User> users = userRepo.findByEmail(user.getEmail());
-        if (users.size() == 0) {
-            int index = userRepo.create(user);
-            if (index > 0) {
-                if (DEBUG) Log.i(LOG_TAG, "User created successfully");
+        if (null != users) {
+            if (users.size() == 0) {
+                int index = userRepo.create(user);
+                if (index > 0) {
+                    if (DEBUG) Log.i(LOG_TAG, "User created successfully");
+                } else {
+                    if (DEBUG) Log.e(LOG_TAG, "Unable to create an user");
+                }
             } else {
-                if (DEBUG) Log.e(LOG_TAG, "Unable to create an user");
+                if (DEBUG) Log.e(LOG_TAG, "user already exists in DB");
             }
-        } else {
-            if (DEBUG) Log.e(LOG_TAG, "user already exists in DB");
         }
     }
 }

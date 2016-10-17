@@ -14,7 +14,7 @@ import java.util.Locale;
 
 public class Utils {
 
-    private AppCompatActivity mActivity;
+    public AppCompatActivity mActivity;
 
     public Utils(AppCompatActivity activity) {
         mActivity = activity;
@@ -25,11 +25,10 @@ public class Utils {
         boolean valid = true;
         // Fields of Appointment form
         List<AppCompatEditText> fields = new LinkedList<>();
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_name));
+        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_title));
         fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_client_name));
         fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_client_phone));
         fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_service));
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_calendar_date));
         // Check if fields are not empty
         for (AppCompatEditText field : fields) {
             if (field.getText().toString().isEmpty()) {
@@ -41,8 +40,11 @@ public class Utils {
     }
 
     public String getCurrentDate() {
-        Locale locale = mActivity.getResources().getConfiguration().locale;
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy/", locale);
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy", getLocale());
         return df.format(Calendar.getInstance().getTime());
+    }
+
+    public Locale getLocale() {
+        return mActivity.getResources().getConfiguration().locale;
     }
 }
