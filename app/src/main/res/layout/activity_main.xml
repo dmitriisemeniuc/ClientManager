@@ -12,7 +12,7 @@
     tools:context=".activity.MainActivity">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_cardview"
+        android:id="@+id/main_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"/>
@@ -25,7 +25,7 @@
 
     <!-- Fab menu button -->
     <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_menu"
+        android:id="@+id/main_fab_menu"
         style="@style/fabMenu"
         fab:menu_fab_size="normal"
         fab:menu_showShadow="true"

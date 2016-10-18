@@ -9,6 +9,8 @@ import android.widget.TextView;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentViewHolder> {
@@ -21,7 +23,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
 
     @Override
     public AppointmentsAdapter.AppointmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cards_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_cards_layout, parent, false);
         return new AppointmentViewHolder(v);
     }
 
@@ -29,6 +31,9 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
     public void onBindViewHolder(AppointmentsAdapter.AppointmentViewHolder holder, int position) {
         holder.mAppointmentTitle.setText(mAppointments.get(position).getTitle());
         holder.mClientName.setText(mAppointments.get(position).getClientName());
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String date = df.format(mAppointments.get(position).getDate());
+        holder.mAppointmetTime.setText(date);
     }
 
     @Override
@@ -47,11 +52,13 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
         TextView mAppointmentTitle;
         TextView mClientName;
+        TextView mAppointmetTime;
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
             mAppointmentTitle = (TextView) itemView.findViewById(R.id.main_appointment_title);
             mClientName = (TextView) itemView.findViewById(R.id.main_appointment_client_name);
+            mAppointmetTime = (TextView) itemView.findViewById(R.id.main_appointment_time);
         }
     }
 }

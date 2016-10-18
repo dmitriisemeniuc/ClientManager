@@ -57,7 +57,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         AppointmentRepository appointmentRepo = new AppointmentRepository(MainActivity.this);
         List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();
         adapter = new AppointmentsAdapter(appointments);
-        rv = (RecyclerView) findViewById(R.id.main_cardview);
+        rv = (RecyclerView) findViewById(R.id.main_recyclerview);
         rv.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
         rv.setLayoutManager(layoutManager);
@@ -99,7 +99,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void collapseFabMenu() {
-        FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
         fabMenu.close(false);
     }
 

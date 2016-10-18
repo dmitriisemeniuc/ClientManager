@@ -11,4 +11,5 @@
     <color name="mainBackground">#F5F5F5</color>
     <color name="colorRipple">#99FFFFFF</color>
     <color name="menu_shadowColor">#66000000</color>
+    <color name="appointment_title_color">#4E342E</color>
 </resources>
