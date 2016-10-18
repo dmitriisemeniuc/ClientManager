@@ -17,9 +17,9 @@ import android.widget.Toast;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
-import com.semeniuc.dmitrii.clientmanager.utils.AppointmentSaverImpl;
+import com.semeniuc.dmitrii.clientmanager.utils.AppointmentDbHelperImpl;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
-import com.semeniuc.dmitrii.clientmanager.utils.IAppointmentSaver;
+import com.semeniuc.dmitrii.clientmanager.utils.IAppointmentDbHelper;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
@@ -162,8 +162,8 @@ public class AppointmentActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
             mAppointment = createAppointment();
-            IAppointmentSaver appointmentSaver = new AppointmentSaverImpl();
-            return appointmentSaver.saveAppointmentToDb(mAppointment);
+            IAppointmentDbHelper appointmentHelper = new AppointmentDbHelperImpl();
+            return appointmentHelper.saveAppointmentToDb(mAppointment);
         }
 
         @Override

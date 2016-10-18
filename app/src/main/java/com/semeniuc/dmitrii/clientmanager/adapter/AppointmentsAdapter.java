@@ -15,10 +15,12 @@ import java.util.List;
 
 public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentViewHolder> {
 
-    List<Appointment> mAppointments;
+    private List<Appointment> mAppointments;
+    private final OnItemClickListener mListener;
 
-    public AppointmentsAdapter(List<Appointment> appointments){
+    public AppointmentsAdapter(List<Appointment> appointments, OnItemClickListener listener) {
         mAppointments = appointments;
+        mListener = listener;
     }
 
     @Override
@@ -34,11 +36,12 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         String date = df.format(mAppointments.get(position).getDate());
         holder.mAppointmetTime.setText(date);
+        holder.bind(mAppointments.get(position), mListener);
     }
 
     @Override
     public int getItemCount() {
-        if(mAppointments != null){
+        if (mAppointments != null) {
             return mAppointments.size();
         }
         return 0;
@@ -60,6 +63,19 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             mClientName = (TextView) itemView.findViewById(R.id.main_appointment_client_name);
             mAppointmetTime = (TextView) itemView.findViewById(R.id.main_appointment_time);
         }
+
+        public void bind(final Appointment appointment, final OnItemClickListener listener) {
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(appointment);
+                }
+            });
+        }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(Appointment appointment);
     }
 }
 

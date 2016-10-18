@@ -22,7 +22,8 @@ import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentsAdapter;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
-import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
+import com.semeniuc.dmitrii.clientmanager.utils.AppointmentDbHelperImpl;
+import com.semeniuc.dmitrii.clientmanager.utils.IAppointmentDbHelper;
 import com.semeniuc.dmitrii.clientmanager.utils.IUserSaver;
 import com.semeniuc.dmitrii.clientmanager.utils.UserSaverImpl;
 
@@ -54,15 +55,22 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void displayAppointments() {
-        AppointmentRepository appointmentRepo = new AppointmentRepository(MainActivity.this);
-        List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();
-        adapter = new AppointmentsAdapter(appointments);
-        rv = (RecyclerView) findViewById(R.id.main_recyclerview);
-        rv.setHasFixedSize(true);
+        IAppointmentDbHelper appointmentDbHelper = new AppointmentDbHelperImpl();
+        List<Appointment> appointments = appointmentDbHelper.getAllAppointments(this);
+        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.main_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        rv.setLayoutManager(layoutManager);
-        rv.setItemAnimator(new DefaultItemAnimator());
-        rv.setAdapter(adapter);
+        // RecyclerView will be displayed as list
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        // Set adapter with itemOnClickListener
+        mRecyclerView.setAdapter(new AppointmentsAdapter(appointments, new AppointmentsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Appointment appointment) {
+                if (DEBUG)
+                    Log.w(LOG_TAG, "Appointment wth id: " + String.valueOf(appointment.getId()) + " clicked");
+            }
+        }));
     }
 
     @Override

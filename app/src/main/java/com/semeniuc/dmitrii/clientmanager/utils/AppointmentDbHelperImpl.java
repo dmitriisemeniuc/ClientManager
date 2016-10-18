@@ -1,14 +1,16 @@
 package com.semeniuc.dmitrii.clientmanager.utils;
 
+import android.content.Context;
+
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 
 import java.util.List;
 
-public class AppointmentSaverImpl implements IAppointmentSaver {
+public class AppointmentDbHelperImpl implements IAppointmentDbHelper {
 
-    public static final String LOG_TAG = AppointmentSaverImpl.class.getSimpleName();
+    public static final String LOG_TAG = AppointmentDbHelperImpl.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
 
     @Override
@@ -30,5 +32,11 @@ public class AppointmentSaverImpl implements IAppointmentSaver {
             saved = Constants.APPOINTMENT_IS_NULL;
         }
         return saved;
+    }
+
+    @Override
+    public List<Appointment> getAllAppointments(Context context) {
+        AppointmentRepository appointmentRepo = new AppointmentRepository(context);
+        return (List<Appointment>) appointmentRepo.findAll();
     }
 }
