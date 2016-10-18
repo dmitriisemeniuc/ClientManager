@@ -8,13 +8,15 @@
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/appointment_title"
         style="@style/appointmentFormField"
-        android:hint="@string/appointment_title_hint" />
+        android:hint="@string/appointment_title_hint"
+        android:inputType="textCapWords"/>
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/appointment_client_name"
         style="@style/appointmentFormField"
         android:layout_below="@+id/appointment_title"
-        android:hint="@string/appointment_client_name" />
+        android:hint="@string/appointment_client_name"
+        android:inputType="textCapWords"/>
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/appointment_client_phone"
@@ -28,7 +30,8 @@
         android:id="@+id/appointment_service"
         style="@style/appointmentFormField"
         android:layout_below="@+id/appointment_client_phone"
-        android:hint="@string/appointment_service" />
+        android:hint="@string/appointment_service"
+        android:inputType="textCapWords"/>
 
     <android.support.v7.widget.AppCompatEditText
         android:id="@+id/appointment_info"
@@ -36,7 +39,7 @@
         android:layout_below="@+id/appointment_service"
         android:gravity="top|start"
         android:hint="@string/appointment_info"
-        android:inputType="textMultiLine"
+        android:inputType="textMultiLine|textCapSentences"
         android:lines="4"
         android:maxLength="150"
         android:maxLines="6"

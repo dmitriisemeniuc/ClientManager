@@ -5,6 +5,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -17,13 +20,22 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentsAdapter;
+import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.IUserSaver;
 import com.semeniuc.dmitrii.clientmanager.utils.UserSaverImpl;
+
+import java.util.List;
 
 public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static final int LAYOUT = R.layout.activity_main;
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
+
+    private RecyclerView rv;
+    private RecyclerView.LayoutManager layoutManager;
+    private AppointmentsAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -33,6 +45,24 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         setOnClickListeners();
         // Save Global user to DB
         new SaveUser().execute();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        displayAppointments();
+    }
+
+    private void displayAppointments() {
+        AppointmentRepository appointmentRepo = new AppointmentRepository(MainActivity.this);
+        List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();
+        adapter = new AppointmentsAdapter(appointments);
+        rv = (RecyclerView) findViewById(R.id.main_recyclerview);
+        rv.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this);
+        rv.setLayoutManager(layoutManager);
+        rv.setItemAnimator(new DefaultItemAnimator());
+        rv.setAdapter(adapter);
     }
 
     @Override
@@ -69,7 +99,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void collapseFabMenu() {
-        FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.fab_menu);
+        FloatingActionMenu fabMenu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
         fabMenu.close(false);
     }
 
