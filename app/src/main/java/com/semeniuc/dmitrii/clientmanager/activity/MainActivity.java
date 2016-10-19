@@ -57,17 +57,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         displayAppointments();
     }
 
-    private void logAppointments(List<Appointment> appointments) {
-        for (Appointment appointment : appointments) {
-            Log.e(LOG_TAG, "Appointment TITLE: " + appointment.getTitle());
-            Log.e(LOG_TAG, "Appointment CLIENT: " + appointment.getClientName());
-            Log.e(LOG_TAG, "Appointment PHONE: " + appointment.getClientPhone());
-            Log.e(LOG_TAG, "Appointment SERVICE: " + appointment.getService());
-            Log.e(LOG_TAG, "Appointment INFO: " + appointment.getInfo());
-            Log.e(LOG_TAG, "Appointment DATE: " + appointment.getDate().toString());
-        }
-    }
-
     private void displayAppointments() {
         AppointmentRepository appointmentRepo = new AppointmentRepository(this);
         List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();

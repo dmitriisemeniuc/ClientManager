@@ -68,7 +68,8 @@
                 android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/activity_horizontal_margin"
                 android:layout_toEndOf="@+id/appointment_calendar_icon"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                android:hint="@string/choose_date" />
         </RelativeLayout>
     </RelativeLayout>
 
