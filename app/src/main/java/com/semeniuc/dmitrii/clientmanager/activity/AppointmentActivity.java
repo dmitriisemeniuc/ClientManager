@@ -21,7 +21,6 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -65,8 +64,6 @@ public class AppointmentActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
-
-        setCurrentDateToCalendarDate();
     }
 
     @Override
@@ -98,12 +95,7 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
-    protected void setCurrentDateToCalendarDate() {
-        String date = mUtils.getCurrentDate();
-        mDate.setText(date);
-    }
-
-    protected DatePickerDialog getDatePickerDialog() {
+    private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new DatePickerDialog(
                 this, datePickerListener, calendar.get(Calendar.YEAR),
@@ -113,7 +105,7 @@ public class AppointmentActivity extends AppCompatActivity {
     protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            String date = day + "/" + ++month + "/" + year;
+            String date = mUtils.concat(year, month, day);
             mDate.setText(date);
         }
     };
@@ -131,7 +123,7 @@ public class AppointmentActivity extends AppCompatActivity {
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),
                 mInfo.getText().toString(),
-                new Date(mDate.getText().toString())
+                mUtils.convertStringToDate(mDate.getText().toString())
         );
     }
 

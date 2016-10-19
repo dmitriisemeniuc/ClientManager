@@ -3,15 +3,15 @@ package com.semeniuc.dmitrii.clientmanager.utils;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatTextView;
 import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 
-import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,17 +47,30 @@ public class Utils {
                 valid = false;
             }
         }
+
+        AppCompatTextView date = (AppCompatTextView) mActivity.findViewById(R.id.appointment_calendar_date);
+        if (date.getText().toString().isEmpty()) {
+            date.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
         return valid;
     }
 
-    public String getCurrentDate() {
-        DateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT, getLocale());
-        return df.format(Calendar.getInstance().getTime());
+    public String convertDateToString(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT, getLocale());
+        return dateFormat.format(date);
     }
 
-    public String getDateAsString(Date date, String format) {
-        DateFormat df = new SimpleDateFormat(format, getLocale());
-        return df.format(date);
+    public Date convertStringToDate(String dateString) {
+        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT, getLocale());
+        Date date = null;
+        try {
+            date = format.parse(dateString);
+            System.out.println(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     public Locale getLocale() {
@@ -97,7 +110,7 @@ public class Utils {
         }
     }
 
-    public Appointment copyAppointmentData(Appointment fromAppointment, Appointment toAppointment){
+    public Appointment copyAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
         toAppointment.setTitle(fromAppointment.getTitle());
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
@@ -105,5 +118,17 @@ public class Utils {
         toAppointment.setInfo(fromAppointment.getInfo());
         toAppointment.setDate(fromAppointment.getDate());
         return toAppointment;
+    }
+
+    public String concat(int year, int month, int day) {
+        String monthStr = String.valueOf(++month);
+        String dayStr = String.valueOf(day);
+        if (month < 10) {
+            monthStr = "0" + monthStr;
+        }
+        if (day < 10) {
+            dayStr = "0" + dayStr;
+        }
+        return dayStr + "/" + monthStr + "/" + year;
     }
 }

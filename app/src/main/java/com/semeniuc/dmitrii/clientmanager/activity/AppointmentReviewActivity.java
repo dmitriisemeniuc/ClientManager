@@ -1,5 +1,7 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,6 +18,7 @@ import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
@@ -87,13 +90,31 @@ public class AppointmentReviewActivity extends AppointmentActivity {
         return true;
     }
 
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        if (id == DATE_PICKER_DIALOG_ID) {
+            return getDatePickerDialog();
+        } else {
+            return null;
+        }
+    }
+
+    private DatePickerDialog getDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        Date date = mUtils.convertStringToDate(mDate.getText().toString());
+        calendar.setTime(date);
+        return new DatePickerDialog(
+                this, datePickerListener, calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+    }
+
     public void populateAppointmentFields() {
         mAppointmentTitle.setText(mAppointment.getTitle());
         mClientName.setText(mAppointment.getClientName());
         mClientPhone.setText(mAppointment.getClientPhone());
         mService.setText(mAppointment.getService());
         mInfo.setText(mAppointment.getInfo());
-        mDate.setText(mUtils.getDateAsString(mAppointment.getDate(), Constants.DATE_FORMAT));
+        mDate.setText(mUtils.convertDateToString(mAppointment.getDate()));
     }
 
     private Appointment createAppointment() {
@@ -105,7 +126,7 @@ public class AppointmentReviewActivity extends AppointmentActivity {
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),
                 mInfo.getText().toString(),
-                new Date(mDate.getText().toString())
+                mUtils.convertStringToDate(mDate.getText().toString())
         );
     }
 
