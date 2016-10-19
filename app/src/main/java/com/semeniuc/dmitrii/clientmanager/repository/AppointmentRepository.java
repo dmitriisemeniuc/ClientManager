@@ -3,16 +3,18 @@ package com.semeniuc.dmitrii.clientmanager.repository;
 import android.content.Context;
 import android.util.Log;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
-import com.j256.ormlite.stmt.Where;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
+import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.List;
 
-public class AppointmentRepository implements Crud {
+public class AppointmentRepository implements Repository {
 
     public static final String LOG_TAG = AppointmentRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
@@ -24,7 +26,6 @@ public class AppointmentRepository implements Crud {
         helper = DatabaseManager.getInstance().getHelper();
     }
 
-
     @Override
     public int create(Object item) {
         int index = -1;
@@ -35,37 +36,36 @@ public class AppointmentRepository implements Crud {
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
     @Override
     public int update(Object item) {
         int index = -1;
-
         Appointment appointment = (Appointment) item;
-
         try {
-            helper.getAppointmentDao().update(appointment);
+            Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
+            QueryBuilder<Appointment,Integer> queryBuilder = appointmentDAO.queryBuilder();
+            queryBuilder.where().eq(Appointment.APPOINTMENT_ID_FIELD_NAME, appointment.getId());
+            PreparedQuery<Appointment> preparedQuery = queryBuilder.prepare();
+            Appointment appointmentEntry = appointmentDAO.queryForFirst(preparedQuery);
+            appointmentEntry = new Utils().copyAppointmentData(appointment, appointmentEntry);
+            index = appointmentDAO.update(appointmentEntry);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
     @Override
     public int delete(Object item) {
         int index = -1;
-
         Appointment appointment = (Appointment) item;
-
         try {
-            helper.getAppointmentDao().delete(appointment);
+            index = helper.getAppointmentDao().delete(appointment);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
@@ -78,23 +78,6 @@ public class AppointmentRepository implements Crud {
             e.printStackTrace();
         }
         return appointment;
-    }
-
-    public List<Appointment> findByTitleAndClientName(String title, String clientName) {
-        List<Appointment> appointments = null;
-        try{
-            QueryBuilder<Appointment, Integer> queryBuilder = helper.getAppointmentDao().queryBuilder();
-            Where where = queryBuilder.where();
-            // The Appointment title must be equals to title
-            where.eq(Appointment.APPOINTMENT_TITLE_FIELD_NAME, title);
-            where.and();
-            // The appointment clientName must be equals to clientName
-            where.eq(Appointment.CLIENT_NAME_FIELD_NAME, clientName);
-            appointments = queryBuilder.query();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-        return appointments;
     }
 
     @Override

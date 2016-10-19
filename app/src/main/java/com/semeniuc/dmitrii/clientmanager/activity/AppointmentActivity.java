@@ -12,14 +12,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.DatePicker;
-import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
-import com.semeniuc.dmitrii.clientmanager.utils.AppointmentDbHelperImpl;
+import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
-import com.semeniuc.dmitrii.clientmanager.utils.IAppointmentDbHelper;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
@@ -33,10 +31,10 @@ public class AppointmentActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_appointment;
     public static final String LOG_TAG = AppointmentActivity.class.getSimpleName();
-    public static final int DATEPICKER_DIALOG_ID = 1;
+    public static final int DATE_PICKER_DIALOG_ID = 1;
 
-    private Utils mUtils = new Utils(AppointmentActivity.this);
-    private Appointment mAppointment;
+    protected Utils mUtils = new Utils(AppointmentActivity.this);
+    protected Appointment mAppointment;
 
     @BindView(R.id.appointment_title)
     AppCompatEditText mAppointmentTitle;
@@ -53,12 +51,12 @@ public class AppointmentActivity extends AppCompatActivity {
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
-        showDatePickerDialog(DATEPICKER_DIALOG_ID);
+        showDatePickerDialog(DATE_PICKER_DIALOG_ID);
     }
 
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
-        showDatePickerDialog(DATEPICKER_DIALOG_ID);
+        showDatePickerDialog(DATE_PICKER_DIALOG_ID);
     }
 
     @Override
@@ -83,9 +81,8 @@ public class AppointmentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_appointment:
-                if (mUtils.isAppointmentFormValid()) {
+                if (mUtils.isAppointmentFormValid())
                     new SaveAppointment().execute();
-                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -94,26 +91,26 @@ public class AppointmentActivity extends AppCompatActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        if (id == DATEPICKER_DIALOG_ID) {
+        if (id == DATE_PICKER_DIALOG_ID) {
             return getDatePickerDialog();
         } else {
             return null;
         }
     }
 
-    private void setCurrentDateToCalendarDate() {
+    protected void setCurrentDateToCalendarDate() {
         String date = mUtils.getCurrentDate();
         mDate.setText(date);
     }
 
-    private DatePickerDialog getDatePickerDialog() {
+    protected DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new DatePickerDialog(
                 this, datePickerListener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
+    protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             String date = day + "/" + ++month + "/" + year;
@@ -121,40 +118,21 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     };
 
-    private void showDatePickerDialog(int dialogId) {
+    protected void showDatePickerDialog(int dialogId) {
         showDialog(dialogId);
     }
 
-    public Appointment createAppointment() {
-        Appointment appointment = new Appointment();
-        appointment.setTitle(mAppointmentTitle.getText().toString());
-        appointment.setUserGoogleId(MyApplication.getInstance().getUser().getGoogleId());
-        appointment.setClientName(mClientName.getText().toString());
-        appointment.setClientPhone(mClientPhone.getText().toString());
-        appointment.setService(mService.getText().toString());
-        appointment.setInfo(mInfo.getText().toString());
-        appointment.setDate(new Date(mDate.getText().toString()));
-        return appointment;
-    }
-
-    private void showUserMessage(int saved, String title, String clientName) {
-        switch (saved) {
-            case Constants.APPOINTMENT_CREATED:
-                Toast.makeText(this, getResources()
-                                .getString(R.string.appointment_saved),
-                        Toast.LENGTH_SHORT).show();
-                break;
-            case Constants.APPOINTMENT_NOT_CREATED:
-                Toast.makeText(this, getResources().getString(R.string.saving_failed),
-                        Toast.LENGTH_SHORT).show();
-                break;
-            case Constants.APPOINTMENT_EXISTS:
-                Toast.makeText(this, getResources().getString(R.string.appointment_with_title) +
-                                " '" + title + "' " + getResources().getString(R.string.and_with_client) +
-                                " '" + clientName + "' - " + getResources().getString(R.string.already_exists),
-                        Toast.LENGTH_LONG).show();
-                break;
-        }
+    private Appointment createAppointment() {
+        return new Appointment(
+                Constants.LONG_DEFAULT,
+                MyApplication.getInstance().getUser().getGoogleId(),
+                mAppointmentTitle.getText().toString(),
+                mClientName.getText().toString(),
+                mClientPhone.getText().toString(),
+                mService.getText().toString(),
+                mInfo.getText().toString(),
+                new Date(mDate.getText().toString())
+        );
     }
 
     private class SaveAppointment extends AsyncTask<Void, Void, Integer> {
@@ -162,15 +140,16 @@ public class AppointmentActivity extends AppCompatActivity {
         @Override
         protected Integer doInBackground(Void... voids) {
             mAppointment = createAppointment();
-            IAppointmentDbHelper appointmentHelper = new AppointmentDbHelperImpl();
-            return appointmentHelper.saveAppointmentToDb(mAppointment);
+            AppointmentRepository appointmentRepo = new AppointmentRepository(
+                    MyApplication.getInstance().getApplicationContext());
+            return appointmentRepo.create(mAppointment);
         }
 
         @Override
-        protected void onPostExecute(Integer saved) {
-            showUserMessage(saved, mAppointment.getTitle(), mAppointment.getClientName());
-            if (saved == Constants.APPOINTMENT_CREATED) finish();
-            super.onPostExecute(saved);
+        protected void onPostExecute(Integer created) {
+            mUtils.showSaveResultMessage(created, AppointmentActivity.this);
+            if (created == Constants.CREATED) finish();
+            super.onPostExecute(created);
         }
     }
 }

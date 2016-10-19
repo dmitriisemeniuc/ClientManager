@@ -30,4 +30,12 @@
     <string name="and_with_client">and with client</string>
     <string name="already_exists">already exists</string>
     <string name="cannot_save_appointment">Cannot save an appointment</string>
+    <string name="delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="appointment_updated">Appointment updated</string>
+    <string name="updating_failed">Updating failed</string>
+    <string name="appointment_deleted">Appointment deleted</string>
+    <string name="deleting_failed">Deleting failed</string>
+    <string name="sign_in_failed">Sign in failed</string>
+    <string name="email_already_registered">Email already registered</string>
 </resources>

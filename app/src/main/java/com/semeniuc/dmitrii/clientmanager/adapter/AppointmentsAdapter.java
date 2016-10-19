@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -33,7 +34,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
     public void onBindViewHolder(AppointmentsAdapter.AppointmentViewHolder holder, int position) {
         holder.mAppointmentTitle.setText(mAppointments.get(position).getTitle());
         holder.mClientName.setText(mAppointments.get(position).getClientName());
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat df = new SimpleDateFormat(Constants.DATE_FORMAT);
         String date = df.format(mAppointments.get(position).getDate());
         holder.mAppointmetTime.setText(date);
         holder.bind(mAppointments.get(position), mListener);

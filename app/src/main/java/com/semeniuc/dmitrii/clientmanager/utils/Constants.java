@@ -1,11 +1,19 @@
 package com.semeniuc.dmitrii.clientmanager.utils;
 
+import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+
 public class Constants {
 
     public static final boolean DEBUG = true;
-    public static final int APPOINTMENT_CREATED = 1;
-    public static final int APPOINTMENT_NOT_CREATED = 0;
-    public static final int APPOINTMENT_EXISTS = 2;
-    public static final int APPOINTMENT_IS_NULL = -1;
+    public static final String DOT = ".";
 
+    public static final int CREATED = 1;
+    public static final int UPDATED = 1;
+    public static final int DELETED = 1;
+
+    public static final String DATE_FORMAT = "dd/MM/yyyy";
+    public static final String APPOINTMENT_PATH =
+            Appointment.class.getPackage().getName().concat(DOT + Appointment.class.getSimpleName());
+
+    public static final long LONG_DEFAULT = 0L;
 }

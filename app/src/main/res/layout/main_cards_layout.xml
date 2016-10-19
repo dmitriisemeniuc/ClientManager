@@ -75,7 +75,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/main_cards_time_icon"
                 android:textSize="14sp"
-                android:text="10:00 20/10/2016"
+                android:text="20/10/2016 10:00"
                 android:textColor="@color/colorPrimary"
                 android:layout_centerVertical="true"/>
             </RelativeLayout>
