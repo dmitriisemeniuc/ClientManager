@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.auth.api.Auth;
@@ -22,9 +23,10 @@ import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentsAdapter;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.User;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
-import com.semeniuc.dmitrii.clientmanager.utils.IUserSaver;
-import com.semeniuc.dmitrii.clientmanager.utils.UserSaverImpl;
+import com.semeniuc.dmitrii.clientmanager.repository.UserRepository;
+import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
@@ -32,10 +34,10 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     public static final int LAYOUT = R.layout.activity_main;
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
+    public static String USER_SAVING_ERROR_MSG = "";
 
-    private RecyclerView rv;
     private RecyclerView.LayoutManager layoutManager;
-    private AppointmentsAdapter adapter;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,19 +52,44 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
+        if (!USER_SAVING_ERROR_MSG.isEmpty())
+            Toast.makeText(this, USER_SAVING_ERROR_MSG, Toast.LENGTH_SHORT).show();
         displayAppointments();
     }
 
+    private void logAppointments(List<Appointment> appointments) {
+        for (Appointment appointment : appointments) {
+            Log.e(LOG_TAG, "Appointment TITLE: " + appointment.getTitle());
+            Log.e(LOG_TAG, "Appointment CLIENT: " + appointment.getClientName());
+            Log.e(LOG_TAG, "Appointment PHONE: " + appointment.getClientPhone());
+            Log.e(LOG_TAG, "Appointment SERVICE: " + appointment.getService());
+            Log.e(LOG_TAG, "Appointment INFO: " + appointment.getInfo());
+            Log.e(LOG_TAG, "Appointment DATE: " + appointment.getDate().toString());
+        }
+    }
+
     private void displayAppointments() {
-        AppointmentRepository appointmentRepo = new AppointmentRepository(MainActivity.this);
+        AppointmentRepository appointmentRepo = new AppointmentRepository(this);
         List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();
-        adapter = new AppointmentsAdapter(appointments);
-        rv = (RecyclerView) findViewById(R.id.main_recyclerview);
-        rv.setHasFixedSize(true);
+        mRecyclerView = (RecyclerView) findViewById(R.id.main_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        rv.setLayoutManager(layoutManager);
-        rv.setItemAnimator(new DefaultItemAnimator());
-        rv.setAdapter(adapter);
+        // RecyclerView will be displayed as list
+        mRecyclerView.setLayoutManager(layoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        // Set adapter with itemOnClickListener
+        mRecyclerView.setAdapter(new AppointmentsAdapter(appointments, new AppointmentsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(Appointment appointment) {
+                reviewAppointment(appointment);
+            }
+        }));
+    }
+
+    private void reviewAppointment(Appointment appointment) {
+        Intent i = new Intent(this, AppointmentReviewActivity.class);
+        i.putExtra(Constants.APPOINTMENT_PATH, appointment);
+        startActivity(i);
     }
 
     @Override
@@ -148,9 +175,20 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
         @Override
         protected Void doInBackground(Void... voids) {
-            if (DEBUG) Log.i(LOG_TAG, "doInBackground()");
-            IUserSaver userSaver = new UserSaverImpl();
-            userSaver.saveGlobalUserToDb();
+            UserRepository userRepo = new UserRepository(MyApplication.getInstance().getApplicationContext());
+            User user = MyApplication.getInstance().getUser();
+            List<User> users = userRepo.findByEmail(user.getEmail());
+            if (null != users) {
+                if (users.size() == 0) {
+                    int index = userRepo.create(user);
+                    USER_SAVING_ERROR_MSG = "";
+                    if (index <= 0) {
+                        USER_SAVING_ERROR_MSG = getResources().getString(R.string.sign_in_failed);
+                    }
+                } else {
+                    USER_SAVING_ERROR_MSG = getResources().getString(R.string.email_already_registered);
+                }
+            }
             return null;
         }
     }

@@ -2,7 +2,7 @@ package com.semeniuc.dmitrii.clientmanager.repository;
 
 import java.util.List;
 
-interface Crud
+interface Repository
 {
     int create(Object item);
 

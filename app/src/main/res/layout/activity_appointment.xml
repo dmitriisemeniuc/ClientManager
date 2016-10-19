@@ -1,70 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="@dimen/activity_vertical_margin"
     android:orientation="vertical">
 
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_title"
-        style="@style/appointmentFormField"
-        android:hint="@string/appointment_title_hint"
-        android:inputType="textCapWords"/>
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_client_name"
-        style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_title"
-        android:hint="@string/appointment_client_name"
-        android:inputType="textCapWords"/>
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_client_phone"
-        style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_client_name"
-        android:hint="@string/appointment_phone_number"
-        android:inputType="phone"
-        android:maxLength="30" />
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_service"
-        style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_client_phone"
-        android:hint="@string/appointment_service"
-        android:inputType="textCapWords"/>
-
-    <android.support.v7.widget.AppCompatEditText
-        android:id="@+id/appointment_info"
-        style="@style/appointmentFormField"
-        android:layout_below="@+id/appointment_service"
-        android:gravity="top|start"
-        android:hint="@string/appointment_info"
-        android:inputType="textMultiLine|textCapSentences"
-        android:lines="4"
-        android:maxLength="150"
-        android:maxLines="6"
-        android:minLines="2" />
-
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/activity_vertical_margin"
-        android:layout_below="@+id/appointment_info">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/appointment_calendar_icon"
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/appointment_title"
+            style="@style/appointmentFormField"
+            android:hint="@string/appointment_title_hint"
+            android:inputType="textCapWords" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/appointment_client_name"
+            style="@style/appointmentFormField"
+            android:layout_below="@+id/appointment_title"
+            android:hint="@string/appointment_client_name"
+            android:inputType="textCapWords" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/appointment_client_phone"
+            style="@style/appointmentFormField"
+            android:layout_below="@+id/appointment_client_name"
+            android:hint="@string/appointment_phone_number"
+            android:inputType="phone"
+            android:maxLength="30" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/appointment_service"
+            style="@style/appointmentFormField"
+            android:layout_below="@+id/appointment_client_phone"
+            android:hint="@string/appointment_service"
+            android:inputType="textCapWords" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/appointment_info"
+            style="@style/appointmentFormField"
+            android:layout_below="@+id/appointment_service"
+            android:gravity="top|start"
+            android:hint="@string/appointment_info"
+            android:inputType="textMultiLine|textCapSentences"
+            android:lines="4"
+            android:maxLength="150"
+            android:maxLines="6"
+            android:minLines="2" />
+
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/ic_calendar"/>
+            android:layout_below="@+id/appointment_info"
+            android:padding="@dimen/activity_vertical_margin">
 
-        <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/appointment_calendar_date"
-            android:layout_width="wrap_content"
-            style="@style/appointmentFormField"
-            android:layout_toEndOf="@+id/appointment_calendar_icon"
-            android:textSize="16sp"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_centerVertical="true"/>
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_calendar_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_calendar" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_calendar_date"
+                style="@style/appointmentFormField"
+                android:layout_width="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                android:layout_toEndOf="@+id/appointment_calendar_icon"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </RelativeLayout>
 
-</RelativeLayout>
+</ScrollView>

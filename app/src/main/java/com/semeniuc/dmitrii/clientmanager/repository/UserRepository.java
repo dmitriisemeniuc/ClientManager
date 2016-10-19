@@ -10,7 +10,7 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class UserRepository implements Crud {
+public class UserRepository implements Repository {
 
     public static final String LOG_TAG = UserRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
@@ -32,37 +32,30 @@ public class UserRepository implements Crud {
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
     @Override
     public int update(Object item) {
         int index = -1;
-
         User user = (User) item;
-
         try {
             helper.getUserDao().update(user);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
     @Override
     public int delete(Object item) {
         int index = -1;
-
         User user = (User) item;
-
         try {
             helper.getUserDao().delete(user);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return index;
     }
 
@@ -90,13 +83,11 @@ public class UserRepository implements Crud {
     @Override
     public List<?> findAll() {
         List<User> items = null;
-
         try {
             items = helper.getUserDao().queryForAll();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-
         return items;
     }
 }
