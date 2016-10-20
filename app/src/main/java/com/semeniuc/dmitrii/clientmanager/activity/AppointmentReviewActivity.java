@@ -81,6 +81,8 @@ public class AppointmentReviewActivity extends AppointmentActivity {
             case R.id.action_update_appointment:
                 if (mUtils.isAppointmentFormValid()) {
                     new UpdateAppointment().execute();
+                } else {
+                    hideKeyboard();
                 }
                 break;
             case R.id.action_delete_appointment:

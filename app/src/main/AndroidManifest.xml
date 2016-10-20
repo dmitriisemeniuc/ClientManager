@@ -31,12 +31,14 @@
             android:name=".activity.AppointmentActivity"
             android:label="@string/appointment"
             android:theme="@style/Theme.AppCompat.Light"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:parentActivityName=".activity.MainActivity">
         </activity>
 
         <activity
             android:name=".activity.AppointmentReviewActivity"
             android:label="@string/appointment"
+            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.AppCompat.Light">
         </activity>
 
