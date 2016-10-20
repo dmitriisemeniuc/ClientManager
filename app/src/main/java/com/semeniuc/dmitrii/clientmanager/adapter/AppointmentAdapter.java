@@ -8,34 +8,38 @@ import android.widget.TextView;
 
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.List;
 
-public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapter.AppointmentViewHolder> {
+public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder> {
 
     private List<Appointment> mAppointments;
     private final OnItemClickListener mListener;
     private Utils mUtils = new Utils();
 
-    public AppointmentsAdapter(List<Appointment> appointments, OnItemClickListener listener) {
+    public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener) {
         mAppointments = appointments;
         mListener = listener;
     }
 
     @Override
-    public AppointmentsAdapter.AppointmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_cards_layout, parent, false);
+    public AppointmentAdapter.AppointmentViewHolder onCreateViewHolder(
+            ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(
+                R.layout.main_cards_layout, parent, false);
         return new AppointmentViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(AppointmentsAdapter.AppointmentViewHolder holder, int position) {
+    public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
         holder.mClientName.setText(mAppointments.get(position).getClientName());
         holder.mClientPhone.setText(mAppointments.get(position).getClientPhone());
         holder.mService.setText(mAppointments.get(position).getService());
         holder.mInfo.setText(mAppointments.get(position).getInfo());
-        holder.mDate.setText(mUtils.convertDateToString(mAppointments.get(position).getDate()));
+        holder.mDateTime.setText(mUtils.convertDateToString(mAppointments.get(position).getDate(),
+                Constants.DATE_TIME_FORMAT));
         holder.bind(mAppointments.get(position), mListener);
     }
 
@@ -57,7 +61,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
         TextView mClientPhone;
         TextView mService;
         TextView mInfo;
-        TextView mDate;
+        TextView mDateTime;
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
@@ -65,7 +69,7 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
             mClientPhone = (TextView) itemView.findViewById(R.id.main_appointment_client_phone);
             mService = (TextView) itemView.findViewById(R.id.main_appointment_service);
             mInfo = (TextView) itemView.findViewById(R.id.main_appointment_info);
-            mDate = (TextView) itemView.findViewById(R.id.main_appointment_time);
+            mDateTime = (TextView) itemView.findViewById(R.id.main_appointment_date_time);
         }
 
         public void bind(final Appointment appointment, final OnItemClickListener listener) {

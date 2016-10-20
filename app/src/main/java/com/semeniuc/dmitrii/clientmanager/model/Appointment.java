@@ -34,7 +34,7 @@ public class Appointment implements Parcelable {
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
     private String info;
     @DatabaseField(canBeNull = false, columnName = DATE_FIELD_NAME,
-            dataType = DataType.DATE_STRING, format = Constants.DATE_FORMAT)
+            dataType = DataType.DATE_STRING, format = Constants.DATE_TIME_FORMAT)
     private Date date;
 
     public Appointment() {

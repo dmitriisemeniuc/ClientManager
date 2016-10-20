@@ -16,7 +16,7 @@
     <string name="label_add_appointment">Add appointment</string>
     <string name="appointment">Appointment</string>
     <string name="appointment_title_hint">Appointment title</string>
-    <string name="appointment_client_name">Client name</string>
+    <string name="appointment_client_name">Client</string>
     <string name="appointment_phone_number">Phone number</string>
     <string name="appointment_service">Service</string>
     <string name="date_label">Date:</string>
@@ -36,7 +36,8 @@
     <string name="updating_failed">Updating failed</string>
     <string name="appointment_deleted">Appointment deleted</string>
     <string name="deleting_failed">Deleting failed</string>
-    <string name="sign_in_failed">Sign in failed</string>
+    <string name="user_saving_failed">User saving failed</string>
     <string name="email_already_registered">Email already registered</string>
     <string name="choose_date">Choose date</string>
+    <string name="choose_time">Choose time</string>
 </resources>
