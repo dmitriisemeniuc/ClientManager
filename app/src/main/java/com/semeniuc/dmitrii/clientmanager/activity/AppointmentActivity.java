@@ -2,6 +2,7 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,7 +12,9 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
+import android.widget.ScrollView;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
@@ -78,8 +81,11 @@ public class AppointmentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_appointment:
-                if (mUtils.isAppointmentFormValid())
+                if (mUtils.isAppointmentFormValid()) {
                     new SaveAppointment().execute();
+                } else {
+                    hideKeyboard();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -95,6 +101,12 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
+    protected void hideKeyboard() {
+        ScrollView mainLayout = (ScrollView) findViewById(R.id.appointment_layout);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
+    }
+
     private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new DatePickerDialog(
@@ -107,6 +119,7 @@ public class AppointmentActivity extends AppCompatActivity {
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             String date = mUtils.concat(year, month, day);
             mDate.setText(date);
+            mDate.setError(null);
         }
     };
 

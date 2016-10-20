@@ -13,9 +13,6 @@ import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
 
 public class Utils {
 
@@ -35,19 +32,26 @@ public class Utils {
 
         boolean valid = true;
         // Fields of Appointment form
-        List<AppCompatEditText> fields = new LinkedList<>();
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_title));
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_client_name));
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_client_phone));
-        fields.add((AppCompatEditText) mActivity.findViewById(R.id.appointment_service));
-        // Check if fields are not empty
-        for (AppCompatEditText field : fields) {
-            if (field.getText().toString().isEmpty()) {
-                field.setError(mActivity.getResources().getString(R.string.field_is_required));
-                valid = false;
-            }
+        AppCompatEditText title = (AppCompatEditText) mActivity.findViewById(R.id.appointment_title);
+        if (title.getText().toString().isEmpty()) {
+            title.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
         }
-
+        AppCompatEditText clientName = (AppCompatEditText) mActivity.findViewById(R.id.appointment_client_name);
+        if (clientName.getText().toString().isEmpty()) {
+            clientName.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        AppCompatEditText clientPhone = (AppCompatEditText) mActivity.findViewById(R.id.appointment_client_phone);
+        if (clientPhone.getText().toString().isEmpty()) {
+            clientPhone.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        AppCompatEditText service = (AppCompatEditText) mActivity.findViewById(R.id.appointment_service);
+        if (service.getText().toString().isEmpty()) {
+            service.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
         AppCompatTextView date = (AppCompatTextView) mActivity.findViewById(R.id.appointment_calendar_date);
         if (date.getText().toString().isEmpty()) {
             date.setError(mActivity.getResources().getString(R.string.field_is_required));
@@ -57,12 +61,12 @@ public class Utils {
     }
 
     public String convertDateToString(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT, getLocale());
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
         return dateFormat.format(date);
     }
 
     public Date convertStringToDate(String dateString) {
-        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT, getLocale());
+        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT);
         Date date = null;
         try {
             date = format.parse(dateString);
@@ -71,10 +75,6 @@ public class Utils {
             e.printStackTrace();
         }
         return date;
-    }
-
-    public Locale getLocale() {
-        return mActivity.getResources().getConfiguration().locale;
     }
 
     public void showSaveResultMessage(int saved, AppCompatActivity activity) {
