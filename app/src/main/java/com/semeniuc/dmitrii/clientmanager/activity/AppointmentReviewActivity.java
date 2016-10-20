@@ -31,8 +31,6 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     private Context mContext = MyApplication.getInstance().getApplicationContext();
     private Appointment mAppointment;
 
-    @BindView(R.id.appointment_title)
-    AppCompatEditText mAppointmentTitle;
     @BindView(R.id.appointment_client_name)
     AppCompatEditText mClientName;
     @BindView(R.id.appointment_client_phone)
@@ -111,7 +109,6 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     }
 
     public void populateAppointmentFields() {
-        mAppointmentTitle.setText(mAppointment.getTitle());
         mClientName.setText(mAppointment.getClientName());
         mClientPhone.setText(mAppointment.getClientPhone());
         mService.setText(mAppointment.getService());
@@ -123,7 +120,6 @@ public class AppointmentReviewActivity extends AppointmentActivity {
         return new Appointment(
                 mAppointment.getId(),
                 MyApplication.getInstance().getUser().getGoogleId(),
-                mAppointmentTitle.getText().toString(),
                 mClientName.getText().toString(),
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),

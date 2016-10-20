@@ -38,8 +38,6 @@ public class AppointmentActivity extends AppCompatActivity {
     protected Utils mUtils = new Utils(AppointmentActivity.this);
     protected Appointment mAppointment;
 
-    @BindView(R.id.appointment_title)
-    AppCompatEditText mAppointmentTitle;
     @BindView(R.id.appointment_client_name)
     AppCompatEditText mClientName;
     @BindView(R.id.appointment_client_phone)
@@ -131,7 +129,6 @@ public class AppointmentActivity extends AppCompatActivity {
         return new Appointment(
                 Constants.LONG_DEFAULT,
                 MyApplication.getInstance().getUser().getGoogleId(),
-                mAppointmentTitle.getText().toString(),
                 mClientName.getText().toString(),
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),

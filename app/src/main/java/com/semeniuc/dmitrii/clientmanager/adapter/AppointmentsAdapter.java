@@ -31,7 +31,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
 
     @Override
     public void onBindViewHolder(AppointmentsAdapter.AppointmentViewHolder holder, int position) {
-        holder.mAppointmentTitle.setText(mAppointments.get(position).getTitle());
         holder.mClientName.setText(mAppointments.get(position).getClientName());
         holder.mClientPhone.setText(mAppointments.get(position).getClientPhone());
         holder.mService.setText(mAppointments.get(position).getService());
@@ -54,7 +53,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
     }
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        TextView mAppointmentTitle;
         TextView mClientName;
         TextView mClientPhone;
         TextView mService;
@@ -63,7 +61,6 @@ public class AppointmentsAdapter extends RecyclerView.Adapter<AppointmentsAdapte
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
-            mAppointmentTitle = (TextView) itemView.findViewById(R.id.main_appointment_title);
             mClientName = (TextView) itemView.findViewById(R.id.main_appointment_client_name);
             mClientPhone = (TextView) itemView.findViewById(R.id.main_appointment_client_phone);
             mService = (TextView) itemView.findViewById(R.id.main_appointment_service);

@@ -32,11 +32,6 @@ public class Utils {
 
         boolean valid = true;
         // Fields of Appointment form
-        AppCompatEditText title = (AppCompatEditText) mActivity.findViewById(R.id.appointment_title);
-        if (title.getText().toString().isEmpty()) {
-            title.setError(mActivity.getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
         AppCompatEditText clientName = (AppCompatEditText) mActivity.findViewById(R.id.appointment_client_name);
         if (clientName.getText().toString().isEmpty()) {
             clientName.setError(mActivity.getResources().getString(R.string.field_is_required));
@@ -111,7 +106,6 @@ public class Utils {
     }
 
     public Appointment copyAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
-        toAppointment.setTitle(fromAppointment.getTitle());
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());
