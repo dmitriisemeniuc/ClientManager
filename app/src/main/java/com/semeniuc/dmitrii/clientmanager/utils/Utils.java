@@ -32,11 +32,6 @@ public class Utils {
 
         boolean valid = true;
         // Fields of Appointment form
-        AppCompatEditText title = (AppCompatEditText) mActivity.findViewById(R.id.appointment_title);
-        if (title.getText().toString().isEmpty()) {
-            title.setError(mActivity.getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
         AppCompatEditText clientName = (AppCompatEditText) mActivity.findViewById(R.id.appointment_client_name);
         if (clientName.getText().toString().isEmpty()) {
             clientName.setError(mActivity.getResources().getString(R.string.field_is_required));
@@ -57,16 +52,22 @@ public class Utils {
             date.setError(mActivity.getResources().getString(R.string.field_is_required));
             valid = false;
         }
+
+        AppCompatTextView time = (AppCompatTextView) mActivity.findViewById(R.id.appointment_time);
+        if (time.getText().toString().isEmpty()) {
+            time.setError(mActivity.getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
         return valid;
     }
 
-    public String convertDateToString(Date date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMAT);
+    public String convertDateToString(Date date, String pattern) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);
     }
 
-    public Date convertStringToDate(String dateString) {
-        SimpleDateFormat format = new SimpleDateFormat(Constants.DATE_FORMAT);
+    public Date convertStringToDate(String dateString, String pattern) {
+        SimpleDateFormat format = new SimpleDateFormat(pattern);
         Date date = null;
         try {
             date = format.parse(dateString);
@@ -111,7 +112,6 @@ public class Utils {
     }
 
     public Appointment copyAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
-        toAppointment.setTitle(fromAppointment.getTitle());
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());
@@ -120,7 +120,7 @@ public class Utils {
         return toAppointment;
     }
 
-    public String concat(int year, int month, int day) {
+    public String getCorrectDateFormat(int year, int month, int day) {
         String monthStr = String.valueOf(++month);
         String dayStr = String.valueOf(day);
         if (month < 10) {
@@ -130,5 +130,17 @@ public class Utils {
             dayStr = "0" + dayStr;
         }
         return dayStr + "/" + monthStr + "/" + year;
+    }
+
+    public String getCorrectTimeFormat(int hour, int minute){
+        String hourStr = String.valueOf(hour);
+        String minuteStr = String.valueOf(minute);
+        if(hour < 10){
+            hourStr = "0" + hourStr;
+        }
+        if(minute < 10){
+            minuteStr = "0" + minuteStr;
+        }
+        return hourStr + ":" + minuteStr;
     }
 }

@@ -2,6 +2,7 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
+import android.widget.TimePicker;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
@@ -34,12 +36,11 @@ public class AppointmentActivity extends AppCompatActivity {
     public static final int LAYOUT = R.layout.activity_appointment;
     public static final String LOG_TAG = AppointmentActivity.class.getSimpleName();
     public static final int DATE_PICKER_DIALOG_ID = 1;
+    public static final int TIME_PICKER_DIALOG_ID = 2;
 
     protected Utils mUtils = new Utils(AppointmentActivity.this);
     protected Appointment mAppointment;
 
-    @BindView(R.id.appointment_title)
-    AppCompatEditText mAppointmentTitle;
     @BindView(R.id.appointment_client_name)
     AppCompatEditText mClientName;
     @BindView(R.id.appointment_client_phone)
@@ -50,15 +51,24 @@ public class AppointmentActivity extends AppCompatActivity {
     AppCompatEditText mInfo;
     @BindView(R.id.appointment_calendar_date)
     AppCompatTextView mDate;
+    @BindView(R.id.appointment_time)
+    AppCompatTextView mTime;
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
-        showDatePickerDialog(DATE_PICKER_DIALOG_ID);
+        showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
-
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
-        showDatePickerDialog(DATE_PICKER_DIALOG_ID);
+        showPickerDialog(DATE_PICKER_DIALOG_ID);
+    }
+    @OnClick(R.id.appointment_time_icon)
+    void onClockIconClicked() {
+        showPickerDialog(TIME_PICKER_DIALOG_ID);
+    }
+    @OnClick(R.id.appointment_time)
+    void onClockClicked() {
+        showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
 
     @Override
@@ -96,17 +106,23 @@ public class AppointmentActivity extends AppCompatActivity {
     protected Dialog onCreateDialog(int id) {
         if (id == DATE_PICKER_DIALOG_ID) {
             return getDatePickerDialog();
+        } else if (id == TIME_PICKER_DIALOG_ID) {
+            return getTimePickerDialog();
         } else {
             return null;
         }
     }
 
-    protected void hideKeyboard() {
-        ScrollView mainLayout = (ScrollView) findViewById(R.id.appointment_layout);
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
+    /**
+     * Open picker dialog with date/time dialog id
+     */
+    protected void showPickerDialog(int dialogId) {
+        showDialog(dialogId);
     }
 
+    /*
+    * Open date picker dialog with current date
+    * */
     private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new DatePickerDialog(
@@ -114,32 +130,50 @@ public class AppointmentActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
+    /*
+    * Set chosen Date to date edit text
+    * */
     protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            String date = mUtils.concat(year, month, day);
+            String date = mUtils.getCorrectDateFormat(year, month, day);
             mDate.setText(date);
             mDate.setError(null);
         }
     };
 
-    protected void showDatePickerDialog(int dialogId) {
-        showDialog(dialogId);
+    /*
+    * Open date picker dialog with current time
+    * */
+    private TimePickerDialog getTimePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
+                calendar.get(Calendar.MINUTE), true);
     }
 
-    private Appointment createAppointment() {
-        return new Appointment(
-                Constants.LONG_DEFAULT,
-                MyApplication.getInstance().getUser().getGoogleId(),
-                mAppointmentTitle.getText().toString(),
-                mClientName.getText().toString(),
-                mClientPhone.getText().toString(),
-                mService.getText().toString(),
-                mInfo.getText().toString(),
-                mUtils.convertStringToDate(mDate.getText().toString())
-        );
+    /*
+    * Set chosen Time to time edit text
+    * */
+    protected TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
+            String time = mUtils.getCorrectTimeFormat(hourOfDay, minute);
+            mTime.setText(time);
+        }
+    };
+
+    /**
+     * The keyboard need to be hidden for user to be able to see all form fields of the appointment activity
+     * */
+    protected void hideKeyboard() {
+        ScrollView mainLayout = (ScrollView) findViewById(R.id.appointment_layout);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
 
+    /*
+    * Save Appointment to DB (Create new one)
+    * */
     private class SaveAppointment extends AsyncTask<Void, Void, Integer> {
 
         @Override
@@ -156,5 +190,24 @@ public class AppointmentActivity extends AppCompatActivity {
             if (created == Constants.CREATED) finish();
             super.onPostExecute(created);
         }
+    }
+
+    /*
+    * Creates new Appointment with data from appointment form
+    * */
+    private Appointment createAppointment() {
+        return new Appointment(
+                Constants.LONG_DEFAULT,
+                MyApplication.getInstance().getUser().getGoogleId(),
+                mClientName.getText().toString(),
+                mClientPhone.getText().toString(),
+                mService.getText().toString(),
+                mInfo.getText().toString(),
+                mUtils.convertStringToDate(getDateFromDateAndTime(), Constants.DATE_TIME_FORMAT)
+        );
+    }
+
+    protected String getDateFromDateAndTime() {
+        return mDate.getText().toString() + " " + mTime.getText().toString();
     }
 }

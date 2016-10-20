@@ -5,6 +5,7 @@
     <color name="colorAccent">#607D8B</color>
     <color name="textPrimary">#212121</color>
     <color name="textSecondary">#757575</color>
+    <color name="text_hint">#BDBDBD</color>
     <color name="icons">#212121</color>
     <color name="divider">#BDBDBD</color>
     <color name="blue_grey_500">#607D8B</color>
@@ -16,6 +17,10 @@
     <color name="title_text_color">#0091EA</color>
     <color name="appointment_status_todo_color">#FFAB00</color>
     <color name="client_name_text_color">#FF6D00</color>
-    <color name="service_text_color">#689F38</color>
+    <color name="client_name_hint_text_color">#FFAB40</color>
+    <color name="service_text_color">#827717</color>
+    <color name="service_hint_text_color">#C0CA33</color>
     <color name="light_grey_background">#F5F5F5</color>
+    <color name="yellow_light">#FFFDE7</color>
+    <color name="action_bar_background">#FF6D00</color>
 </resources>

@@ -16,7 +16,6 @@ public class Appointment implements Parcelable {
     public static final String APPOINTMENT_ID_FIELD_NAME = "_ID";
     public static final String USER_GOOGLE_ID_FIELD_NAME = "google_id";
     public static final String APPOINTMENT_TITLE_FIELD_NAME = "title";
-    public static final String CLIENT_NAME_FIELD_NAME = "client";
     public static final String CLIENT_PHONE_FIELD_NAME = "phone";
     public static final String SERVICE_FIELD_NAME = "service";
     public static final String INFO_FIELD_NAME = "info";
@@ -27,8 +26,6 @@ public class Appointment implements Parcelable {
     @DatabaseField(canBeNull = false, columnName = USER_GOOGLE_ID_FIELD_NAME)
     private String userGoogleId;
     @DatabaseField(canBeNull = false, columnName = APPOINTMENT_TITLE_FIELD_NAME)
-    private String title;
-    @DatabaseField(canBeNull = false, columnName = CLIENT_NAME_FIELD_NAME)
     private String clientName;
     @DatabaseField(canBeNull = false, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
@@ -37,17 +34,16 @@ public class Appointment implements Parcelable {
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
     private String info;
     @DatabaseField(canBeNull = false, columnName = DATE_FIELD_NAME,
-            dataType = DataType.DATE_STRING, format = Constants.DATE_FORMAT)
+            dataType = DataType.DATE_STRING, format = Constants.DATE_TIME_FORMAT)
     private Date date;
 
     public Appointment() {
     }
 
-    public Appointment(long id, String userGoogleId, String title, String clientName, String clientPhone,
+    public Appointment(long id, String userGoogleId, String clientName, String clientPhone,
                        String service, String info, Date date) {
         this.id = id;
         this.userGoogleId = userGoogleId;
-        this.title = title;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
@@ -73,14 +69,6 @@ public class Appointment implements Parcelable {
 
     public void setUserGoogleId(String userGoogleId) {
         this.userGoogleId = userGoogleId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getClientName() {
@@ -134,7 +122,6 @@ public class Appointment implements Parcelable {
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
         parcel.writeString(userGoogleId);
-        parcel.writeString(title);
         parcel.writeString(clientName);
         parcel.writeString(clientPhone);
         parcel.writeString(service);
@@ -147,7 +134,6 @@ public class Appointment implements Parcelable {
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
         userGoogleId = in.readString();
-        title = in.readString();
         clientName = in.readString();
         clientPhone = in.readString();
         service = in.readString();

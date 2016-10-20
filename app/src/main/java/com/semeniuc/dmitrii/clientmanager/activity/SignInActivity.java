@@ -2,11 +2,11 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -17,8 +17,12 @@ import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.model.User;
+import com.semeniuc.dmitrii.clientmanager.repository.UserRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.GoogleAuthenticator;
+
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -29,6 +33,7 @@ public class SignInActivity extends AppCompatActivity {
     public static final String LOG_TAG = SignInActivity.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
     public static final int RC_SIGN_IN = 9001;
+    public static String USER_SAVING_ERROR = "";
 
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
@@ -41,7 +46,6 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (DEBUG) Log.i(LOG_TAG, "onCreate()");
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
@@ -54,18 +58,16 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        if (DEBUG) Log.i(LOG_TAG, "onStart()");
         silentSignIn();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (DEBUG) Log.i(LOG_TAG, "onActivityResult()");
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+            newSignIn(result);
         }
     }
 
@@ -79,12 +81,10 @@ public class SignInActivity extends AppCompatActivity {
     * Checking if the user is signed in previously
     * */
     private void silentSignIn() {
-        if (DEBUG) Log.i(LOG_TAG, "silentSignIn()");
         OptionalPendingResult<GoogleSignInResult> opr = mGoogleAuthenticator.getOptionalPendingResult();
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
-            if (DEBUG) Log.i(LOG_TAG, "Got cached sign-in");
             GoogleSignInResult result = opr.get();
             handleSignInResult(result);
         } else {
@@ -106,9 +106,17 @@ public class SignInActivity extends AppCompatActivity {
      * Handling of sign in result
      */
     private void handleSignInResult(GoogleSignInResult result) {
-        if (DEBUG) Log.i(LOG_TAG, "handleSignInResult()");
         if (result.isSuccess()) {
-            if (DEBUG) Log.i(LOG_TAG, "Sign in is success!");
+            // Show authenticated UI
+            updateUI(true);
+        } else {
+            // Signed out, show unauthenticated UI.
+            updateUI(false);
+        }
+    }
+
+    private void newSignIn(GoogleSignInResult result) {
+        if (result.isSuccess()) {
             // Store user id, user name and email to the global User object
             setUserDetails(result);
             // Show authenticated UI
@@ -123,12 +131,20 @@ public class SignInActivity extends AppCompatActivity {
     * Setting of signed user to global User object
     * */
     private void setUserDetails(@NonNull GoogleSignInResult result) {
-        if (DEBUG) Log.i(LOG_TAG, "setUserDetails()");
         GoogleSignInAccount account = result.getSignInAccount();
         if (null != account) {
-            mGoogleAuthenticator.setUserDetails(account);
+            User user = mGoogleAuthenticator.setUserDetails(account);
+            // Save Global user to DB
+            new SaveUser().execute(user);
+            if(!USER_SAVING_ERROR.isEmpty()){
+                Toast.makeText(this, USER_SAVING_ERROR, Toast.LENGTH_SHORT);
+                return;
+            }
+            // Set global user
+            MyApplication.getInstance().setUser(user);
             if (DEBUG)
-                Toast.makeText(this, "Signed in as: " + MyApplication.getInstance().getUser().getName(),
+                Toast.makeText(this, "Signed in as: " +
+                        MyApplication.getInstance().getUser().getName(),
                         Toast.LENGTH_SHORT).show();
         }
     }
@@ -151,9 +167,7 @@ public class SignInActivity extends AppCompatActivity {
     * Updating of UI. If true => goes to MainActivity
     * */
     protected void updateUI(boolean update) {
-        if (DEBUG) Log.i(LOG_TAG, "updateUI()");
         if (update) {
-            if (DEBUG) Log.i(LOG_TAG, "signedIn==true");
             startMainActivity();
             finish();
         }
@@ -174,7 +188,6 @@ public class SignInActivity extends AppCompatActivity {
             mProgressDialog.setIndeterminate(true);
         }
         mProgressDialog.show();
-        if (DEBUG) Log.i(LOG_TAG, "show Dialog");
     }
 
     /*
@@ -183,7 +196,33 @@ public class SignInActivity extends AppCompatActivity {
     private void hideProgressDialog() {
         if (null != mProgressDialog && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
-            if (DEBUG) Log.i(LOG_TAG, "hide Dialog");
+        }
+    }
+
+    private class SaveUser extends AsyncTask<User, Void, Void> {
+
+        @Override
+        protected Void doInBackground(User... array) {
+            User user = array[0];
+            UserRepository userRepo = new UserRepository(
+                    MyApplication.getInstance().getApplicationContext());
+            // Check if user with this e-mail already exists.
+            // It makes sense only if there are another authentication options apart from google
+            // sign in, like facebook login or login with user e-mail.
+            // If the app will use only google sign in option, this check should be removed
+            List<User> users = userRepo.findByEmail(user.getEmail());
+            if (null != users) {
+                if (users.size() == 0) {
+                    int index = userRepo.create(user);
+                    USER_SAVING_ERROR = "";
+                    if (index < 1) {
+                        USER_SAVING_ERROR = getResources().getString(R.string.user_saving_failed);
+                    }
+                } else {
+                    USER_SAVING_ERROR = getResources().getString(R.string.email_already_registered);
+                }
+            }
+            return null;
         }
     }
 }

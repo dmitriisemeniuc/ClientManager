@@ -53,11 +53,11 @@ public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedLi
     /*
     * Set signed user data to the global user object
     * */
-    public void setUserDetails(@NonNull GoogleSignInAccount account){
+    public User setUserDetails(@NonNull GoogleSignInAccount account){
         User user = new User();
         user.setGoogleId(account.getId());
         user.setName(account.getDisplayName());
         user.setEmail(account.getEmail());
-        MyApplication.getInstance().setUser(user);
+        return user;
     }
 }

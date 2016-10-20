@@ -11,45 +11,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         card_view:cardUseCompatPadding="true"
-        card_view:cardElevation="3dp"
+        card_view:cardElevation="2dp"
         card_view:cardCornerRadius="2dp">
 
         <View
             android:id="@+id/appointment_done"
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="3dp"
             android:background="@color/appointment_status_todo_color" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp">
-            <!-- TITLE -->
-            <TextView
-                android:id="@+id/main_appointment_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="25dp"
-                android:text="Title"
-                android:textColor="@color/title_text_color"
-                android:textSize="16sp" />
             <!-- CLIENT -->
             <RelativeLayout
                 android:id="@+id/main_cards_client_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/main_appointment_title"
-                android:layout_marginTop="3dp">
+                android:layout_marginTop="5dp">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_client_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_human_female" />
+                    android:src="@mipmap/ic_human_male" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_client_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -57,7 +46,8 @@
                     android:layout_toEndOf="@+id/main_cards_client_icon"
                     android:text="Client name"
                     android:textColor="@color/client_name_text_color"
-                    android:textSize="15sp" />
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif-light"/>
             </RelativeLayout>
             <!-- SERVICE -->
             <RelativeLayout
@@ -67,14 +57,14 @@
                 android:layout_below="@+id/main_cards_client_layout"
                 android:layout_marginTop="3dp">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_service_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="16dp"
                     android:layout_centerVertical="true"
                     android:src="@mipmap/ic_worker" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_service"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -82,7 +72,8 @@
                     android:layout_toEndOf="@+id/main_cards_service_icon"
                     android:text="Service"
                     android:textColor="@color/service_text_color"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    android:fontFamily="sans-serif-light"/>
             </RelativeLayout>
             <!-- DIVIDER -->
             <View
@@ -91,9 +82,9 @@
                 android:layout_height="1px"
                 android:layout_below="@+id/main_cards_service_layout"
                 android:layout_marginTop="7dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="1dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:background="@color/title_text_color" />
             <!-- DATE, PHONE -->
             <RelativeLayout
@@ -109,23 +100,23 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp">
 
-                    <ImageView
-                        android:id="@+id/main_cards_time_icon"
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/main_cards_date_time_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="18dp"
                         android:layout_centerVertical="true"
-                        android:layout_marginStart="-5dp"
                         android:src="@mipmap/ic_calendar_clock" />
 
-                    <TextView
-                        android:id="@+id/main_appointment_time"
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/main_appointment_date_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerVertical="true"
-                        android:layout_toEndOf="@+id/main_cards_time_icon"
+                        android:layout_toEndOf="@+id/main_cards_date_time_icon"
                         android:text="20/10/2016 10:00"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:fontFamily="sans-serif-light"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -134,7 +125,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true">
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/main_cards_phone_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="16dp"
@@ -142,7 +133,7 @@
                         android:layout_marginStart="-5dp"
                         android:src="@mipmap/ic_cellphone_android" />
 
-                    <TextView
+                    <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/main_appointment_client_phone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -150,9 +141,10 @@
                         android:layout_toEndOf="@+id/main_cards_phone_icon"
                         android:text="069111111"
                         android:textSize="14sp"
-                        android:textColor="@color/colorPrimary"/>
+                        android:textColor="@color/colorPrimary"
+                        android:fontFamily="sans-serif-light"/>
 
-                    <ImageView
+                    <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/main_cards_phone_call_icon"
                         android:layout_width="wrap_content"
                         android:layout_height="28dp"
@@ -172,14 +164,14 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp">
 
-                <ImageView
+                <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_info_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="18dp"
                     android:layout_centerVertical="true"
                     android:src="@mipmap/ic_information_outline" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -187,7 +179,8 @@
                     android:layout_toEndOf="@+id/main_cards_info_icon"
                     android:text="info"
                     android:textSize="14sp"
-                    android:textColor="@color/colorPrimary"/>
+                    android:textColor="@color/colorPrimary"
+                    android:fontFamily="sans-serif-light"/>
             </RelativeLayout>
 
         </RelativeLayout>
