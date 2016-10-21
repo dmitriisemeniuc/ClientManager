@@ -4,6 +4,10 @@ import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 
 public class Constants {
 
+    public static final String USER = "user";
+    public static final String USER_GOOGLE = "google";
+    public static final String USER_REGISTERED = "registered";
+
     public static final boolean DEBUG = true;
     public static final String DOT = ".";
 
@@ -17,6 +21,4 @@ public class Constants {
 
     public static final String APPOINTMENT_PATH =
             Appointment.class.getPackage().getName().concat(DOT + Appointment.class.getSimpleName());
-
-    public static final long LONG_DEFAULT = 0L;
 }

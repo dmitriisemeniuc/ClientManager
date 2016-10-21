@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/mainBackground"
-    tools:context=".activity.SignInActivity">
+    tools:context=".activity.BaseSignInActivity">
 
     <RelativeLayout
         android:id="@+id/signin_layout"
@@ -29,7 +29,7 @@
             style="@style/SignIn"/>
 
         <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
+            android:id="@+id/sign_in_with_google_button"
             android:layout_below="@+id/sign_in_msg"
             app:buttonSize="wide"
             style="@style/SignIn"/>

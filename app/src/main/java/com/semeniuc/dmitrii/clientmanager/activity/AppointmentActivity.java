@@ -193,12 +193,11 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     /*
-    * Creates new Appointment with data from appointment form
+    * Create new Appointment with data from appointment form
     * */
     private Appointment createAppointment() {
         return new Appointment(
-                Constants.LONG_DEFAULT,
-                MyApplication.getInstance().getUser().getGoogleId(),
+                MyApplication.getInstance().getUser().getId(),
                 mClientName.getText().toString(),
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),

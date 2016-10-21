@@ -12,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.auth.api.Auth;
@@ -27,11 +26,10 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class MainActivity extends SignInActivity implements View.OnClickListener {
+public class MainActivity extends BaseSignInActivity implements View.OnClickListener {
 
     public static final int LAYOUT = R.layout.activity_main;
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static String USER_SAVING_ERROR_MSG = "";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,8 +42,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        if (!USER_SAVING_ERROR_MSG.isEmpty())
-            Toast.makeText(this, USER_SAVING_ERROR_MSG, Toast.LENGTH_SHORT).show();
         displayAppointments();
     }
 
@@ -157,7 +153,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     * Returning of the user back to sign in activity
     * */
     private void backToSignInActivity() {
-        Intent intent = new Intent(this, SignInActivity.class);
+        Intent intent = new Intent(this, BaseSignInActivity.class);
         startActivity(intent);
         finish();
     }
