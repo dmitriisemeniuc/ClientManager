@@ -123,6 +123,9 @@ public class BaseSignInActivity extends AppCompatActivity {
      */
     private void handleGoogleSignInResult(GoogleSignInResult result) {
         if (result.isSuccess()) {
+            GoogleSignInAccount account = result.getSignInAccount();
+            User user = getUserByEmail(account.getEmail());
+            MyApplication.getInstance().setUser(user);
             // Show authenticated UI
             updateUI(true);
         } else {
@@ -147,7 +150,7 @@ public class BaseSignInActivity extends AppCompatActivity {
     private void setGoogleUserDetails(@NonNull GoogleSignInResult result) {
         GoogleSignInAccount account = result.getSignInAccount();
         if (null != account) {
-            User user = mGoogleAuthenticator.setUserDetails(account);
+          User user = mGoogleAuthenticator.setUserDetails(account);
             // Save Global user to DB
             new SaveGoogleUser().execute(user);
         }
@@ -200,6 +203,16 @@ public class BaseSignInActivity extends AppCompatActivity {
     private void hideProgressDialog() {
         if (null != mProgressDialog && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
+        }
+    }
+
+    private User getUserByEmail(String email){
+        UserRepository userRepo = new UserRepository(mCtx);
+        List<User> users = userRepo.findByEmail(email);
+        if(users != null){
+            return users.get(0);
+        } else {
+            return null;
         }
     }
 

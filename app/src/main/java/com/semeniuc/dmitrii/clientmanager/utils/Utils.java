@@ -71,7 +71,6 @@ public class Utils {
         Date date = null;
         try {
             date = format.parse(dateString);
-            System.out.println(date);
         } catch (ParseException e) {
             e.printStackTrace();
         }

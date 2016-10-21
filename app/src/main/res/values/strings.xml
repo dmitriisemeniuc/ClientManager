@@ -24,7 +24,7 @@
     <string name="save">Save</string>
     <string name="fill_the_form">Fill the form</string>
     <string name="field_is_required">Field is required</string>
-    <string name="appointment_saved">Appointment saved</string>
+    <string name="appointment_saved">Appointment added</string>
     <string name="saving_failed">Saving failed</string>
     <string name="appointment_with_title">Appointment with title</string>
     <string name="and_with_client">and with client</string>
