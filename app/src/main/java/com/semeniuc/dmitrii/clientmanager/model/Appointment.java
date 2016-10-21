@@ -14,7 +14,7 @@ import java.util.Date;
 public class Appointment implements Parcelable {
 
     public static final String APPOINTMENT_ID_FIELD_NAME = "_ID";
-    public static final String USER_GOOGLE_ID_FIELD_NAME = "user_id";
+    public static final String USER_ID_FIELD_NAME = "user_id";
     public static final String APPOINTMENT_TITLE_FIELD_NAME = "title";
     public static final String CLIENT_PHONE_FIELD_NAME = "phone";
     public static final String SERVICE_FIELD_NAME = "service";
@@ -23,7 +23,7 @@ public class Appointment implements Parcelable {
 
     @DatabaseField(generatedId = true, columnName = APPOINTMENT_ID_FIELD_NAME)
     private long id;
-    @DatabaseField(canBeNull = false, columnName = USER_GOOGLE_ID_FIELD_NAME)
+    @DatabaseField(canBeNull = false, columnName = USER_ID_FIELD_NAME)
     private long userId;
     @DatabaseField(canBeNull = false, columnName = APPOINTMENT_TITLE_FIELD_NAME)
     private String clientName;

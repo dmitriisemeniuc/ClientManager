@@ -5,8 +5,9 @@ import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 public class Constants {
 
     public static final String USER = "user";
-    public static final String USER_GOOGLE = "google";
-    public static final String USER_REGISTERED = "registered";
+    public static final String GOOGLE_USER = "google";
+    public static final String REGISTERED_WITH_EMAIL_USER = "registered";
+    public static final String NEW_USER = "new";
 
     public static final boolean DEBUG = true;
     public static final String DOT = ".";

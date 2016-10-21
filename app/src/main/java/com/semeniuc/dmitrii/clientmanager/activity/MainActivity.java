@@ -42,7 +42,7 @@ public class MainActivity extends BaseSignInActivity implements View.OnClickList
     @Override
     public void onStart() {
         super.onStart();
-        displayAppointments();
+        displayAppointmentsOrderedByDate();
     }
 
     @Override
@@ -99,9 +99,11 @@ public class MainActivity extends BaseSignInActivity implements View.OnClickList
         startActivity(intent);
     }
 
-    private void displayAppointments() {
+    private void displayAppointmentsOrderedByDate() {
         AppointmentRepository appointmentRepo = new AppointmentRepository(this);
-        List<Appointment> appointments = (List<Appointment>) appointmentRepo.findAll();
+        long userId = MyApplication.getInstance().getUser().getId();
+        List<Appointment> appointments =
+                (List<Appointment>) appointmentRepo.findAllByUserIdOrderByDate(userId);
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
             @Override

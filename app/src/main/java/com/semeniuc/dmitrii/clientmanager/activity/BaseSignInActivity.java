@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
@@ -54,12 +55,10 @@ public class BaseSignInActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
-        checkUserSignInType();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
+        String user = checkUserSignInType();
+        if(user.equals(Constants.NEW_USER)){
+            initGoogleAuthenticator();
+        }
     }
 
     @Override
@@ -73,8 +72,8 @@ public class BaseSignInActivity extends AppCompatActivity {
     }
 
     private void signInWithGoogle() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(
-                MyApplication.getInstance().getGoogleApiClient());
+        GoogleApiClient apiClient = MyApplication.getInstance().getGoogleApiClient();
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(apiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
@@ -82,15 +81,20 @@ public class BaseSignInActivity extends AppCompatActivity {
      * Identify what type of user should be used
      * {It can be: google user, facebook user or user registered with e-mail}
      * */
-    private void checkUserSignInType() {
+    private String checkUserSignInType() {
         SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        String user = settings.getString(Constants.USER, "");
-        if(user.equals(Constants.USER_GOOGLE)){
-            mGoogleAuthenticator = new GoogleAuthenticator();
-            mGoogleAuthenticator.createGoogleSignInOptions();
-            mGoogleAuthenticator.setGoogleApiClient(this, this);
+        String user = settings.getString(Constants.USER, Constants.NEW_USER);
+        if(user.equals(Constants.GOOGLE_USER)){
+            initGoogleAuthenticator();
             silentSignInWithGoogle();
         }
+        return user;
+    }
+
+    private void initGoogleAuthenticator() {
+        mGoogleAuthenticator = new GoogleAuthenticator();
+        mGoogleAuthenticator.createGoogleSignInOptions();
+        mGoogleAuthenticator.setGoogleApiClient(this, this);
     }
 
     /*
@@ -260,7 +264,7 @@ public class BaseSignInActivity extends AppCompatActivity {
             updateUI(true);
             SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
             SharedPreferences.Editor editor = settings.edit();
-            editor.putString(Constants.USER, Constants.USER_GOOGLE);
+            editor.putString(Constants.USER, Constants.GOOGLE_USER);
             // Commit the edits!
             editor.commit();
             Toast.makeText(mCtx, "Signed in as: " + MyApplication.getInstance().getUser().getName(),

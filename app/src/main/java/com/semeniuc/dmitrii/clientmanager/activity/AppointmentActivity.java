@@ -117,6 +117,7 @@ public class AppointmentActivity extends AppCompatActivity {
      * Open picker dialog with date/time dialog id
      */
     protected void showPickerDialog(int dialogId) {
+        hideKeyboard();
         showDialog(dialogId);
     }
 
