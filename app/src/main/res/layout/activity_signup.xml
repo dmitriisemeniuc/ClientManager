@@ -12,8 +12,8 @@
         android:id="@+id/logo_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true">
 
         <android.support.v7.widget.AppCompatImageView
@@ -31,26 +31,16 @@
         android:layout_below="@+id/logo_layout">
 
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/sign_up_user_name_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
-            android:hint="@string/username"
-            android:inputType="textEmailAddress"
-            android:textColor="@android:color/white" />
-
-        <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_email_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_user_name_et"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:fontFamily="monospace"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:maxLength="100"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_password_et"
@@ -61,13 +51,27 @@
             android:fontFamily="monospace"
             android:hint="@string/password"
             android:inputType="textVisiblePassword"
-            android:textColor="@android:color/white" />
+            android:textColor="@android:color/white"
+            android:maxLength="100"/>
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/sign_up_confirm_password_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sign_up_password_et"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
+            android:hint="@string/confirmPassword"
+            android:inputType="textVisiblePassword"
+            android:textColor="@android:color/white"
+            android:maxLength="100"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_up_password_et"
+            android:layout_below="@+id/sign_up_confirm_password_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:text="@string/sign_up"
             android:background="@color/orangeBackground"

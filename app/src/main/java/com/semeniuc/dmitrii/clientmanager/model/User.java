@@ -3,6 +3,7 @@ package com.semeniuc.dmitrii.clientmanager.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.field.ForeignCollectionField;
@@ -20,7 +21,7 @@ public class User implements Parcelable {
     private long id;
     @DatabaseField(canBeNull = true, columnName = USER_GOOGLE_ID_FIELD_NAME, unique = true)
     private String googleId;
-    @DatabaseField(canBeNull = false, columnName = USER_NAME_FIELD_NAME)
+    @DatabaseField(canBeNull = true, columnName = USER_NAME_FIELD_NAME)
     private String name;
     @DatabaseField(canBeNull = false, columnName = USER_EMAIL_FIELD_NAME, unique = true)
     private String email;
@@ -30,6 +31,17 @@ public class User implements Parcelable {
     private ForeignCollection<Appointment> appointments;
 
     public User() {
+    }
+
+    public User(GoogleSignInAccount account) {
+        googleId = account.getId();
+        name = account.getDisplayName();
+        email = account.getEmail();
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
     public User(Parcel in) {

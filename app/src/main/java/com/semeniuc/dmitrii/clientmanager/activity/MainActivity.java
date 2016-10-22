@@ -1,6 +1,7 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -79,7 +80,18 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     protected void signOut() {
-        super.signOut();
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
+        // setting.getString will return NEW_USER value in case if USER value won't be found
+        String userType = settings.getString(USER, NEW_USER);
+        if(userType.equals(GOOGLE_USER)){
+            super.signOut();
+        }
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(USER, NEW_USER);
+        editor.putString(EMAIL, EMPTY);
+        editor.putBoolean(LOGGED_IN, false);
+        // Commit the edits!
+        editor.commit();
         backToSignInActivity();
     }
 

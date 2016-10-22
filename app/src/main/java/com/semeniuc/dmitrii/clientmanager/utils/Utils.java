@@ -61,6 +61,13 @@ public class Utils {
         return valid;
     }
 
+    public boolean isEditTextEmpty(AppCompatEditText et){
+        if (et.getText().toString().isEmpty()) {
+            return true;
+        }
+        return false;
+    }
+
     public String convertDateToString(Date date, String pattern) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(pattern);
         return dateFormat.format(date);

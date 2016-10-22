@@ -7,6 +7,8 @@ public class Constants {
     public static final String USER = "user";
     public static final String GOOGLE_USER = "google";
     public static final String REGISTERED_USER = "registered";
+    public static final String EMAIL = "email";
+    public static final String LOGGED_IN = "logged";
     public static final String NEW_USER = "new";
     public static final String EMPTY = "";
     public static final int FIRST = 0;

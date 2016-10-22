@@ -6,15 +6,8 @@
     android:layout_height="match_parent"
     android:padding="5dp"
     android:orientation="vertical"
-    android:fontFamily="sans-serif-light">
-
-    <android.support.v7.widget.CardView
-        android:id="@+id/appointment_cards_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        card_view:cardCornerRadius="2dp"
-        card_view:cardElevation="3dp"
-        card_view:cardUseCompatPadding="true">
+    android:fontFamily="sans-serif-light"
+    android:background="@android:color/white">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -102,40 +95,10 @@
             </RelativeLayout>
 
             <RelativeLayout
-                android:id="@+id/appointment_info_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/appointment_client_phone_layout"
-                android:layout_marginStart="20dp">
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/appointment_info_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="25dp"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_information_outline" />
-
-                <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/appointment_info"
-                    style="@style/appointmentFormField"
-                    android:gravity="top|start"
-                    android:hint="@string/appointment_info"
-                    android:inputType="textMultiLine|textCapSentences"
-                    android:layout_centerVertical="true"
-                    android:layout_toEndOf="@+id/appointment_info_icon"
-                    android:lines="4"
-                    android:maxLength="150"
-                    android:maxLines="6"
-                    android:minLines="1"
-                    android:fontFamily="sans-serif-light"
-                    android:layout_marginEnd="20dp"
-                    android:textColorHint="@color/text_hint"/>
-            </RelativeLayout>
-
-            <RelativeLayout
+                android:id="@+id/appointment_date_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/appointment_info_layout"
+                android:layout_below="@+id/appointment_client_phone_layout"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp">
@@ -178,6 +141,36 @@
                     android:fontFamily="sans-serif-light"
                     android:textColorHint="@color/text_hint"/>
             </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/appointment_info_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/appointment_date_layout"
+                android:layout_marginStart="20dp">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/appointment_info_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_information_outline" />
+
+                <android.support.v7.widget.AppCompatEditText
+                    android:id="@+id/appointment_info"
+                    style="@style/appointmentFormField"
+                    android:gravity="top|start"
+                    android:hint="@string/appointment_info"
+                    android:inputType="textMultiLine|textCapSentences"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@+id/appointment_info_icon"
+                    android:lines="4"
+                    android:maxLength="150"
+                    android:maxLines="6"
+                    android:minLines="1"
+                    android:fontFamily="sans-serif-light"
+                    android:layout_marginEnd="20dp"
+                    android:textColorHint="@color/text_hint"/>
+            </RelativeLayout>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
 </ScrollView>
