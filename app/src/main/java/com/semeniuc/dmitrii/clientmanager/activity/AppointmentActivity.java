@@ -163,9 +163,6 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     * The keyboard need to be hidden for user to be able to see all form fields of the appointment activity
-     * */
     protected void hideKeyboard() {
         ScrollView mainLayout = (ScrollView) findViewById(R.id.appointment_layout);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -6,14 +6,12 @@ import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 
 import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
-import com.semeniuc.dmitrii.clientmanager.model.User;
 
 public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedListener {
 
@@ -47,16 +45,5 @@ public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedLi
 
     public OptionalPendingResult<GoogleSignInResult> getOptionalPendingResult() {
         return Auth.GoogleSignInApi.silentSignIn(MyApplication.getInstance().getGoogleApiClient());
-    }
-
-    /*
-    * Set signed user data to the global user object
-    * */
-    public User setUserDetails(@NonNull GoogleSignInAccount account){
-        User user = new User();
-        user.setGoogleId(account.getId());
-        user.setName(account.getDisplayName());
-        user.setEmail(account.getEmail());
-        return user;
     }
 }

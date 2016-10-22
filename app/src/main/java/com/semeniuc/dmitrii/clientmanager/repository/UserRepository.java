@@ -3,6 +3,9 @@ package com.semeniuc.dmitrii.clientmanager.repository;
 import android.content.Context;
 import android.util.Log;
 
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.User;
@@ -74,6 +77,22 @@ public class UserRepository implements Repository {
         List<User> users = null;
         try {
             users = helper.getUserDao().queryForEq("email", email);
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public List<User> findByEmailAndPassword(String email, String password) {
+        List<User> users = null;
+        try {
+            Dao<User, Integer> userDAO = helper.getUserDao();
+            QueryBuilder<User, Integer> queryBuilder = userDAO.queryBuilder();
+            Where where = queryBuilder.where();
+            where.eq(User.USER_EMAIL_FIELD_NAME, email);
+            where.and();
+            where.eq(User.USER_PASSWORD_FIELD_NAME, password);
+            users = userDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
