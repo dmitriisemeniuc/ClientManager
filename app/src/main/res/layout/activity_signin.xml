@@ -9,41 +9,58 @@
     tools:context=".activity.SignInActivity">
 
     <RelativeLayout
+        android:id="@+id/logo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:layout_centerHorizontal="true">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/sign_in_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/logo" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/sign_in_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/logo_layout">
+
         <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/sign_in_email_et"
+            android:id="@+id/sign_in_email_username_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
             android:hint="@string/email_username"
             android:inputType="textEmailAddress"
-            android:textColor="@android:color/white"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"/>
+            android:textColor="@android:color/white" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_in_password_et"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/sign_in_email_et"
+            android:layout_below="@+id/sign_in_email_username_et"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
             android:hint="@string/password"
             android:inputType="textVisiblePassword"
-            android:textColor="@android:color/white"
-            android:layout_margin="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"/>
+            android:textColor="@android:color/white" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/sign_in_password_et"
-            android:text="@string/login"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:background="@color/orangeBackground"
-            android:shadowColor="@android:color/white"/>
+            android:shadowColor="@android:color/white"
+            android:text="@string/login" />
 
         <RelativeLayout
             android:id="@+id/line_separator"
@@ -51,63 +68,71 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/sign_in_btn"
             android:layout_centerInParent="true">
+
             <View
                 android:id="@+id/divider_1"
                 android:layout_width="100dp"
                 android:layout_height="1px"
-                android:background="@android:color/white"
-                android:layout_centerVertical="true" />
+                android:layout_centerVertical="true"
+                android:background="@android:color/white" />
+
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/or"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/or"
-                android:textColor="@android:color/white"
-                android:layout_toEndOf="@+id/divider_1"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
-                android:fontFamily="monospace"/>
+                android:layout_toEndOf="@+id/divider_1"
+                android:fontFamily="monospace"
+                android:text="@string/or"
+                android:textColor="@android:color/white" />
+
             <View
                 android:layout_width="100dp"
                 android:layout_height="1px"
-                android:background="@android:color/white"
+                android:layout_centerVertical="true"
                 android:layout_toEndOf="@+id/or"
-                android:layout_centerVertical="true" />
+                android:background="@android:color/white" />
         </RelativeLayout>
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_with_google_button"
             style="@style/SignIn"
-            app:buttonSize="wide"
-            android:layout_below="@+id/line_separator"
             android:layout_width="match_parent"
-            android:layout_margin="@dimen/activity_horizontal_margin" />
+            android:layout_below="@+id/line_separator"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            app:buttonSize="wide" />
 
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/sign_in_sign_up_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="center_horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal">
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/sign_in_sign_up_question"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/do_not_have_account"
             android:fontFamily="sans-serif"
-            android:textSize="16sp"/>
+            android:text="@string/do_not_have_account"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/sign_in_sign_up_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sign_up_link"
-            android:textStyle="bold"
-            android:layout_toEndOf="@+id/sign_in_sign_up_question"
             android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/sign_in_sign_up_question"
             android:fontFamily="sans-serif"
-            android:textSize="16sp"/>
+            android:text="@string/sign_up_link"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

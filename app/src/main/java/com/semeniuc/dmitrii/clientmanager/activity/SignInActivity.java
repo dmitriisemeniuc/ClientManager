@@ -43,7 +43,7 @@ public class SignInActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
     private Context mCtx = MyApplication.getInstance().getApplicationContext();
-
+    
     @OnClick(R.id.sign_in_with_google_button)
     void submitSignIn() {
         signInWithGoogle();

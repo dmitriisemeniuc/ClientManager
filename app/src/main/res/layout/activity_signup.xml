@@ -9,10 +9,26 @@
     tools:context=".activity.SignInActivity">
 
     <RelativeLayout
+        android:id="@+id/logo_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp"
+        android:layout_centerHorizontal="true">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/sign_in_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/logo" />
+    </RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/sign_in_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:layout_below="@+id/logo_layout">
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_user_name_et"
