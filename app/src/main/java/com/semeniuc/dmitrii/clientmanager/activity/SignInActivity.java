@@ -30,10 +30,10 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BaseSignInActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_signin;
-    public static final String LOG_TAG = BaseSignInActivity.class.getSimpleName();
+    public static final String LOG_TAG = SignInActivity.class.getSimpleName();
     public static final String LOGIN_PREFS = "loginPrefs";
     public static final boolean DEBUG = Constants.DEBUG;
     public static final int RC_SIGN_IN = 9001;
@@ -49,6 +49,11 @@ public class BaseSignInActivity extends AppCompatActivity {
         signInWithGoogle();
     }
 
+    @OnClick(R.id.sign_in_sign_up_link)
+    void submitSignUp() {
+        goToSignUpActivity();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +61,7 @@ public class BaseSignInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         String user = checkUserSignInType();
-        if(user.equals(Constants.NEW_USER)){
+        if (user.equals(Constants.NEW_USER)) {
             initGoogleAuthenticator();
         }
     }
@@ -77,14 +82,20 @@ public class BaseSignInActivity extends AppCompatActivity {
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void goToSignUpActivity() {
+        Intent intent = new Intent(this, SignUpActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     /**
      * Identify what type of user should be used
      * {It can be: google user, facebook user or user registered with e-mail}
-     * */
+     */
     private String checkUserSignInType() {
         SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
         String user = settings.getString(Constants.USER, Constants.NEW_USER);
-        if(user.equals(Constants.GOOGLE_USER)){
+        if (user.equals(Constants.GOOGLE_USER)) {
             initGoogleAuthenticator();
             silentSignInWithGoogle();
         }
@@ -154,7 +165,7 @@ public class BaseSignInActivity extends AppCompatActivity {
     private void setGoogleUserDetails(@NonNull GoogleSignInResult result) {
         GoogleSignInAccount account = result.getSignInAccount();
         if (null != account) {
-          User user = mGoogleAuthenticator.setUserDetails(account);
+            User user = mGoogleAuthenticator.setUserDetails(account);
             // Save Global user to DB
             new SaveGoogleUser().execute(user);
         }
@@ -185,7 +196,7 @@ public class BaseSignInActivity extends AppCompatActivity {
     }
 
     private void startMainActivity() {
-        Intent intent = new Intent(BaseSignInActivity.this, MainActivity.class);
+        Intent intent = new Intent(SignInActivity.this, MainActivity.class);
         startActivity(intent);
     }
 
@@ -210,10 +221,10 @@ public class BaseSignInActivity extends AppCompatActivity {
         }
     }
 
-    private User getUserByEmail(String email){
+    private User getUserByEmail(String email) {
         UserRepository userRepo = new UserRepository(mCtx);
         List<User> users = userRepo.findByEmail(email);
-        if(users != null){
+        if (users != null) {
             return users.get(0);
         } else {
             return null;

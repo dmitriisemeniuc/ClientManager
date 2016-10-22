@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/mainBackground"
+    android:orientation="vertical"
+    tools:context=".activity.SignInActivity">
+
+    <RelativeLayout
+        android:id="@+id/sign_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/sign_up_user_name_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
+            android:hint="@string/username"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/sign_up_email_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sign_up_user_name_et"
+            android:layout_marginEnd="@dimen/activity_horizontal_margin"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/sign_up_password_et"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sign_up_email_et"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:fontFamily="monospace"
+            android:hint="@string/password"
+            android:inputType="textVisiblePassword"
+            android:textColor="@android:color/white" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/sign_in_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/sign_up_password_et"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:text="@string/sign_up"
+            android:background="@color/orangeBackground"
+            android:textColor="@android:color/white"
+            android:shadowColor="@android:color/white" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/sign_up_sign_in_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
+        android:gravity="center_horizontal">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/sign_up_sign_in_question"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:text="@string/already_have_account"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"/>
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/sign_up_sign_in_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/sign_up_sign_in_question"
+            android:fontFamily="sans-serif"
+            android:text="@string/sign_in_link"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
+</RelativeLayout>
