@@ -23,7 +23,6 @@ public class GoogleAuthenticator implements GoogleApiClient.OnConnectionFailedLi
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.i(LOG_TAG, "onConnectionFailed()");
         Log.e(LOG_TAG, "Google sign in is unavailable");
     }
 

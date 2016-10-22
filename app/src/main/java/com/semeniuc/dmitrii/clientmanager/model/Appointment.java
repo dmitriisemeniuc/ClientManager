@@ -14,7 +14,7 @@ import java.util.Date;
 public class Appointment implements Parcelable {
 
     public static final String APPOINTMENT_ID_FIELD_NAME = "_ID";
-    public static final String USER_ID_FIELD_NAME = "user_id";
+    public static final String USER_FIELD_NAME = "user_id";
     public static final String APPOINTMENT_TITLE_FIELD_NAME = "title";
     public static final String CLIENT_PHONE_FIELD_NAME = "phone";
     public static final String SERVICE_FIELD_NAME = "service";
@@ -23,8 +23,8 @@ public class Appointment implements Parcelable {
 
     @DatabaseField(generatedId = true, columnName = APPOINTMENT_ID_FIELD_NAME)
     private long id;
-    @DatabaseField(canBeNull = false, columnName = USER_ID_FIELD_NAME)
-    private long userId;
+    @DatabaseField(canBeNull = false, foreign = true, columnName = USER_FIELD_NAME)
+    private User user;
     @DatabaseField(canBeNull = false, columnName = APPOINTMENT_TITLE_FIELD_NAME)
     private String clientName;
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
@@ -40,9 +40,10 @@ public class Appointment implements Parcelable {
     public Appointment() {
     }
 
-    public Appointment(long userId, String clientName, String clientPhone,
+    // Constructor for creating new Appointment without id
+    public Appointment(User user, String clientName, String clientPhone,
                        String service, String info, Date date) {
-        this.userId = userId;
+        this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
@@ -50,10 +51,11 @@ public class Appointment implements Parcelable {
         this.date = date;
     }
 
-    public Appointment(long id, long userId, String clientName, String clientPhone,
+    // Constructor for creating new Appointment with specified id
+    public Appointment(long id, User user, String clientName, String clientPhone,
                        String service, String info, Date date) {
         this.id = id;
-        this.userId = userId;
+        this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
@@ -73,12 +75,12 @@ public class Appointment implements Parcelable {
         this.id = id;
     }
 
-    public long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getClientName() {
@@ -131,7 +133,7 @@ public class Appointment implements Parcelable {
 
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
-        parcel.writeLong(userId);
+        parcel.writeParcelable(user, i);
         parcel.writeString(clientName);
         parcel.writeString(clientPhone);
         parcel.writeString(service);
@@ -143,7 +145,7 @@ public class Appointment implements Parcelable {
 
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
-        userId = in.readLong();
+        user = in.readParcelable(User.class.getClassLoader());
         clientName = in.readString();
         clientPhone = in.readString();
         service = in.readString();

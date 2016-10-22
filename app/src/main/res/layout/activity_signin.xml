@@ -124,7 +124,7 @@
             android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:id="@+id/sign_in_sign_up_link"
+            android:id="@+id/sign_up_link"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"

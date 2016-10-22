@@ -6,8 +6,11 @@ public class Constants {
 
     public static final String USER = "user";
     public static final String GOOGLE_USER = "google";
-    public static final String REGISTERED_WITH_EMAIL_USER = "registered";
+    public static final String REGISTERED_USER = "registered";
     public static final String NEW_USER = "new";
+    public static final String EMPTY = "";
+    public static final int FIRST = 0;
+    public static final int SIZE_EMPTY = 0;
 
     public static final boolean DEBUG = true;
     public static final String DOT = ".";

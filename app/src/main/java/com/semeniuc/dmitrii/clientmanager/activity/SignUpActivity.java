@@ -15,7 +15,7 @@ public class SignUpActivity extends AppCompatActivity{
     public static final int LAYOUT = R.layout.activity_signup;
     public static final String LOG_TAG = SignUpActivity.class.getSimpleName();
 
-    @OnClick(R.id.sign_up_sign_in_link)
+    @OnClick(R.id.sign_in_link)
     void submitSignIn() {
         goToSignInActivity();
     }

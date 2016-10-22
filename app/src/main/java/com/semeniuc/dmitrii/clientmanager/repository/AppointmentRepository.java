@@ -49,7 +49,7 @@ public class AppointmentRepository implements Repository {
             queryBuilder.where().eq(Appointment.APPOINTMENT_ID_FIELD_NAME, appointment.getId());
             PreparedQuery<Appointment> preparedQuery = queryBuilder.prepare();
             Appointment appointmentEntry = appointmentDAO.queryForFirst(preparedQuery);
-            appointmentEntry = new Utils().copyAppointmentData(appointment, appointmentEntry);
+            appointmentEntry = new Utils().updateAppointmentData(appointment, appointmentEntry);
             index = appointmentDAO.update(appointmentEntry);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -85,7 +85,7 @@ public class AppointmentRepository implements Repository {
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.USER_ID_FIELD_NAME, id);
+            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
             queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true); // true for ascending
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
