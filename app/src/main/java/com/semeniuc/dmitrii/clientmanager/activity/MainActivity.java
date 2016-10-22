@@ -26,7 +26,7 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class MainActivity extends BaseSignInActivity implements View.OnClickListener {
+public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static final int LAYOUT = R.layout.activity_main;
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -155,7 +155,7 @@ public class MainActivity extends BaseSignInActivity implements View.OnClickList
     * Returning of the user back to sign in activity
     * */
     private void backToSignInActivity() {
-        Intent intent = new Intent(this, BaseSignInActivity.class);
+        Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);
         finish();
     }

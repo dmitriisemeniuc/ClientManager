@@ -110,7 +110,7 @@ public class Utils {
         }
     }
 
-    public Appointment copyAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
+    public Appointment updateAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());

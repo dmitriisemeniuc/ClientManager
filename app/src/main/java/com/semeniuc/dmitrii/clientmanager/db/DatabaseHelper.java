@@ -90,4 +90,11 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
         return appointmentDao;
     }
+
+    @Override
+    public void close() {
+        super.close();
+        userDao = null;
+        appointmentDao = null;
+    }
 }

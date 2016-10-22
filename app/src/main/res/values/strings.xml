@@ -40,4 +40,17 @@
     <string name="email_already_registered">Email already registered</string>
     <string name="choose_date">Choose date</string>
     <string name="choose_time">Choose time</string>
+    <string name="app_description">The Best Client Manager app</string>
+    <string name="email">Email</string>
+    <string name="email_username">Email or Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="or">or</string>
+    <string name="do_not_have_account">Don\'t have account yet?</string>
+    <string name="sign_up_link">Sign up</string>
+    <string name="username">Username</string>
+    <string name="sign_up">Sign up</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="sign_in_link">Sign In</string>
+    <string name="signed_in_as">Signed in as</string>
 </resources>

@@ -198,7 +198,7 @@ public class AppointmentActivity extends AppCompatActivity {
     * */
     private Appointment createAppointment() {
         return new Appointment(
-                MyApplication.getInstance().getUser().getId(),
+                MyApplication.getInstance().getUser(),
                 mClientName.getText().toString(),
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),

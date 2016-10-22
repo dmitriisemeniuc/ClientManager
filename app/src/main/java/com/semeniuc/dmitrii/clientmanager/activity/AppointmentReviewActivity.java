@@ -185,7 +185,7 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     private Appointment createAppointment() {
         return new Appointment(
                 mAppointment.getId(),
-                MyApplication.getInstance().getUser().getId(),
+                MyApplication.getInstance().getUser(),
                 mClientName.getText().toString(),
                 mClientPhone.getText().toString(),
                 mService.getText().toString(),
