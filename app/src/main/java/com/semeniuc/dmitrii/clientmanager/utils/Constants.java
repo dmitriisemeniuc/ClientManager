@@ -15,7 +15,6 @@ public class Constants {
     public static final int SIZE_EMPTY = 0;
     public static final int RC_SIGN_IN = 9001;
 
-
     public static final boolean DEBUG = true;
     public static final String DOT = ".";
 
@@ -29,4 +28,7 @@ public class Constants {
 
     public static final String APPOINTMENT_PATH =
             Appointment.class.getPackage().getName().concat(DOT + Appointment.class.getSimpleName());
+
+    // Permition
+    public static final int PERMISSIONS_REQUEST_CALL_PHONE = 5555;
 }

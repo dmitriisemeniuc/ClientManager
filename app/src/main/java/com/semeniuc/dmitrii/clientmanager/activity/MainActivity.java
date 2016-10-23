@@ -1,9 +1,13 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -81,7 +85,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     protected void signOut() {
         Utils utils = new Utils(this);
         String userType = utils.getUserFromPrefs();
-        if(userType.equals(Constants.GOOGLE_USER)){
+        if (userType.equals(Constants.GOOGLE_USER)) {
             super.signOut();
         }
         utils.setUserInPrefs(Constants.NEW_USER);
@@ -112,6 +116,24 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
             @Override
             public void onItemClick(Appointment appointment) {
                 reviewAppointment(appointment);
+            }
+        }, new AppointmentAdapter.OnPhoneClickListener() {
+            @Override
+            public void onPhoneClick(String phoneNumber) {
+                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                            Manifest.permission.CALL_PHONE)) {
+                    } else {
+                        // No explanation needed, we can request the permission.
+                        ActivityCompat.requestPermissions(MainActivity.this,
+                                new String[]{Manifest.permission.CALL_PHONE},
+                                Constants.PERMISSIONS_REQUEST_CALL_PHONE);
+                    }
+                    return;
+                }
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null));
+                startActivity(intent);
             }
         }));
     }
