@@ -1,5 +1,6 @@
 package com.semeniuc.dmitrii.clientmanager.adapter;
 
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,11 +18,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     private List<Appointment> mAppointments;
     private final OnItemClickListener mListener;
+    private final OnPhoneClickListener mPhoneListener;
     private Utils mUtils = new Utils();
 
-    public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener) {
+    public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener, OnPhoneClickListener phoneListener) {
         mAppointments = appointments;
         mListener = listener;
+        mPhoneListener = phoneListener;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.mInfo.setText(mAppointments.get(position).getInfo());
         holder.mDateTime.setText(mUtils.convertDateToString(mAppointments.get(position).getDate(),
                 Constants.DATE_TIME_FORMAT));
-        holder.bind(mAppointments.get(position), mListener);
+        holder.bind(mAppointments.get(position), mListener, mPhoneListener);
     }
 
     @Override
@@ -62,6 +65,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         AppCompatTextView mService;
         AppCompatTextView mInfo;
         AppCompatTextView mDateTime;
+        AppCompatImageView mClientPhoneIcon;
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
@@ -70,20 +74,32 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             mService = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_service);
             mInfo = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_info);
             mDateTime = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_date_time);
+            mClientPhoneIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_phone_call_icon);
         }
 
-        public void bind(final Appointment appointment, final OnItemClickListener listener) {
+        public void bind(final Appointment appointment, final OnItemClickListener listener, final OnPhoneClickListener phoneListener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onItemClick(appointment);
                 }
             });
+            mClientPhoneIcon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    phoneListener.onPhoneClick(appointment.getClientPhone());
+                }
+            });
+
         }
     }
 
     public interface OnItemClickListener {
         void onItemClick(Appointment appointment);
+    }
+
+    public interface OnPhoneClickListener {
+        void onPhoneClick(String phoneNumber);
     }
 }
 
