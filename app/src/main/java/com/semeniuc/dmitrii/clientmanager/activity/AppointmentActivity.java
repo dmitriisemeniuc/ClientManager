@@ -214,8 +214,4 @@ public class AppointmentActivity extends AppCompatActivity {
             super.onPostExecute(created);
         }
     }
-
-    protected String getDateFromDateAndTime() {
-        return date.getText().toString() + " " + time.getText().toString();
-    }
 }
