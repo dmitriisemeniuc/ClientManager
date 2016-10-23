@@ -33,25 +33,17 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_in_email_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
+            style="@style/signInField"
             android:hint="@string/email"
-            android:inputType="textEmailAddress"
-            android:textColor="@android:color/white" />
+            android:inputType="textEmailAddress" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_in_password_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/signInField"
             android:layout_below="@+id/sign_in_email_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
             android:hint="@string/password"
-            android:inputType="textVisiblePassword"
-            android:textColor="@android:color/white" />
+            android:inputType="textVisiblePassword" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
