@@ -33,17 +33,17 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     private Appointment mAppointment;
 
     @BindView(R.id.appointment_client_name)
-    AppCompatEditText mClientName;
+    AppCompatEditText clientName;
     @BindView(R.id.appointment_client_phone)
-    AppCompatEditText mClientPhone;
+    AppCompatEditText clientPhone;
     @BindView(R.id.appointment_service)
-    AppCompatEditText mService;
+    AppCompatEditText service;
     @BindView(R.id.appointment_info)
-    AppCompatEditText mInfo;
+    AppCompatEditText info;
     @BindView(R.id.appointment_calendar_date)
-    AppCompatTextView mDate;
+    AppCompatTextView date;
     @BindView(R.id.appointment_time)
-    AppCompatTextView mTime;
+    AppCompatTextView time;
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
@@ -89,6 +89,7 @@ public class AppointmentReviewActivity extends AppointmentActivity {
         switch (item.getItemId()) {
             case R.id.action_update_appointment:
                 if (mUtils.isAppointmentFormValid()) {
+                    setDataFromFields();
                     new UpdateAppointment().execute();
                 } else {
                     hideKeyboard();
@@ -112,39 +113,39 @@ public class AppointmentReviewActivity extends AppointmentActivity {
         }
     }
 
-    /*
-    * Fill apointment form fields with coming data
+    /**
+    * Fill appointment form fields with coming data
     * */
     public void populateAppointmentFields() {
-        mClientName.setText(mAppointment.getClientName());
-        mClientPhone.setText(mAppointment.getClientPhone());
-        mService.setText(mAppointment.getService());
-        mInfo.setText(mAppointment.getInfo());
-        mDate.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.DATE_FORMAT));
-        mTime.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.TIME_FORMAT));
+        clientName.setText(mAppointment.getClientName());
+        clientPhone.setText(mAppointment.getClientPhone());
+        service.setText(mAppointment.getService());
+        info.setText(mAppointment.getInfo());
+        date.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.DATE_FORMAT));
+        time.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.TIME_FORMAT));
     }
 
-    /*
+    /**
     * Open date picker dialog with date coming from Appointment
     * */
     private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         // Set date for dialog coming from appointment
-        Date date = mUtils.convertStringToDate(mDate.getText().toString(), Constants.DATE_FORMAT);
-        calendar.setTime(date);
+        Date dateForDialog = mUtils.convertStringToDate(date.getText().toString(), Constants.DATE_FORMAT);
+        calendar.setTime(dateForDialog);
         return new DatePickerDialog(
                 this, datePickerListener, calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    /*
+    /**
     * Open time picker dialog with time coming from Appointment
     * */
     private TimePickerDialog getTimePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         // Set time for dialog coming from appointment
-        Date date = mUtils.convertStringToDate(mTime.getText().toString(), Constants.TIME_FORMAT);
-        calendar.setTime(date);
+        Date dateForDialog = mUtils.convertStringToDate(time.getText().toString(), Constants.TIME_FORMAT);
+        calendar.setTime(dateForDialog);
         return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
                 calendar.get(Calendar.MINUTE), true);
     }
@@ -153,8 +154,10 @@ public class AppointmentReviewActivity extends AppointmentActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            Appointment appointment = new Appointment(mAppointment.getId(), MyApplication.getInstance().getUser(),
+                    mClientName, mClientPhone, mService, mInfo, mDateTime);
             AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
-            return appointmentRepo.update(createAppointment());
+            return appointmentRepo.update(appointment);
         }
 
         @Override
@@ -177,20 +180,5 @@ public class AppointmentReviewActivity extends AppointmentActivity {
             mUtils.showDeleteResultMessage(deleted, AppointmentReviewActivity.this);
             if (deleted == Constants.DELETED) finish();
         }
-    }
-
-    /*
-    * Creates appointment with data from appointment form and with already existed ID
-    * */
-    private Appointment createAppointment() {
-        return new Appointment(
-                mAppointment.getId(),
-                MyApplication.getInstance().getUser(),
-                mClientName.getText().toString(),
-                mClientPhone.getText().toString(),
-                mService.getText().toString(),
-                mInfo.getText().toString(),
-                mUtils.convertStringToDate(getDateFromDateAndTime(), Constants.DATE_TIME_FORMAT)
-        );
     }
 }

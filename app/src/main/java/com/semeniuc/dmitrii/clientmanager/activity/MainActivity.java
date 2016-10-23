@@ -1,14 +1,12 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +22,7 @@ import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentAdapter;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
+import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.List;
 
@@ -80,18 +79,12 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     protected void signOut() {
-        SharedPreferences settings = getApplicationContext().getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        // setting.getString will return NEW_USER value in case if USER value won't be found
-        String userType = settings.getString(USER, NEW_USER);
-        if(userType.equals(GOOGLE_USER)){
+        Utils utils = new Utils(this);
+        String userType = utils.getUserFromPrefs();
+        if(userType.equals(Constants.GOOGLE_USER)){
             super.signOut();
         }
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(USER, NEW_USER);
-        editor.putString(EMAIL, EMPTY);
-        editor.putBoolean(LOGGED_IN, false);
-        // Commit the edits!
-        editor.commit();
+        utils.setUserInPrefs(Constants.NEW_USER);
         backToSignInActivity();
     }
 
@@ -113,9 +106,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     private void displayAppointmentsOrderedByDate() {
         AppointmentRepository appointmentRepo = new AppointmentRepository(this);
-        long userId = MyApplication.getInstance().getUser().getId();
-        List<Appointment> appointments =
-                (List<Appointment>) appointmentRepo.findAllByUserIdOrderByDate(userId);
+        List<Appointment> appointments = appointmentRepo.findAll();
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
             @Override
@@ -157,7 +148,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     protected void updateUI(boolean signedIn) {
-        if (DEBUG) Log.i(LOG_TAG, "updateUI()");
         if (!signedIn) {
             backToSignInActivity();
         }

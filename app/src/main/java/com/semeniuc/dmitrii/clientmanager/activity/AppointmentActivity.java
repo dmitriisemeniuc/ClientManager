@@ -26,6 +26,7 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,32 +41,44 @@ public class AppointmentActivity extends AppCompatActivity {
 
     protected Utils mUtils = new Utils(AppointmentActivity.this);
     protected Appointment mAppointment;
+    protected String mClientName;
+    protected String mClientPhone;
+    protected String mService;
+    protected String mInfo;
+    protected String mDate;
+    protected String mTime;
+    protected Date mDateTime;
 
     @BindView(R.id.appointment_client_name)
-    AppCompatEditText mClientName;
+    AppCompatEditText clientName;
     @BindView(R.id.appointment_client_phone)
-    AppCompatEditText mClientPhone;
+    AppCompatEditText clientPhone;
     @BindView(R.id.appointment_service)
-    AppCompatEditText mService;
+    AppCompatEditText service;
     @BindView(R.id.appointment_info)
-    AppCompatEditText mInfo;
+    AppCompatEditText info;
     @BindView(R.id.appointment_calendar_date)
-    AppCompatTextView mDate;
+    AppCompatTextView date;
     @BindView(R.id.appointment_time)
-    AppCompatTextView mTime;
+    AppCompatTextView time;
+    @BindView(R.id.appointment_layout)
+    ScrollView mainLayout;
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
@@ -92,25 +105,36 @@ public class AppointmentActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_save_appointment:
                 if (mUtils.isAppointmentFormValid()) {
+                    setDataFromFields();
                     new SaveAppointment().execute();
-                } else {
-                    hideKeyboard();
+                    return true;
                 }
-                return true;
+                hideKeyboard();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void setDataFromFields() {
+        mClientName = clientName.getText().toString();
+        mClientPhone = clientPhone.getText().toString();
+        mService = service.getText().toString();
+        mInfo = info.getText().toString();
+        mDate = date.getText().toString();
+        mTime = time.getText().toString();
+        String dateTime = mDate + " " + mTime;
+        mDateTime = mUtils.convertStringToDate(dateTime, Constants.DATE_TIME_FORMAT);
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         if (id == DATE_PICKER_DIALOG_ID) {
             return getDatePickerDialog();
-        } else if (id == TIME_PICKER_DIALOG_ID) {
-            return getTimePickerDialog();
-        } else {
-            return null;
         }
+        if (id == TIME_PICKER_DIALOG_ID) {
+            return getTimePickerDialog();
+        }
+        return null;
     }
 
     /**
@@ -137,9 +161,9 @@ public class AppointmentActivity extends AppCompatActivity {
     protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            String date = mUtils.getCorrectDateFormat(year, month, day);
-            mDate.setText(date);
-            mDate.setError(null);
+            String formattedDate = mUtils.getCorrectDateFormat(year, month, day);
+            date.setText(formattedDate);
+            date.setError(null);
         }
     };
 
@@ -158,13 +182,13 @@ public class AppointmentActivity extends AppCompatActivity {
     protected TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-            String time = mUtils.getCorrectTimeFormat(hourOfDay, minute);
-            mTime.setText(time);
+            String formattedTime = mUtils.getCorrectTimeFormat(hourOfDay, minute);
+            time.setText(formattedTime);
+            time.setError(null);
         }
     };
 
     protected void hideKeyboard() {
-        ScrollView mainLayout = (ScrollView) findViewById(R.id.appointment_layout);
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
@@ -176,7 +200,8 @@ public class AppointmentActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
-            mAppointment = createAppointment();
+            mAppointment = new Appointment(MyApplication.getInstance().getUser(), mClientName,
+                    mClientPhone, mService, mInfo, mDateTime);
             AppointmentRepository appointmentRepo = new AppointmentRepository(
                     MyApplication.getInstance().getApplicationContext());
             return appointmentRepo.create(mAppointment);
@@ -190,21 +215,7 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    * Create new Appointment with data from appointment form
-    * */
-    private Appointment createAppointment() {
-        return new Appointment(
-                MyApplication.getInstance().getUser(),
-                mClientName.getText().toString(),
-                mClientPhone.getText().toString(),
-                mService.getText().toString(),
-                mInfo.getText().toString(),
-                mUtils.convertStringToDate(getDateFromDateAndTime(), Constants.DATE_TIME_FORMAT)
-        );
-    }
-
     protected String getDateFromDateAndTime() {
-        return mDate.getText().toString() + " " + mTime.getText().toString();
+        return date.getText().toString() + " " + time.getText().toString();
     }
 }
