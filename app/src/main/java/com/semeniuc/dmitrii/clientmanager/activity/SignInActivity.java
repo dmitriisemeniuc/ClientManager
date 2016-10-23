@@ -10,6 +10,9 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.util.Log;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -36,21 +39,9 @@ import butterknife.OnClick;
 public class SignInActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_signin;
-    public static final boolean DEBUG = Constants.DEBUG;
     public static final String LOG_TAG = SignInActivity.class.getSimpleName();
-    public static final String LOGIN_PREFS = "loginPrefs";
-    public static final String USER = Constants.USER;
-    public static final String NEW_USER = Constants.NEW_USER;
-    public static final String GOOGLE_USER = Constants.GOOGLE_USER;
-    public static final String REGISTERED_USER = Constants.REGISTERED_USER;
-    public static final String LOGGED_IN = Constants.LOGGED_IN;
-    public static final String EMAIL = Constants.EMAIL;
-    public static final String EMPTY = Constants.EMPTY;
-    public static final int FIRST = Constants.FIRST;
-    public static final int SIZE_EMPTY = Constants.SIZE_EMPTY;
-    public static final int RC_SIGN_IN = 9001;
-    public static String USER_SAVING_MSG = EMPTY;
-    public static String USER_SAVING_ERROR = EMPTY;
+    public static String USER_SAVING_MSG = Constants.EMPTY;
+    public static String USER_SAVING_ERROR = Constants.EMPTY;
 
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
@@ -62,6 +53,8 @@ public class SignInActivity extends AppCompatActivity {
     AppCompatEditText email;
     @BindView(R.id.sign_in_password_et)
     AppCompatEditText password;
+    @BindView(R.id.main_sign_in_layout)
+    RelativeLayout mainLayout;
 
     @OnClick(R.id.sign_in_with_google_button)
     void submitGoogleSignIn() {
@@ -84,44 +77,63 @@ public class SignInActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
-        String user = checkUserSignInType();
-        if (user.equals(NEW_USER)) {
-            // GoogleAuthenticator should be instantiated only once for this Activity,
-            // so it is called from onCreate method
-            initGoogleAuthenticator();
-        }
+        checkUserSignInType();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == Constants.RC_SIGN_IN) {
+            // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             newSignInWithGoogle(result);
         }
     }
 
+    /**
+     * Sign in with Google account
+     */
     private void signInWithGoogle() {
         GoogleApiClient apiClient = MyApplication.getInstance().getGoogleApiClient();
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(apiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        startActivityForResult(signInIntent, Constants.RC_SIGN_IN);
     }
 
+    /**
+     * Sign in with email
+     */
     private void signIn() {
         boolean formValid = validateForm();
         if (!formValid) return;
         boolean userRegistered = isEmailAndPasswordRegistered();
         if (userRegistered) {
             doLogin();
+            return;
         }
+        hideKeyboard();
+        Toast.makeText(this, getResources().getString(R.string.invalid_credentials),
+                Toast.LENGTH_SHORT).show();
     }
 
     private boolean validateForm() {
         boolean empty = isSignInFieldsEmpty();
         if (empty) return false;
-        // Form valid
-        return true;
+        return true; // Form valid
+    }
+
+    private boolean isSignInFieldsEmpty() {
+        mFieldRequired = this.getResources().getString(R.string.field_is_required);
+        // email validation
+        if (mUtils.isEditTextEmpty(email)) {
+            email.setError(mFieldRequired);
+            return true;
+        }
+        // password validation
+        if (mUtils.isEditTextEmpty(password)) {
+            password.setError(mFieldRequired);
+            return true;
+        }
+        return false;
     }
 
     private boolean isEmailAndPasswordRegistered() {
@@ -130,10 +142,8 @@ public class SignInActivity extends AppCompatActivity {
                 email.getText().toString(), password.getText().toString());
         if (users != null) {
             if (users.size() > 0) {
-                // User registered
-                return true;
+                return true; // User registered
             }
-
         }
         return false;
     }
@@ -141,25 +151,18 @@ public class SignInActivity extends AppCompatActivity {
     private void doLogin() {
         User user = new User(email.getText().toString(), password.getText().toString());
         MyApplication.getInstance().setUser(user);
+        mUtils.setUserInPrefs(Constants.REGISTERED_USER);
         updateUI(true);
     }
 
-    private boolean isSignInFieldsEmpty() {
-        mFieldRequired = this.getResources().getString(R.string.field_is_required);
-        boolean valid = false;
-        // user name / email validation
-        if (mUtils.isEditTextEmpty(email)) {
-            email.setError(mFieldRequired);
-            valid = true;
-        }
-        // password validation
-        if (mUtils.isEditTextEmpty(password)) {
-            password.setError(mFieldRequired);
-            valid = true;
-        }
-        return valid;
+    private void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
 
+    /**
+     * Go to Sign Up Activity to sign up with email
+     */
     private void goToSignUpActivity() {
         Intent intent = new Intent(this, SignUpActivity.class);
         startActivity(intent);
@@ -168,39 +171,52 @@ public class SignInActivity extends AppCompatActivity {
 
     /**
      * Identify what type of user should be used
-     * {It can be: google user, facebook user or user registered with e-mail}
+     * {It can be: user signed in with google or registered with e-mail}
      */
-    private String checkUserSignInType() {
-        SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-        // setting.getString will return NEW_USER value in case if USER value won't be found
-        String userType = settings.getString(USER, NEW_USER);
-        if (userType.equals(GOOGLE_USER)) {
+    private void checkUserSignInType() {
+        String userType = mUtils.getUserFromPrefs();
+        if (userType.equals(Constants.GOOGLE_USER)) {
+            // USER REGISTERED WITH GOOGLE ACCOUNT
             initGoogleAuthenticator();
+            SharedPreferences settings = mCtx.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             // If previous google sign is cached
-            // (google does not sign out) - silent sign in will be made
-            boolean loggedIn = settings.getBoolean(LOGGED_IN, false);
+            // (user does not sign out) - google silent sign in will be made
             if (loggedIn) silentSignInWithGoogle();
-        } else if (userType.equals(REGISTERED_USER)) {
-            boolean loggedIn = settings.getBoolean(LOGGED_IN, false);
+            return;
+        } // USER REGISTERED WITH EMAIL
+        if (userType.equals(Constants.REGISTERED_USER)) {
+
+            SharedPreferences settings = mCtx.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             if (loggedIn) {
-                String email = settings.getString(EMAIL, EMPTY);
+                String email = settings.getString(Constants.EMAIL, Constants.EMPTY);
                 if (!email.isEmpty()) {
                     new SetGlobalUser().execute(email);
                 }
             }
+            return;
+        } // NEW USER
+        if (userType.equals(Constants.NEW_USER)) {
+            // GoogleAuthenticator should be instantiated only once for this Activity,
+            // so it's called from onCreate method
+            initGoogleAuthenticator();
         }
-        return userType;
+        Log.e(LOG_TAG, "Unknown user type");
     }
 
+    /**
+     * Instantiates Google authenticator object
+     */
     private void initGoogleAuthenticator() {
         mGoogleAuthenticator = new GoogleAuthenticator();
         mGoogleAuthenticator.createGoogleSignInOptions();
         mGoogleAuthenticator.setGoogleApiClient(this, this);
     }
 
-    /*
-    * Checking if the user is signed in previously
-    * */
+    /**
+     * Checking if the user is signed in with Google account previously
+     */
     private void silentSignInWithGoogle() {
         OptionalPendingResult<GoogleSignInResult> opr = mGoogleAuthenticator.getOptionalPendingResult();
         if (opr.isDone()) {
@@ -224,34 +240,30 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     /**
-     * Handling of sign in result
+     * Handle Sign In result.
+     * If result success -> go to Sign In Activity and finish this
      */
     private void handleGoogleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            GoogleSignInAccount account = result.getSignInAccount();
-            User user = getUserByEmail(account.getEmail());
-            MyApplication.getInstance().setUser(user);
-            // Show authenticated UI
-            updateUI(true);
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
-        }
+        if (!result.isSuccess()) return;
+        GoogleSignInAccount account = result.getSignInAccount();
+        User user = getUserByEmail(account.getEmail());
+        MyApplication.getInstance().setUser(user);
+        // Show authenticated UI
+        updateUI(true);
     }
 
+    /**
+     * Makes new sign in with Google account and stores user details
+     */
     private void newSignInWithGoogle(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            // Store user id, user name and email to the global User object
-            setGoogleUserDetails(result);
-        } else {
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
-        }
+        if (!result.isSuccess()) return;
+        // Store user id, user name and email to the global User object
+        setGoogleUserDetails(result);
     }
 
-    /*
-    * Setting of signed user to global User object
-    * */
+    /**
+     * Sets the signed user to global User object
+     */
     private void setGoogleUserDetails(@NonNull GoogleSignInResult result) {
         GoogleSignInAccount account = result.getSignInAccount();
         if (null != account) {
@@ -261,9 +273,9 @@ public class SignInActivity extends AppCompatActivity {
         }
     }
 
-    /*
-    * Sign out from google account
-    * */
+    /**
+     * Sign out from Google account
+     */
     protected void signOut() {
         Auth.GoogleSignInApi.signOut(
                 MyApplication.getInstance().getGoogleApiClient())
@@ -275,14 +287,14 @@ public class SignInActivity extends AppCompatActivity {
                 });
     }
 
-    /*
-    * Updating of UI. If true => goes to MainActivity
-    * */
+    /**
+     * Updates UI.
+     * If true => goes to MainActivity and finish this
+     */
     protected void updateUI(boolean update) {
-        if (update) {
-            startMainActivity();
-            finish();
-        }
+        if (!update) return;
+        startMainActivity();
+        finish();
     }
 
     private void startMainActivity() {
@@ -290,9 +302,9 @@ public class SignInActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*
-    * Showing of dialog during of sign in process
-    * */
+    /**
+     * Showing of dialog during of sign in process
+     */
     private void showProgressDialog() {
         if (null == mProgressDialog) {
             mProgressDialog = new ProgressDialog(this);
@@ -302,9 +314,9 @@ public class SignInActivity extends AppCompatActivity {
         mProgressDialog.show();
     }
 
-    /*
-    * Hiding of dialog after the sign in process is done
-    * */
+    /**
+     * Hiding of dialog after the sign in process is done
+     */
     private void hideProgressDialog() {
         if (null != mProgressDialog && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
@@ -315,41 +327,38 @@ public class SignInActivity extends AppCompatActivity {
         UserRepository userRepo = new UserRepository(mCtx);
         List<User> users = userRepo.findByEmail(email);
         if (users != null) {
-            return users.get(FIRST);
-        } else {
-            return null;
+            return users.get(0);
         }
+        return null;
     }
 
     private class SaveGoogleUser extends AsyncTask<User, Void, String> {
 
         @Override
         protected String doInBackground(User... array) {
-            User user = array[FIRST];
+            User user = array[0];
             UserRepository userRepo = new UserRepository(mCtx);
-            // Check if user with this e-mail already exists.
-            // It makes sense if there are another authentication options apart from google
-            // sign in, like facebook login or login with user e-mail.
-            // If google sign in option is used only, then this can be removed
             List<User> users = userRepo.findByEmail(user.getEmail());
             if (null != users) {
-                if (users.size() == SIZE_EMPTY) {
+                if (users.size() == Constants.SIZE_EMPTY) {
                     int index = userRepo.create(user);
                     if (index == 1) {
                         users = userRepo.findByEmail(user.getEmail());
-                        user = users.get(FIRST);
+                        user = users.get(0);
                         // Set global user
                         MyApplication.getInstance().setUser(user);
-                        USER_SAVING_MSG = getResources().getString(R.string.SignedInAs)
+                        USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
                                 + ": " + user.getEmail();
-                        USER_SAVING_ERROR = EMPTY;
+                        USER_SAVING_ERROR = Constants.EMPTY;
                     } else {
                         USER_SAVING_ERROR = getResources().getString(R.string.userSavingFailed);
                     }
                 } else {
-                    user = users.get(FIRST);
+                    user = users.get(0);
                     MyApplication.getInstance().setUser(user);
-                    USER_SAVING_ERROR = EMPTY;
+                    USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
+                            + ": " + user.getEmail();
+                    USER_SAVING_ERROR = Constants.EMPTY;
                 }
             }
             return USER_SAVING_MSG;
@@ -364,13 +373,7 @@ public class SignInActivity extends AppCompatActivity {
             }
             // Show authenticated UI
             updateUI(true);
-            SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(USER, GOOGLE_USER);
-            editor.putString(Constants.EMAIL, MyApplication.getInstance().getUser().getEmail());
-            editor.putBoolean(Constants.LOGGED_IN, true);
-            // Commit the edits!
-            editor.commit();
+            mUtils.setUserInPrefs(Constants.GOOGLE_USER);
             Toast.makeText(mCtx, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
@@ -382,17 +385,17 @@ public class SignInActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... array) {
-            String email = array[FIRST];
+            String email = array[0];
             UserRepository userRepo = new UserRepository(mCtx);
             List<User> users = userRepo.findByEmail(email);
             if (null != users) {
                 if (users.size() > 0) {
-                    User user = users.get(FIRST);
+                    User user = users.get(0);
                     // Set global user
                     MyApplication.getInstance().setUser(user);
-                    USER_SAVING_MSG = getResources().getString(R.string.SignedInAs)
+                    USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
                             + ": " + user.getEmail();
-                    USER_SAVING_ERROR = EMPTY;
+                    USER_SAVING_ERROR = Constants.EMPTY;
                 } else {
                     USER_SAVING_ERROR = getResources().getString(R.string.user_login_failed);
                 }

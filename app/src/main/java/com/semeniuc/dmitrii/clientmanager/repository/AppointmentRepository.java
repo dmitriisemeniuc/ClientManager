@@ -6,6 +6,7 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
@@ -80,8 +81,10 @@ public class AppointmentRepository implements Repository {
         return appointment;
     }
 
-    public List<?> findAllByUserIdOrderByDate(long id) {
+    @Override
+    public List<Appointment> findAll(){
         List<Appointment> items = null;
+        long id = MyApplication.getInstance().getUser().getId();
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
@@ -91,19 +94,6 @@ public class AppointmentRepository implements Repository {
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-        return items;
-    }
-
-    @Override
-    public List<?> findAll() {
-        List<Appointment> items = null;
-
-        try {
-            items = helper.getAppointmentDao().queryForAll();
-        } catch (java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-
         return items;
     }
 }

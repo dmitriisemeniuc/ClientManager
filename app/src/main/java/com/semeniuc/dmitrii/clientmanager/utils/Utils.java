@@ -1,6 +1,7 @@
 package com.semeniuc.dmitrii.clientmanager.utils;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -148,5 +149,32 @@ public class Utils {
             minuteStr = "0" + minuteStr;
         }
         return hourStr + ":" + minuteStr;
+    }
+
+    public String getUserFromPrefs(){
+        SharedPreferences settings = mContext.getSharedPreferences(
+                Constants.LOGIN_PREFS, mContext.MODE_PRIVATE);
+        // setting.getString will return NEW_USER value in case if USER value won't be found
+        return settings.getString(Constants.USER, Constants.NEW_USER);
+    }
+
+    public void setUserInPrefs(String user) {
+        SharedPreferences.Editor editor = getEditor(Constants.LOGIN_PREFS);
+        if(user.equals(Constants.NEW_USER)){
+            editor.putString(Constants.USER, Constants.NEW_USER);
+            editor.putString(Constants.EMAIL, Constants.EMPTY);
+            editor.putBoolean(Constants.LOGGED_IN, false);
+        } else {
+            editor.putString(Constants.USER, user);
+            editor.putString(Constants.EMAIL, MyApplication.getInstance().getUser().getEmail());
+            editor.putBoolean(Constants.LOGGED_IN, true);
+        }
+        // Commit the edits!
+        editor.commit();
+    }
+
+    public SharedPreferences.Editor getEditor(String prefs) {
+        SharedPreferences settings = mContext.getSharedPreferences(prefs, mContext.MODE_PRIVATE);
+        return settings.edit();
     }
 }

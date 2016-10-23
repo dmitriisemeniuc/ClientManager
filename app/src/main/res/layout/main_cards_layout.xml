@@ -14,12 +14,6 @@
         card_view:cardElevation="2dp"
         card_view:cardCornerRadius="2dp">
 
-        <View
-            android:id="@+id/appointment_done"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/appointment_status_todo_color" />
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

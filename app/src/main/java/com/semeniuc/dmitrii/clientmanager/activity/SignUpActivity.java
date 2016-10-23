@@ -2,7 +2,6 @@ package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -27,9 +26,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_signup;
     public static final String LOG_TAG = SignUpActivity.class.getSimpleName();
-    public static final String LOGIN_PREFS = "loginPrefs";
-    public static final int FIRST = Constants.FIRST;
-    public static final String EMPTY = Constants.EMPTY;
     public static String USER_SAVING_MSG = Constants.EMPTY;
     public static String USER_SAVING_ERROR = Constants.EMPTY;
 
@@ -138,10 +134,9 @@ public class SignUpActivity extends AppCompatActivity {
     * Updating of UI. If true => goes to MainActivity
     * */
     private void updateUI(boolean update) {
-        if (update) {
-            startMainActivity();
-            finish();
-        }
+        if (!update) return;
+        startMainActivity();
+        finish();
     }
 
     private void startMainActivity() {
@@ -153,17 +148,17 @@ public class SignUpActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(User... array) {
-            User user = array[FIRST];
+            User user = array[0];
             UserRepository userRepo = new UserRepository(mCtx);
             int index = userRepo.create(user);
             if (index == 1) {
                 List<User> users = userRepo.findByEmail(user.getEmail());
-                user = users.get(FIRST);
+                user = users.get(0);
                 // Set global user
                 MyApplication.getInstance().setUser(user);
-                USER_SAVING_MSG = getResources().getString(R.string.SignedInAs)
+                USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
                         + ": " + user.getEmail();
-                USER_SAVING_ERROR = EMPTY;
+                USER_SAVING_ERROR = Constants.EMPTY;
             } else {
                 USER_SAVING_ERROR = getResources().getString(R.string.userSavingFailed);
             }
@@ -179,13 +174,7 @@ public class SignUpActivity extends AppCompatActivity {
             }
             // Show authenticated UI
             updateUI(true);
-            SharedPreferences settings = mCtx.getSharedPreferences(LOGIN_PREFS, MODE_PRIVATE);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString(Constants.USER, Constants.REGISTERED_USER);
-            editor.putString(Constants.EMAIL, MyApplication.getInstance().getUser().getEmail());
-            editor.putBoolean(Constants.LOGGED_IN, true);
-            // Commit the edits!
-            editor.commit();
+            mUtils.setUserInPrefs(Constants.REGISTERED_USER);
             Toast.makeText(mCtx, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
