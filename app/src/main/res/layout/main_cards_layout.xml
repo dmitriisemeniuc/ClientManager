@@ -34,9 +34,7 @@
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_client_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    style="@style/cardViewItem"
                     android:layout_toEndOf="@+id/main_cards_client_icon"
                     android:text="Client name"
                     android:textColor="@color/client_name_text_color"
@@ -53,16 +51,13 @@
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_service_icon"
-                    android:layout_width="wrap_content"
+                    style="@style/cardViewItem"
                     android:layout_height="16dp"
-                    android:layout_centerVertical="true"
                     android:src="@mipmap/ic_worker" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_service"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    style="@style/cardViewItem"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
                     android:text="Service"
                     android:textColor="@color/service_text_color"
@@ -79,7 +74,7 @@
                 android:layout_marginBottom="1dp"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
-                android:background="@color/title_text_color" />
+                android:background="@color/colorPrimary" />
             <!-- DATE, PHONE -->
             <RelativeLayout
                 android:id="@+id/main_cards_date_and_phone_layout"
@@ -96,16 +91,13 @@
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/main_cards_date_time_icon"
-                        android:layout_width="wrap_content"
+                        style="@style/cardViewItem"
                         android:layout_height="18dp"
-                        android:layout_centerVertical="true"
                         android:src="@mipmap/ic_calendar_clock" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/main_appointment_date_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
+                        style="@style/cardViewItem"
                         android:layout_toEndOf="@+id/main_cards_date_time_icon"
                         android:text="20/10/2016 10:00"
                         android:textColor="@color/colorPrimary"
@@ -121,17 +113,14 @@
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/main_cards_phone_icon"
-                        android:layout_width="wrap_content"
+                        style="@style/cardViewItem"
                         android:layout_height="16dp"
-                        android:layout_centerVertical="true"
                         android:layout_marginStart="-5dp"
                         android:src="@mipmap/ic_cellphone_android" />
 
                     <android.support.v7.widget.AppCompatTextView
                         android:id="@+id/main_appointment_client_phone"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
+                        style="@style/cardViewItem"
                         android:layout_toEndOf="@+id/main_cards_phone_icon"
                         android:text="069111111"
                         android:textSize="14sp"
@@ -140,9 +129,8 @@
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/main_cards_phone_call_icon"
-                        android:layout_width="wrap_content"
+                        style="@style/cardViewItem"
                         android:layout_height="28dp"
-                        android:layout_centerVertical="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/main_appointment_client_phone"
                         android:src="@mipmap/ic_phone" />
@@ -151,8 +139,7 @@
             <!-- INFO -->
             <RelativeLayout
                 android:id="@+id/main_cards_info_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/cardViewItem"
                 android:layout_below="@+id/main_cards_date_and_phone_layout"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="20dp"
@@ -160,16 +147,13 @@
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_info_icon"
-                    android:layout_width="wrap_content"
+                    style="@style/cardViewItem"
                     android:layout_height="18dp"
-                    android:layout_centerVertical="true"
                     android:src="@mipmap/ic_information_outline" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    style="@style/cardViewItem"
                     android:layout_toEndOf="@+id/main_cards_info_icon"
                     android:text="info"
                     android:textSize="14sp"

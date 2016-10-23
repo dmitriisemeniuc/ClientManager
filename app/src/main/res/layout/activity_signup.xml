@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mainBackground"
+    android:background="@color/orangeBackground"
     android:orientation="vertical"
     tools:context=".activity.SignInActivity">
 
@@ -32,50 +31,36 @@
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_email_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
+            style="@style/signInField"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:textColor="@android:color/white"
             android:maxLength="100"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_password_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/signInField"
             android:layout_below="@+id/sign_up_email_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
             android:hint="@string/password"
             android:inputType="textVisiblePassword"
-            android:textColor="@android:color/white"
             android:maxLength="100"/>
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_confirm_password_et"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="@style/signInField"
             android:layout_below="@+id/sign_up_password_et"
-            android:layout_marginStart="@dimen/activity_horizontal_margin"
-            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-            android:fontFamily="monospace"
             android:hint="@string/confirmPassword"
             android:inputType="textVisiblePassword"
-            android:textColor="@android:color/white"
             android:maxLength="100"/>
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+           style="@style/signInField"
             android:layout_below="@+id/sign_up_confirm_password_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:text="@string/sign_up"
+            android:fontFamily="sans-serif-light"
             android:background="@color/orangeBackground"
-            android:textColor="@android:color/white"
             android:shadowColor="@android:color/white" />
     </RelativeLayout>
 
