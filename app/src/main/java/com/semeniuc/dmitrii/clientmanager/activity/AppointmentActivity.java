@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,6 +49,9 @@ public class AppointmentActivity extends AppCompatActivity {
     protected String mDate;
     protected String mTime;
     protected Date mDateTime;
+    private String mSum;
+    private boolean mPaid;
+    private boolean mDone;
 
     @BindView(R.id.appointment_client_name)
     AppCompatEditText clientName;
@@ -61,6 +65,12 @@ public class AppointmentActivity extends AppCompatActivity {
     AppCompatTextView date;
     @BindView(R.id.appointment_time)
     AppCompatTextView time;
+    @BindView(R.id.appointment_cash)
+    AppCompatEditText sum;
+    @BindView(R.id.appointment_paid_icon)
+    AppCompatImageView paidIcon;
+    @BindView(R.id.appointment_done_icon)
+    AppCompatImageView doneIcon;
     @BindView(R.id.appointment_layout)
     ScrollView mainLayout;
 
@@ -82,6 +92,20 @@ public class AppointmentActivity extends AppCompatActivity {
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
+    }
+
+    @OnClick(R.id.appointment_paid)
+    void onPaidClicked() {
+        changePaidImage();
+    }
+    @OnClick(R.id.appointment_paid_icon)
+    void onPaidIconClicked() {
+        changePaidImage();
+    }
+
+    @OnClick(R.id.appointment_done_icon)
+    void onDoneIconClicked() {
+        changeDoneImage();
     }
 
     @Override
@@ -113,6 +137,24 @@ public class AppointmentActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void changePaidImage() {
+        mPaid = mPaid ? false : true;
+        if (mPaid) {
+            paidIcon.setImageResource(R.mipmap.ic_paid_yes);
+            return;
+        }
+        paidIcon.setImageResource(R.mipmap.ic_paid_no);
+    }
+
+    protected void changeDoneImage() {
+        mDone = mDone ? false : true;
+        if(mDone){
+            doneIcon.setImageResource(R.mipmap.ic_done_yes);
+            return;
+        }
+        doneIcon.setImageResource(R.mipmap.ic_done_no);
     }
 
     protected void setDataFromFields() {

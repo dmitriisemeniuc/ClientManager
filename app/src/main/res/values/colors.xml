@@ -13,10 +13,12 @@
     <color name="menu_shadowColor">#66000000</color>
     <color name="appointment_title_color">#4E342E</color>
     <color name="phone_color">#455A64</color>
-    <color name="client_name_text_color">#FF6D00</color>
-    <color name="client_name_hint_text_color">#FFAB40</color>
-    <color name="service_text_color">#827717</color>
-    <color name="service_hint_text_color">#C0CA33</color>
+    <color name="client_name_text_color">#d35400</color>
+    <color name="client_name_hint_text_color">#e67e22</color>
+    <color name="service_text_color">#c0392b</color>
+    <color name="service_hint_text_color">#e74c3c</color>
     <color name="light_grey_background">#F5F5F5</color>
     <color name="action_bar_background">#FF6D00</color>
+    <color name="money_text_hint">#47596b</color>
+    <color name="money_text">#34495e</color>
 </resources>
