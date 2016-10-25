@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.User;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
@@ -29,6 +30,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     // The DAO object we use to access the SimpleData table pressure
     private Dao<User, Integer> userDao = null;
+    private Dao<Service, Integer> serviceDao = null;
     private Dao<Appointment, Integer> appointmentDao = null;
 
     public DatabaseHelper(Context context) {
@@ -40,6 +42,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
 
             TableUtils.createTable(connectionSource, User.class);
+            TableUtils.createTable(connectionSource, Service.class);
             TableUtils.createTable(connectionSource, Appointment.class);
             if (DEBUG) Log.i(LOG_TAG, "Tables are created");
         } catch (SQLException e) {
@@ -89,6 +92,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             }
         }
         return appointmentDao;
+    }
+
+    public Dao<Service, Integer> getServiceDao() {
+        if (null == serviceDao) {
+            try {
+                serviceDao = getDao(Service.class);
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return serviceDao;
     }
 
     @Override

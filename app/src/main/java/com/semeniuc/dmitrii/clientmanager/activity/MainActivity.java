@@ -23,11 +23,13 @@ import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentAdapter;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class MainActivity extends SignInActivity implements View.OnClickListener {
@@ -111,6 +113,14 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     private void displayAppointmentsOrderedByDate() {
         AppointmentRepository appointmentRepo = new AppointmentRepository(this);
         List<Appointment> appointments = appointmentRepo.findAll();
+        DatabaseHelper helper = new DatabaseHelper(this);
+        for(Appointment appointment : appointments){
+            try {
+                helper.getServiceDao().refresh(appointment.getService());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
             @Override

@@ -39,7 +39,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
         holder.mClientName.setText(mAppointments.get(position).getClientName());
         holder.mClientPhone.setText(mAppointments.get(position).getClientPhone());
-        holder.mService.setText(mAppointments.get(position).getService());
+        holder.mService.setText(mAppointments.get(position).getService().getName());
         holder.mInfo.setText(mAppointments.get(position).getInfo());
         holder.mDateTime.setText(mUtils.convertDateToString(mAppointments.get(position).getDate(),
                 Constants.DATE_TIME_FORMAT));

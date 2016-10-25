@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,11 +17,14 @@ import android.view.MenuItem;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
+import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -119,10 +123,23 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     public void populateAppointmentFields() {
         clientName.setText(mAppointment.getClientName());
         clientPhone.setText(mAppointment.getClientPhone());
-        service.setText(mAppointment.getService());
+        service.setText(mAppointment.getService().getName());
         info.setText(mAppointment.getInfo());
         date.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.DATE_FORMAT));
         time.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.TIME_FORMAT));
+    }
+
+    private void setDataFromFields() {
+        mAppointment.setClientName(clientName.getText().toString());
+        mAppointment.setClientPhone(clientPhone.getText().toString());
+        mAppointment.getService().setName(service.getText().toString());
+        mAppointment.getService().setHairColoring(true);
+        mAppointment.setInfo(info.getText().toString());
+        mDate = date.getText().toString();
+        mTime = time.getText().toString();
+        String dateTime = mDate + " " + mTime;
+        mDateTime = mUtils.convertStringToDate(dateTime, Constants.DATE_TIME_FORMAT);
+        mAppointment.setDate(mDateTime);
     }
 
     /**
@@ -154,10 +171,27 @@ public class AppointmentReviewActivity extends AppointmentActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            /*ServiceRepository serviceRepo = new ServiceRepository(mContext);
+            serviceRepo.update(mAppointment.getService());
             Appointment appointment = new Appointment(mAppointment.getId(), MyApplication.getInstance().getUser(),
                     mClientName, mClientPhone, mService, mInfo, mDateTime);
             AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
-            return appointmentRepo.update(appointment);
+            return appointmentRepo.update(appointment);*/
+            ServiceRepository serviceRepo = new ServiceRepository(mContext);
+            serviceRepo.update(mAppointment.getService());
+            Appointment appointment = new Appointment(mAppointment.getId(), MyApplication.getInstance().getUser(),
+                    mAppointment.getClientName(), mAppointment.getClientPhone(), mAppointment.getService(),
+                    mAppointment.getInfo(), mAppointment.getDate());
+            if(appointment.equals(mAppointment)){
+                Log.e(LOG_TAG, "equals");
+            }
+            AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
+             appointmentRepo.update(appointment);
+            List<Appointment> appointments = appointmentRepo.findAll();
+            for(Appointment app : appointments){
+                Service service = app.getService();
+            }
+            return 1;
         }
 
         @Override
@@ -171,6 +205,8 @@ public class AppointmentReviewActivity extends AppointmentActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            ServiceRepository serviceRepo = new ServiceRepository(mContext);
+            serviceRepo.delete(mService);
             AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
             return appointmentRepo.delete(mAppointment);
         }

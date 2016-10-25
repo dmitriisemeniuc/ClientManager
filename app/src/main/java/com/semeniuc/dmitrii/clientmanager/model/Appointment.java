@@ -32,8 +32,9 @@ public class Appointment implements Parcelable {
     private String clientName;
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
-    @DatabaseField(canBeNull = false, columnName = SERVICE_FIELD_NAME)
-    private String service;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnName = SERVICE_FIELD_NAME)
+    private Service service;
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
     private String info;
     @DatabaseField(canBeNull = false, columnName = DATE_FIELD_NAME,
@@ -51,7 +52,7 @@ public class Appointment implements Parcelable {
 
     // Constructor for creating new Appointment without id
     public Appointment(User user, String clientName, String clientPhone,
-                       String service, String info, Date date) {
+                       Service service, String info, Date date) {
         this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
@@ -62,7 +63,7 @@ public class Appointment implements Parcelable {
 
     // Constructor for creating new Appointment with specified id
     public Appointment(long id, User user, String clientName, String clientPhone,
-                       String service, String info, Date date) {
+                       Service service, String info, Date date) {
         this.id = id;
         this.user = user;
         this.clientName = clientName;
@@ -108,11 +109,11 @@ public class Appointment implements Parcelable {
         this.clientPhone = clientPhone;
     }
 
-    public String getService() {
+    public Service getService() {
         return service;
     }
 
-    public void setService(String service) {
+    public void setService(Service service) {
         this.service = service;
     }
 
@@ -169,7 +170,7 @@ public class Appointment implements Parcelable {
         parcel.writeParcelable(user, i);
         parcel.writeString(clientName);
         parcel.writeString(clientPhone);
-        parcel.writeString(service);
+        parcel.writeParcelable(service, i);
         parcel.writeString(info);
         parcel.writeString(date.toString());
         parcel.writeString(sum);
@@ -185,7 +186,7 @@ public class Appointment implements Parcelable {
         user = in.readParcelable(User.class.getClassLoader());
         clientName = in.readString();
         clientPhone = in.readString();
-        service = in.readString();
+        service = in.readParcelable(Service.class.getClassLoader());
         info = in.readString();
         date = new Date(in.readString());
         sum = in.readString();

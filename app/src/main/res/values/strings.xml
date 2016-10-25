@@ -18,7 +18,7 @@
     <string name="appointment_title_hint">Appointment title</string>
     <string name="appointment_client_name">Client</string>
     <string name="appointment_phone_number">Phone number</string>
-    <string name="appointment_service">Service</string>
+    <string name="appointment_service">Service name</string>
     <string name="date_label">Date:</string>
     <string name="appointment_info">Info</string>
     <string name="save">Save</string>
@@ -61,4 +61,6 @@
     <string name="invalid_credentials">Invalid email or password</string>
     <string name="paid">Paid</string>
     <string name="done">Done</string>
+    <string name="services">Services:</string>
+    <string name="tools">Tools:</string>
 </resources>
