@@ -8,15 +8,18 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
+import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.Calendar;
@@ -44,22 +47,69 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     AppCompatTextView date;
     @BindView(R.id.appointment_time)
     AppCompatTextView time;
+    @BindView(R.id.appointment_cash)
+    AppCompatEditText sum;
+    @BindView(R.id.appointment_paid_icon)
+    AppCompatImageView paidIcon;
+    @BindView(R.id.appointment_done_icon)
+    AppCompatImageView doneIcon;
+    @BindView(R.id.appointment_service_hair_coloring_icon)
+    AppCompatImageView hairColoringIcon;
+    @BindView(R.id.appointment_service_hairdo_icon)
+    AppCompatImageView hairdoIcon;
+    @BindView(R.id.appointment_service_haircut_icon)
+    AppCompatImageView haircutIcon;
+    @BindView(R.id.appointment_layout)
+    ScrollView mainLayout;
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
+    }
+
+    @OnClick(R.id.appointment_paid)
+    void onPaidClicked() {
+        changePaidImage();
+    }
+
+    @OnClick(R.id.appointment_paid_icon)
+    void onPaidIconClicked() {
+        changePaidImage();
+    }
+
+    @OnClick(R.id.appointment_done_icon)
+    void onDoneIconClicked() {
+        changeDoneImage();
+    }
+
+    @OnClick(R.id.appointment_service_hair_coloring_icon)
+    void onHairColoringIconClicked() {
+        changeHairColoringImage();
+    }
+
+    @OnClick(R.id.appointment_service_hairdo_icon)
+    void onHairdoIconClicked() {
+        changeHairdoImage();
+    }
+
+    @OnClick(R.id.appointment_service_haircut_icon)
+    void onHaircutIconClicked() {
+        changeHaircutImage();
     }
 
     @Override
@@ -114,20 +164,46 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     }
 
     /**
-    * Fill appointment form fields with coming data
-    * */
+     * Fill appointment form fields with coming data
+     */
     public void populateAppointmentFields() {
+        // text fields
         clientName.setText(mAppointment.getClientName());
         clientPhone.setText(mAppointment.getClientPhone());
-        service.setText(mAppointment.getService());
+        service.setText(mAppointment.getService().getName());
+        sum.setText(mAppointment.getSum());
         info.setText(mAppointment.getInfo());
         date.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.DATE_FORMAT));
         time.setText(mUtils.convertDateToString(mAppointment.getDate(), Constants.TIME_FORMAT));
+        // booleans
+        boolean hairColoring = mAppointment.getService().isHairColoring();
+        if (hairColoring) hairColoringIcon.setImageResource(R.mipmap.ic_paint_yes);
+        boolean hairdo = mAppointment.getService().isHairdo();
+        if (hairdo) hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_yes);
+        boolean haircut = mAppointment.getService().isHaircut();
+        if (haircut) haircutIcon.setImageResource(R.mipmap.ic_scissors_yes);
+        boolean paid = mAppointment.isPaid();
+        if (paid) paidIcon.setImageResource(R.mipmap.ic_money_paid_yes);
+        boolean done = mAppointment.isDone();
+        if(done) doneIcon.setImageResource(R.mipmap.ic_ok_yes);
+    }
+
+    private void setDataFromFields() {
+        mAppointment.setClientName(clientName.getText().toString());
+        mAppointment.setClientPhone(clientPhone.getText().toString());
+        mAppointment.getService().setName(service.getText().toString());
+        mAppointment.setInfo(info.getText().toString());
+        mAppointment.setSum(sum.getText().toString());
+        mDate = date.getText().toString();
+        mTime = time.getText().toString();
+        String dateTime = mDate + " " + mTime;
+        mDateTime = mUtils.convertStringToDate(dateTime, Constants.DATE_TIME_FORMAT);
+        mAppointment.setDate(mDateTime);
     }
 
     /**
-    * Open date picker dialog with date coming from Appointment
-    * */
+     * Open date picker dialog with date coming from Appointment
+     */
     private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         // Set date for dialog coming from appointment
@@ -139,8 +215,8 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     }
 
     /**
-    * Open time picker dialog with time coming from Appointment
-    * */
+     * Open time picker dialog with time coming from Appointment
+     */
     private TimePickerDialog getTimePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         // Set time for dialog coming from appointment
@@ -154,10 +230,11 @@ public class AppointmentReviewActivity extends AppointmentActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
-            Appointment appointment = new Appointment(mAppointment.getId(), MyApplication.getInstance().getUser(),
-                    mClientName, mClientPhone, mService, mInfo, mDateTime);
+            ServiceRepository serviceRepo = new ServiceRepository(mContext);
+            serviceRepo.update(mAppointment.getService());
+            mAppointment.setUser(MyApplication.getInstance().getUser());
             AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
-            return appointmentRepo.update(appointment);
+            return appointmentRepo.update(mAppointment);
         }
 
         @Override
@@ -171,6 +248,8 @@ public class AppointmentReviewActivity extends AppointmentActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+            ServiceRepository serviceRepo = new ServiceRepository(mContext);
+            serviceRepo.delete(mService);
             AppointmentRepository appointmentRepo = new AppointmentRepository(mContext);
             return appointmentRepo.delete(mAppointment);
         }
@@ -180,5 +259,56 @@ public class AppointmentReviewActivity extends AppointmentActivity {
             mUtils.showDeleteResultMessage(deleted, AppointmentReviewActivity.this);
             if (deleted == Constants.DELETED) finish();
         }
+    }
+
+    // ********** Methods of onClick Image changing
+    private void changePaidImage() {
+        boolean paid = !mAppointment.isPaid();
+        mAppointment.setPaid(paid);
+        if (paid) {
+            paidIcon.setImageResource(R.mipmap.ic_money_paid_yes);
+            return;
+        }
+        paidIcon.setImageResource(R.mipmap.ic_money_paid_no);
+    }
+
+    private void changeDoneImage() {
+        boolean done = !mAppointment.isDone();
+        mAppointment.setDone(done);
+        if (done) {
+            doneIcon.setImageResource(R.mipmap.ic_ok_yes);
+            return;
+        }
+        doneIcon.setImageResource(R.mipmap.ic_ok_no);
+    }
+
+    private void changeHairColoringImage() {
+        boolean hairColoring = !mAppointment.getService().isHairColoring();
+        mAppointment.getService().setHairColoring(hairColoring);
+        if (hairColoring) {
+            hairColoringIcon.setImageResource(R.mipmap.ic_paint_yes);
+            return;
+        }
+        hairColoringIcon.setImageResource(R.mipmap.ic_paint_no);
+    }
+
+    private void changeHairdoImage() {
+        boolean hairdo = !mAppointment.getService().isHairdo();
+        mAppointment.getService().setHairdo(hairdo);
+        if (hairdo) {
+            hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_yes);
+            return;
+        }
+        hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_no);
+    }
+
+    private void changeHaircutImage() {
+        boolean haircut = !mAppointment.getService().isHaircut();
+        mAppointment.getService().setHaircut(haircut);
+        if (haircut) {
+            haircutIcon.setImageResource(R.mipmap.ic_scissors_yes);
+            return;
+        }
+        haircutIcon.setImageResource(R.mipmap.ic_scissors_no);
     }
 }

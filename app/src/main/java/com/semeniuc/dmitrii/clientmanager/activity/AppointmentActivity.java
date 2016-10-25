@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,7 +22,9 @@ import android.widget.TimePicker;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
+import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
@@ -40,14 +43,17 @@ public class AppointmentActivity extends AppCompatActivity {
     public static final int TIME_PICKER_DIALOG_ID = 2;
 
     protected Utils mUtils = new Utils(AppointmentActivity.this);
-    protected Appointment mAppointment;
+    private Appointment mAppointment;
     protected String mClientName;
     protected String mClientPhone;
-    protected String mService;
+    protected Service mService = new Service();
     protected String mInfo;
     protected String mDate;
     protected String mTime;
     protected Date mDateTime;
+    private String mSum;
+    private boolean mPaid;
+    private boolean mDone;
 
     @BindView(R.id.appointment_client_name)
     AppCompatEditText clientName;
@@ -61,6 +67,18 @@ public class AppointmentActivity extends AppCompatActivity {
     AppCompatTextView date;
     @BindView(R.id.appointment_time)
     AppCompatTextView time;
+    @BindView(R.id.appointment_cash)
+    AppCompatEditText sum;
+    @BindView(R.id.appointment_paid_icon)
+    AppCompatImageView paidIcon;
+    @BindView(R.id.appointment_done_icon)
+    AppCompatImageView doneIcon;
+    @BindView(R.id.appointment_service_hair_coloring_icon)
+    AppCompatImageView hairColoringIcon;
+    @BindView(R.id.appointment_service_hairdo_icon)
+    AppCompatImageView hairdoIcon;
+    @BindView(R.id.appointment_service_haircut_icon)
+    AppCompatImageView haircutIcon;
     @BindView(R.id.appointment_layout)
     ScrollView mainLayout;
 
@@ -82,6 +100,36 @@ public class AppointmentActivity extends AppCompatActivity {
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
+    }
+
+    @OnClick(R.id.appointment_paid)
+    void onPaidClicked() {
+        changePaidImage();
+    }
+
+    @OnClick(R.id.appointment_paid_icon)
+    void onPaidIconClicked() {
+        changePaidImage();
+    }
+
+    @OnClick(R.id.appointment_done_icon)
+    void onDoneIconClicked() {
+        changeDoneImage();
+    }
+
+    @OnClick(R.id.appointment_service_hair_coloring_icon)
+    void onHairColoringIconClicked() {
+        changeHairColoringImage();
+    }
+
+    @OnClick(R.id.appointment_service_hairdo_icon)
+    void onHairdoIconClicked() {
+        changeHairdoImage();
+    }
+
+    @OnClick(R.id.appointment_service_haircut_icon)
+    void onHaircutIconClicked() {
+        changeHaircutImage();
     }
 
     @Override
@@ -115,10 +163,11 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
-    protected void setDataFromFields() {
+    private void setDataFromFields() {
         mClientName = clientName.getText().toString();
         mClientPhone = clientPhone.getText().toString();
-        mService = service.getText().toString();
+        mService.setName(service.getText().toString());
+        mSum = sum.getText().toString();
         mInfo = info.getText().toString();
         mDate = date.getText().toString();
         mTime = time.getText().toString();
@@ -200,8 +249,13 @@ public class AppointmentActivity extends AppCompatActivity {
 
         @Override
         protected Integer doInBackground(Void... voids) {
+
+            ServiceRepository serviceRepo = new ServiceRepository(
+                    MyApplication.getInstance().getApplicationContext());
+            serviceRepo.create(mService);
+            //mAppointment.setService(mService);
             mAppointment = new Appointment(MyApplication.getInstance().getUser(), mClientName,
-                    mClientPhone, mService, mInfo, mDateTime);
+                    mClientPhone, mService, mInfo, mDateTime, mSum, mPaid, mDone);
             AppointmentRepository appointmentRepo = new AppointmentRepository(
                     MyApplication.getInstance().getApplicationContext());
             return appointmentRepo.create(mAppointment);
@@ -215,7 +269,52 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
-    protected String getDateFromDateAndTime() {
-        return date.getText().toString() + " " + time.getText().toString();
+    // ********** Methods of onClick Image changing
+    private void changePaidImage() {
+        mPaid = !mPaid;
+        if (mPaid) {
+            paidIcon.setImageResource(R.mipmap.ic_money_paid_yes);
+            return;
+        }
+        paidIcon.setImageResource(R.mipmap.ic_money_paid_no);
+    }
+
+    private void changeDoneImage() {
+        mDone = !mDone;
+        if (!mDone) {
+            doneIcon.setImageResource(R.mipmap.ic_ok_yes);
+            return;
+        }
+        doneIcon.setImageResource(R.mipmap.ic_ok_no);
+    }
+
+    private void changeHairColoringImage() {
+        boolean hairColoring = !mService.isHairColoring();
+        mService.setHairColoring(hairColoring);
+        if (hairColoring) {
+            hairColoringIcon.setImageResource(R.mipmap.ic_paint_yes);
+            return;
+        }
+        hairColoringIcon.setImageResource(R.mipmap.ic_paint_no);
+    }
+
+    private void changeHairdoImage() {
+        boolean hairdo = !mService.isHairdo();
+        mService.setHairdo(hairdo);
+        if (hairdo) {
+            hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_yes);
+            return;
+        }
+        hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_no);
+    }
+
+    private void changeHaircutImage() {
+        boolean haircut = !mService.isHaircut();
+        mService.setHaircut(haircut);
+        if (haircut) {
+            haircutIcon.setImageResource(R.mipmap.ic_scissors_yes);
+            return;
+        }
+        haircutIcon.setImageResource(R.mipmap.ic_scissors_no);
     }
 }

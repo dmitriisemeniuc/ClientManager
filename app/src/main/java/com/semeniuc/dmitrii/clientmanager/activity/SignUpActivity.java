@@ -160,7 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
                         + ": " + user.getEmail();
                 USER_SAVING_ERROR = Constants.EMPTY;
             } else {
-                USER_SAVING_ERROR = getResources().getString(R.string.userSavingFailed);
+                USER_SAVING_ERROR = getResources().getString(R.string.user_saving_failed);
             }
             return USER_SAVING_MSG;
         }

@@ -46,7 +46,7 @@ public class SignInActivity extends AppCompatActivity {
     private ProgressDialog mProgressDialog;
     private GoogleAuthenticator mGoogleAuthenticator;
     private Context mCtx = MyApplication.getInstance().getApplicationContext();
-    private Utils mUtils = new Utils(SignInActivity.this);
+    private Utils mUtils;
     private String mFieldRequired;
 
     @BindView(R.id.sign_in_email_et)
@@ -117,8 +117,7 @@ public class SignInActivity extends AppCompatActivity {
 
     private boolean validateForm() {
         boolean empty = isSignInFieldsEmpty();
-        if (empty) return false;
-        return true; // Form valid
+        return !empty; // if empty true => return false (form not valid)
     }
 
     private boolean isSignInFieldsEmpty() {
@@ -174,6 +173,7 @@ public class SignInActivity extends AppCompatActivity {
      * {It can be: user signed in with google or registered with e-mail}
      */
     private void checkUserSignInType() {
+        mUtils = new Utils(this);
         String userType = mUtils.getUserFromPrefs();
         if (userType.equals(Constants.GOOGLE_USER)) {
             // USER REGISTERED WITH GOOGLE ACCOUNT
@@ -201,8 +201,10 @@ public class SignInActivity extends AppCompatActivity {
             // GoogleAuthenticator should be instantiated only once for this Activity,
             // so it's called from onCreate method
             initGoogleAuthenticator();
+            return;
         }
         Log.e(LOG_TAG, "Unknown user type");
+        Log.e(LOG_TAG, "UserType == " + userType);
     }
 
     /**
@@ -246,6 +248,7 @@ public class SignInActivity extends AppCompatActivity {
     private void handleGoogleSignInResult(GoogleSignInResult result) {
         if (!result.isSuccess()) return;
         GoogleSignInAccount account = result.getSignInAccount();
+        if (account == null) return;
         User user = getUserByEmail(account.getEmail());
         MyApplication.getInstance().setUser(user);
         // Show authenticated UI
@@ -351,7 +354,7 @@ public class SignInActivity extends AppCompatActivity {
                                 + ": " + user.getEmail();
                         USER_SAVING_ERROR = Constants.EMPTY;
                     } else {
-                        USER_SAVING_ERROR = getResources().getString(R.string.userSavingFailed);
+                        USER_SAVING_ERROR = getResources().getString(R.string.user_saving_failed);
                     }
                 } else {
                     user = users.get(0);
@@ -360,7 +363,9 @@ public class SignInActivity extends AppCompatActivity {
                             + ": " + user.getEmail();
                     USER_SAVING_ERROR = Constants.EMPTY;
                 }
+                return USER_SAVING_MSG;
             }
+            USER_SAVING_ERROR = getResources().getString(R.string.user_equal_null);
             return USER_SAVING_MSG;
         }
 

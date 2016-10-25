@@ -20,6 +20,9 @@ public class Appointment implements Parcelable {
     public static final String SERVICE_FIELD_NAME = "service";
     public static final String INFO_FIELD_NAME = "info";
     public static final String DATE_FIELD_NAME = "date";
+    public static final String SUM_FIELD_NAME = "sum";
+    public static final String PAID_FIELD_NAME = "paid";
+    public static final String DONE_FIELD_NAME = "done";
 
     @DatabaseField(generatedId = true, columnName = APPOINTMENT_ID_FIELD_NAME)
     private long id;
@@ -29,31 +32,42 @@ public class Appointment implements Parcelable {
     private String clientName;
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
-    @DatabaseField(canBeNull = false, columnName = SERVICE_FIELD_NAME)
-    private String service;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnDefinition = "integer references service(_id) on delete cascade",
+            columnName = SERVICE_FIELD_NAME)
+    private Service service;
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
     private String info;
     @DatabaseField(canBeNull = false, columnName = DATE_FIELD_NAME,
             dataType = DataType.DATE_STRING, format = Constants.DATE_TIME_FORMAT)
     private Date date;
+    @DatabaseField(canBeNull = true, columnName = SUM_FIELD_NAME)
+    private String sum;
+    @DatabaseField(canBeNull = false, columnName = PAID_FIELD_NAME)
+    private boolean paid;
+    @DatabaseField(canBeNull = false, columnName = DONE_FIELD_NAME)
+    private boolean done;
 
     public Appointment() {
     }
 
     // Constructor for creating new Appointment without id
-    public Appointment(User user, String clientName, String clientPhone,
-                       String service, String info, Date date) {
+    public Appointment(User user, String clientName, String clientPhone, Service service,
+                       String info, Date date, String sum, boolean paid, boolean done) {
         this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
+        this.sum = sum;
+        this.paid = paid;
+        this.done = done;
         this.info = info;
         this.date = date;
     }
 
     // Constructor for creating new Appointment with specified id
-    public Appointment(long id, User user, String clientName, String clientPhone,
-                       String service, String info, Date date) {
+    public Appointment(long id, User user, String clientName, String clientPhone, Service service,
+                       String info, Date date, String sum, boolean paid, boolean done) {
         this.id = id;
         this.user = user;
         this.clientName = clientName;
@@ -61,6 +75,9 @@ public class Appointment implements Parcelable {
         this.service = service;
         this.info = info;
         this.date = date;
+        this.sum = sum;
+        this.paid = paid;
+        this.done = done;
     }
 
     public Appointment(Parcel in) {
@@ -99,11 +116,11 @@ public class Appointment implements Parcelable {
         this.clientPhone = clientPhone;
     }
 
-    public String getService() {
+    public Service getService() {
         return service;
     }
 
-    public void setService(String service) {
+    public void setService(Service service) {
         this.service = service;
     }
 
@@ -123,6 +140,30 @@ public class Appointment implements Parcelable {
         this.date = date;
     }
 
+    public String getSum() {
+        return sum;
+    }
+
+    public void setSum(String sum) {
+        this.sum = sum;
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
+    }
+
+    public boolean isDone() {
+        return done;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -136,9 +177,13 @@ public class Appointment implements Parcelable {
         parcel.writeParcelable(user, i);
         parcel.writeString(clientName);
         parcel.writeString(clientPhone);
-        parcel.writeString(service);
+        parcel.writeParcelable(service, i);
         parcel.writeString(info);
         parcel.writeString(date.toString());
+        parcel.writeString(sum);
+        parcel.writeValue(paid);
+        parcel.writeValue(done);
+
     }
 
     private void readFromParcel(Parcel in) {
@@ -148,9 +193,12 @@ public class Appointment implements Parcelable {
         user = in.readParcelable(User.class.getClassLoader());
         clientName = in.readString();
         clientPhone = in.readString();
-        service = in.readString();
+        service = in.readParcelable(Service.class.getClassLoader());
         info = in.readString();
         date = new Date(in.readString());
+        sum = in.readString();
+        paid = (Boolean) in.readValue(null);
+        done = (Boolean) in.readValue(null);
     }
 
     public static final Parcelable.Creator CREATOR =

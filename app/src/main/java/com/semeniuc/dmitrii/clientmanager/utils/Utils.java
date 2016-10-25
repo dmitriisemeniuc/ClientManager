@@ -63,10 +63,7 @@ public class Utils {
     }
 
     public boolean isEditTextEmpty(AppCompatEditText et){
-        if (et.getText().toString().isEmpty()) {
-            return true;
-        }
-        return false;
+        return et.getText().toString().isEmpty();
     }
 
     public String convertDateToString(Date date, String pattern) {
@@ -122,6 +119,9 @@ public class Utils {
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());
+        toAppointment.setSum(fromAppointment.getSum());
+        toAppointment.setDone(fromAppointment.isDone());
+        toAppointment.setPaid(fromAppointment.isPaid());
         toAppointment.setInfo(fromAppointment.getInfo());
         toAppointment.setDate(fromAppointment.getDate());
         return toAppointment;
