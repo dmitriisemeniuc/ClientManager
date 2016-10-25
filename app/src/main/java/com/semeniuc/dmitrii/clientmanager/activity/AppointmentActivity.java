@@ -51,7 +51,7 @@ public class AppointmentActivity extends AppCompatActivity {
     protected String mDate;
     protected String mTime;
     protected Date mDateTime;
-    private String mSum; // TODO:
+    private String mSum;
     private boolean mPaid;
     private boolean mDone;
 
@@ -167,6 +167,7 @@ public class AppointmentActivity extends AppCompatActivity {
         mClientName = clientName.getText().toString();
         mClientPhone = clientPhone.getText().toString();
         mService.setName(service.getText().toString());
+        mSum = sum.getText().toString();
         mInfo = info.getText().toString();
         mDate = date.getText().toString();
         mTime = time.getText().toString();
@@ -254,7 +255,7 @@ public class AppointmentActivity extends AppCompatActivity {
             serviceRepo.create(mService);
             //mAppointment.setService(mService);
             mAppointment = new Appointment(MyApplication.getInstance().getUser(), mClientName,
-                    mClientPhone, mService, mInfo, mDateTime);
+                    mClientPhone, mService, mInfo, mDateTime, mSum, mPaid, mDone);
             AppointmentRepository appointmentRepo = new AppointmentRepository(
                     MyApplication.getInstance().getApplicationContext());
             return appointmentRepo.create(mAppointment);
@@ -269,8 +270,8 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     // ********** Methods of onClick Image changing
-    protected void changePaidImage() {
-        mPaid = mPaid ? false : true;
+    private void changePaidImage() {
+        mPaid = !mPaid;
         if (mPaid) {
             paidIcon.setImageResource(R.mipmap.ic_money_paid_yes);
             return;
@@ -278,18 +279,17 @@ public class AppointmentActivity extends AppCompatActivity {
         paidIcon.setImageResource(R.mipmap.ic_money_paid_no);
     }
 
-    protected void changeDoneImage() {
-        mDone = mDone ? false : true;
-        if (mDone) {
+    private void changeDoneImage() {
+        mDone = !mDone;
+        if (!mDone) {
             doneIcon.setImageResource(R.mipmap.ic_ok_yes);
             return;
         }
         doneIcon.setImageResource(R.mipmap.ic_ok_no);
     }
 
-    protected void changeHairColoringImage() {
-        boolean hairColoring = mService.isHairColoring();
-        hairColoring = hairColoring ? false : true;
+    private void changeHairColoringImage() {
+        boolean hairColoring = !mService.isHairColoring();
         mService.setHairColoring(hairColoring);
         if (hairColoring) {
             hairColoringIcon.setImageResource(R.mipmap.ic_paint_yes);
@@ -298,9 +298,8 @@ public class AppointmentActivity extends AppCompatActivity {
         hairColoringIcon.setImageResource(R.mipmap.ic_paint_no);
     }
 
-    protected void changeHairdoImage() {
-        boolean hairdo = mService.isHairdo();
-        hairdo = hairdo ? false : true;
+    private void changeHairdoImage() {
+        boolean hairdo = !mService.isHairdo();
         mService.setHairdo(hairdo);
         if (hairdo) {
             hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_yes);
@@ -309,9 +308,8 @@ public class AppointmentActivity extends AppCompatActivity {
         hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_no);
     }
 
-    protected void changeHaircutImage() {
-        boolean haircut = mService.isHaircut();
-        haircut = haircut ? false : true;
+    private void changeHaircutImage() {
+        boolean haircut = !mService.isHaircut();
         mService.setHaircut(haircut);
         if (haircut) {
             haircutIcon.setImageResource(R.mipmap.ic_scissors_yes);

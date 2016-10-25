@@ -109,6 +109,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         userDao = null;
+        serviceDao = null;
         appointmentDao = null;
     }
 }

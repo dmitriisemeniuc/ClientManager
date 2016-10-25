@@ -41,7 +41,7 @@
             style="@style/signInField"
             android:layout_below="@+id/sign_up_email_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:hint="@string/password"
+            android:hint="@string/pass"
             android:inputType="textVisiblePassword"
             android:maxLength="100"/>
 

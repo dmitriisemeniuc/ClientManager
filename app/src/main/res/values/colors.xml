@@ -21,4 +21,7 @@
     <color name="action_bar_background">#FF6D00</color>
     <color name="money_text_hint">#47596b</color>
     <color name="money_text">#34495e</color>
+    <color name="date_text_color">#2c3e50</color>
+    <color name="phone_number_text_color">#27ae60</color>
+    <color name="info_text_color">#666666</color>
 </resources>

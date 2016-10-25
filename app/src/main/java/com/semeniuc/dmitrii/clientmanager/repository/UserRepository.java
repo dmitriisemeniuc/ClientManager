@@ -76,7 +76,11 @@ public class UserRepository implements Repository {
     public List<User> findByEmail(String email) {
         List<User> users = null;
         try {
-            users = helper.getUserDao().queryForEq("email", email);
+            Dao<User, Integer> userDAO = helper.getUserDao();
+            QueryBuilder<User, Integer> queryBuilder = userDAO.queryBuilder();
+            Where where = queryBuilder.where();
+            where.eq(User.USER_EMAIL_FIELD_NAME, email);
+            users = userDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }

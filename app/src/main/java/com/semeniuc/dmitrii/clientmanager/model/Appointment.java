@@ -33,6 +33,7 @@ public class Appointment implements Parcelable {
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnDefinition = "integer references service(_id) on delete cascade",
             columnName = SERVICE_FIELD_NAME)
     private Service service;
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
@@ -51,19 +52,22 @@ public class Appointment implements Parcelable {
     }
 
     // Constructor for creating new Appointment without id
-    public Appointment(User user, String clientName, String clientPhone,
-                       Service service, String info, Date date) {
+    public Appointment(User user, String clientName, String clientPhone, Service service,
+                       String info, Date date, String sum, boolean paid, boolean done) {
         this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
+        this.sum = sum;
+        this.paid = paid;
+        this.done = done;
         this.info = info;
         this.date = date;
     }
 
     // Constructor for creating new Appointment with specified id
-    public Appointment(long id, User user, String clientName, String clientPhone,
-                       Service service, String info, Date date) {
+    public Appointment(long id, User user, String clientName, String clientPhone, Service service,
+                       String info, Date date, String sum, boolean paid, boolean done) {
         this.id = id;
         this.user = user;
         this.clientName = clientName;
@@ -71,6 +75,9 @@ public class Appointment implements Parcelable {
         this.service = service;
         this.info = info;
         this.date = date;
+        this.sum = sum;
+        this.paid = paid;
+        this.done = done;
     }
 
     public Appointment(Parcel in) {

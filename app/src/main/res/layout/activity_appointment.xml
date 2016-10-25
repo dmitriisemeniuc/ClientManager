@@ -189,6 +189,7 @@
                 android:layout_toEndOf="@+id/appointment_client_phone_icon"
                 android:hint="@string/appointment_phone_number"
                 android:inputType="phone"
+                android:digits="0123456789+"
                 android:maxLength="30"
                 android:textColorHint="@color/text_hint" />
         </RelativeLayout>
@@ -258,19 +259,19 @@
                 android:layout_width="80dp"
                 android:layout_marginEnd="20dp"
                 android:layout_toEndOf="@+id/appointment_cash_icon"
-                android:hint="0"
+                android:hint="@string/hint_zero"
+                android:ellipsize="end"
+                android:gravity="start"
                 android:textColor="@color/money_text"
-                android:textAlignment="textEnd"
                 android:inputType="numberDecimal"
-                android:gravity="end"
-                android:textColorHint="@color/money_text_hint" />
+                android:digits="0123456789." />
 
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/appointment_paid"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/appointment_cash"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/money_text"
                 android:text="@string/paid"
                 android:layout_centerVertical="true"
                 android:fontFamily="sans-serif-light"
