@@ -17,15 +17,15 @@ import java.util.List;
 
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.AppointmentViewHolder> {
 
-    private List<Appointment> mAppointments;
-    private final OnItemClickListener mListener;
-    private final OnPhoneClickListener mPhoneListener;
-    private Utils mUtils = new Utils();
+    private List<Appointment> appointments;
+    private final OnItemClickListener listener;
+    private final OnPhoneClickListener phoneListener;
+    private Utils utils = new Utils();
 
     public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener, OnPhoneClickListener phoneListener) {
-        mAppointments = appointments;
-        mListener = listener;
-        mPhoneListener = phoneListener;
+        this.appointments = appointments;
+        this.listener = listener;
+        this.phoneListener = phoneListener;
     }
 
     @Override
@@ -39,38 +39,68 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
         // fields
-        holder.mClientName.setText(mAppointments.get(position).getClientName());
-        holder.mClientPhone.setText(mAppointments.get(position).getClientPhone());
-        holder.mService.setText(mAppointments.get(position).getService().getName());
-        holder.mSum.setText(mAppointments.get(position).getSum());
-        holder.mInfo.setText(mAppointments.get(position).getInfo());
-        if(mAppointments.get(position).getInfo().isEmpty()){
-            holder.mInfoLayout.setVisibility(View.GONE);
+        holder.clientName.setText(appointments.get(position).getClientName());
+
+        if(appointments.get(position).getClientPhone().isEmpty()){
+            holder.clientPhoneIcon.setVisibility(View.GONE);
+        } else{
+            holder.clientPhone.setText(appointments.get(position).getClientPhone());
         }
-        holder.mDateTime.setText(mUtils.convertDateToString(mAppointments.get(position).getDate(),
+        holder.service.setText(appointments.get(position).getService().getName());
+        holder.sum.setText(appointments.get(position).getSum());
+        holder.info.setText(appointments.get(position).getInfo());
+        if (appointments.get(position).getInfo().isEmpty()) {
+            holder.infoLayout.setVisibility(View.GONE);
+        }
+        holder.dateTime.setText(utils.convertDateToString(appointments.get(position).getDate(),
                 Constants.DATE_TIME_FORMAT));
         // booleans {images}
-        boolean done = mAppointments.get(position).isDone();
-        if(!done) holder.mDone.setVisibility(View.GONE);
-        boolean paid = mAppointments.get(position).isPaid();
-        if(!paid) holder.mPaid.setVisibility(View.GONE);
-        boolean hairColoring = mAppointments.get(position).getService().isHairColoring();
-        if(!hairColoring) holder.mHairColoring.setVisibility(View.GONE);
-        boolean hairdo = mAppointments.get(position).getService().isHairdo();
-        if(!hairdo) holder.mHairdo.setVisibility(View.GONE);
-        boolean haircut = mAppointments.get(position).getService().isHaircut();
-        if(!haircut) holder.mHaircut.setVisibility(View.GONE);
-        if(!hairColoring && !hairdo && !haircut){
-            holder.mServiceLabel.setVisibility(View.GONE);
+        boolean done = appointments.get(position).isDone();
+        if (!done) holder.done.setVisibility(View.GONE);
+        boolean paid = appointments.get(position).isPaid();
+        if (!paid) holder.paid.setVisibility(View.GONE);
+
+        // SERVICES
+        boolean hairColoring = appointments.get(position).getService().isHairColoring();
+        if (!hairColoring) holder.hairColoring.setVisibility(View.GONE);
+        boolean hairdo = appointments.get(position).getService().isHairdo();
+        if (!hairdo) holder.hairdo.setVisibility(View.GONE);
+        boolean haircut = appointments.get(position).getService().isHaircut();
+        if (!haircut) holder.haircut.setVisibility(View.GONE);
+        if (!hairColoring && !hairdo && !haircut) {
+            holder.serviceLayout.setVisibility(View.GONE);
         }
-        // set onClickListeners
-        holder.bind(mAppointments.get(position), mListener, mPhoneListener);
+        // TOOLS
+        boolean brush = appointments.get(position).getTools().isBrush();
+        if (!brush) holder.brush.setVisibility(View.GONE);
+        boolean hairBrush = appointments.get(position).getTools().isHairBrush();
+        if (!hairBrush) holder.hairBrush.setVisibility(View.GONE);
+        boolean hairDryer = appointments.get(position).getTools().isHairDryer();
+        if (!hairDryer) holder.hairDryer.setVisibility(View.GONE);
+        boolean hairBand = appointments.get(position).getTools().isHairBand();
+        if (!hairBand) holder.hairBand.setVisibility(View.GONE);
+        boolean cutSet = appointments.get(position).getTools().isCutSet();
+        if (!cutSet) holder.cutSet.setVisibility(View.GONE);
+        boolean spray = appointments.get(position).getTools().isSpray();
+        if (!spray) holder.spray.setVisibility(View.GONE);
+        boolean oxy = appointments.get(position).getTools().isOxy();
+        if (!oxy) holder.oxy.setVisibility(View.GONE);
+        boolean tube = appointments.get(position).getTools().isTube();
+        if (!tube) holder.tube.setVisibility(View.GONE);
+        boolean trimmer = appointments.get(position).getTools().isTrimmer();
+        if (!trimmer) holder.trimmer.setVisibility(View.GONE);
+        if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet &&
+                !spray && !oxy && !tube && !trimmer){
+            holder.toolsLayout.setVisibility(View.GONE);
+        }
+            // set onClickListeners
+            holder.bind(appointments.get(position), listener, phoneListener);
     }
 
     @Override
     public int getItemCount() {
-        if (mAppointments != null) {
-            return mAppointments.size();
+        if (appointments != null) {
+            return appointments.size();
         }
         return 0;
     }
@@ -81,37 +111,58 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView mClientName;
-        AppCompatTextView mClientPhone;
-        AppCompatTextView mService;
-        AppCompatTextView mServiceLabel;
-        AppCompatTextView mSum;
-        AppCompatTextView mInfo;
-        RelativeLayout mInfoLayout;
-        AppCompatTextView mDateTime;
-        AppCompatImageView mClientPhoneIcon;
-        AppCompatImageView mPaid;
-        AppCompatImageView mDone;
-        AppCompatImageView mHairColoring;
-        AppCompatImageView mHairdo;
-        AppCompatImageView mHaircut;
+        AppCompatTextView clientName;
+        AppCompatTextView clientPhone;
+        AppCompatTextView service;
+        AppCompatTextView sum;
+        AppCompatTextView info;
+        AppCompatTextView dateTime;
+        AppCompatImageView clientPhoneIcon;
+        AppCompatImageView paid;
+        AppCompatImageView done;
+        AppCompatImageView hairColoring;
+        AppCompatImageView hairdo;
+        AppCompatImageView haircut;
+        AppCompatImageView brush;
+        AppCompatImageView hairBrush;
+        AppCompatImageView hairDryer;
+        AppCompatImageView hairBand;
+        AppCompatImageView cutSet;
+        AppCompatImageView spray;
+        AppCompatImageView oxy;
+        AppCompatImageView tube;
+        AppCompatImageView trimmer;
+        RelativeLayout serviceLayout;
+        RelativeLayout toolsLayout;
+        RelativeLayout infoLayout;
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
-            mClientName = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_name);
-            mClientPhone = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_phone);
-            mService = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_service_name);
-            mServiceLabel = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_services_label);
-            mSum = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum_et);
-            mPaid = (AppCompatImageView) itemView.findViewById(R.id.main_cards_paid_icon);
-            mDone = (AppCompatImageView) itemView.findViewById(R.id.main_cards_done_icon);
-            mInfo = (AppCompatTextView) itemView.findViewById(R.id.main_cards_info);
-            mInfoLayout = (RelativeLayout) itemView.findViewById(R.id.main_cards_info_layout);
-            mDateTime = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_date_time);
-            mClientPhoneIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_phone_call_icon);
-            mHairColoring = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hair_coloring);
-            mHairdo = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hairdo);
-            mHaircut = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_haircut);
+            clientName = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_name);
+            clientPhone = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_phone);
+            service = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_service_name);
+            sum = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum);
+            paid = (AppCompatImageView) itemView.findViewById(R.id.main_cards_paid_icon);
+            done = (AppCompatImageView) itemView.findViewById(R.id.main_cards_done_icon);
+            info = (AppCompatTextView) itemView.findViewById(R.id.main_cards_info);
+            dateTime = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_date_time);
+            clientPhoneIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_phone_call_icon);
+            hairColoring = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hair_coloring);
+            hairdo = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hairdo);
+            haircut = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_haircut);
+            brush = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_brush);
+            hairBrush = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_brush);
+            hairDryer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_dryer);
+            hairBand = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_band);
+            cutSet = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_cut_set);
+            spray = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_spray);
+            oxy = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_oxy);
+            tube = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_tube);
+            trimmer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_trimmer);
+
+            serviceLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_services);
+            toolsLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_tools);
+            infoLayout = (RelativeLayout) itemView.findViewById(R.id.main_cards_info_layout);
         }
 
         public void bind(final Appointment appointment, final OnItemClickListener listener, final OnPhoneClickListener phoneListener) {
@@ -121,7 +172,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     listener.onItemClick(appointment);
                 }
             });
-            mClientPhoneIcon.setOnClickListener(new View.OnClickListener() {
+            clientPhoneIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     phoneListener.onPhoneClick(appointment.getClientPhone());
@@ -139,5 +190,3 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         void onPhoneClick(String phoneNumber);
     }
 }
-
-

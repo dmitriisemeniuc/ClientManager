@@ -20,7 +20,7 @@ public class Utils {
     public static final String LOG_TAG = Utils.class.getSimpleName();
 
     private AppCompatActivity mActivity;
-    private Context mContext = MyApplication.getInstance().getApplicationContext();
+    private Context context = MyApplication.getInstance().getApplicationContext();
 
     public Utils() {
     }
@@ -84,33 +84,33 @@ public class Utils {
 
     public void showSaveResultMessage(int saved, AppCompatActivity activity) {
         if (saved == Constants.CREATED) {
-            Toast.makeText(mContext, activity.getResources()
+            Toast.makeText(context, activity.getResources()
                             .getString(R.string.appointment_saved),
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(mContext, activity.getResources().getString(R.string.saving_failed),
+            Toast.makeText(context, activity.getResources().getString(R.string.saving_failed),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     public void showUpdateResultMessage(int updated, AppCompatActivity activity) {
         if (updated == Constants.UPDATED) {
-            Toast.makeText(mContext, activity.getResources()
+            Toast.makeText(context, activity.getResources()
                             .getString(R.string.appointment_updated),
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(mContext, activity.getResources().getString(R.string.updating_failed),
+            Toast.makeText(context, activity.getResources().getString(R.string.updating_failed),
                     Toast.LENGTH_SHORT).show();
         }
     }
 
     public void showDeleteResultMessage(int deleted, AppCompatActivity activity) {
         if (deleted == Constants.DELETED) {
-            Toast.makeText(mContext, activity.getResources()
+            Toast.makeText(context, activity.getResources()
                             .getString(R.string.appointment_deleted),
                     Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(mContext, activity.getResources().getString(R.string.deleting_failed),
+            Toast.makeText(context, activity.getResources().getString(R.string.deleting_failed),
                     Toast.LENGTH_SHORT).show();
         }
     }
@@ -119,6 +119,7 @@ public class Utils {
         toAppointment.setClientName(fromAppointment.getClientName());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());
+        toAppointment.setTools(fromAppointment.getTools());
         toAppointment.setSum(fromAppointment.getSum());
         toAppointment.setDone(fromAppointment.isDone());
         toAppointment.setPaid(fromAppointment.isPaid());
@@ -152,8 +153,8 @@ public class Utils {
     }
 
     public String getUserFromPrefs(){
-        SharedPreferences settings = mContext.getSharedPreferences(
-                Constants.LOGIN_PREFS, mContext.MODE_PRIVATE);
+        SharedPreferences settings = context.getSharedPreferences(
+                Constants.LOGIN_PREFS, context.MODE_PRIVATE);
         // setting.getString will return NEW_USER value in case if USER value won't be found
         return settings.getString(Constants.USER, Constants.NEW_USER);
     }
@@ -174,7 +175,7 @@ public class Utils {
     }
 
     public SharedPreferences.Editor getEditor(String prefs) {
-        SharedPreferences settings = mContext.getSharedPreferences(prefs, mContext.MODE_PRIVATE);
+        SharedPreferences settings = context.getSharedPreferences(prefs, context.MODE_PRIVATE);
         return settings.edit();
     }
 }

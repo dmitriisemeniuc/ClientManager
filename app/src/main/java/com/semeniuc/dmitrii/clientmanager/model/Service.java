@@ -27,7 +27,6 @@ public class Service implements Parcelable {
     private boolean haircut;
 
     public Service() {
-
     }
 
     public Service(Parcel in) {

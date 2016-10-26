@@ -42,7 +42,7 @@
     <string name="choose_time">Choose time</string>
     <string name="app_description">The Best Client Manager app</string>
     <string name="email">Email</string>
-    <string name="pass">Password</string>
+    <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="or">OR</string>
     <string name="do_not_have_account">Don\'t have account yet?</string>
@@ -53,12 +53,12 @@
     <string name="sign_in_link">Sign In</string>
     <string name="signed_in_as">Signed in as</string>
     <string name="confirmPassword">Confirm Password</string>
-    <string name="passwordDoesNotMatch">Password and confirm pass does not match</string>
+    <string name="passwords_not_match">Passwords don\'t match</string>
     <string name="user_name_registered">User name already registered</string>
     <string name="email_registered">Email already registered</string>
     <string name="unable_save_user">Unable save user</string>
     <string name="user_login_failed">User login failed</string>
-    <string name="invalid_credentials">Invalid email or pass</string>
+    <string name="invalid_credentials">Invalid email or password</string>
     <string name="paid">Paid</string>
     <string name="done">Done</string>
     <string name="services">Services:</string>

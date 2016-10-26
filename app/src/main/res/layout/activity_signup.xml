@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:src="@drawable/logo" />
+            android:src="@mipmap/ic_logo" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -41,7 +41,7 @@
             style="@style/signInField"
             android:layout_below="@+id/sign_up_email_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:hint="@string/pass"
+            android:hint="@string/password"
             android:inputType="textVisiblePassword"
             android:maxLength="100"/>
 

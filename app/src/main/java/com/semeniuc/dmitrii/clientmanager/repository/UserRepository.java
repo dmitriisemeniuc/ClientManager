@@ -31,7 +31,7 @@ public class UserRepository implements Repository {
         User user = (User) item;
         try {
             index = helper.getUserDao().create(user);
-            if (DEBUG) Log.i(LOG_TAG, "index = " + index);
+            if (DEBUG) Log.i(LOG_TAG, "created: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -43,7 +43,8 @@ public class UserRepository implements Repository {
         int index = -1;
         User user = (User) item;
         try {
-            helper.getUserDao().update(user);
+            index = helper.getUserDao().update(user);
+            if (DEBUG) Log.i(LOG_TAG, "updated: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -55,7 +56,8 @@ public class UserRepository implements Repository {
         int index = -1;
         User user = (User) item;
         try {
-            helper.getUserDao().delete(user);
+            index = helper.getUserDao().delete(user);
+            if (DEBUG) Log.i(LOG_TAG, "deleted: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }

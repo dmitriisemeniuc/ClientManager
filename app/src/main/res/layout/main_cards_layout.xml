@@ -34,7 +34,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_client_name"
                     style="@style/cardViewItem"
-                    android:layout_marginEnd="35dp"
+                    android:layout_marginEnd="70dp"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_client_icon"
                     android:fontFamily="sans-serif-light"
@@ -66,14 +66,41 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_service_name"
                     style="@style/cardViewItem"
-                    android:layout_marginEnd="35dp"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
+                    android:layout_marginEnd="70dp"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/service_text_color"
                     android:textSize="18sp" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_paid_icon"
+                    style="@style/cardViewItem"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toStartOf="@+id/main_cards_sum"
+                    android:src="@mipmap/ic_money_paid_yes" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_cards_sum"
+                    style="@style/cardViewItem"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/main_cards_sum_currency"
+                    android:text="@string/hint_zero"
+                    android:textColor="@color/money_text"
+                    android:textSize="14sp" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_cards_sum_currency"
+                    style="@style/cardViewItem"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/currency"
+                    android:textColor="@color/money_text"
+                    android:textSize="14sp" />
             </RelativeLayout>
 
+            <!-- SERVICES -->
             <RelativeLayout
                 android:id="@+id/main_appointment_services"
                 android:layout_width="match_parent"
@@ -113,39 +140,103 @@
                     android:layout_toEndOf="@+id/main_cards_services_hairdo"
                     android:src="@mipmap/ic_scissors_yes" />
 
+            </RelativeLayout>
+            <!-- TOOLS -->
+            <RelativeLayout
+                android:id="@+id/main_appointment_tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/main_appointment_services"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="15dp">
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_appointment_tools_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tools"
+                    android:textSize="16sp" />
+
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_paid_icon"
-                    style="@style/cardViewItem"
+                    android:id="@+id/main_cards_tools_brush"
+                    android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_toStartOf="@+id/main_cards_sum_et"
-                    android:src="@mipmap/ic_money_paid_yes" />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_cards_sum_et"
-                    style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
-                    android:layout_toStartOf="@+id/main_cards_sum_currency_et"
-                    android:text="@string/hint_zero"
-                    android:textColor="@color/money_text"
-                    android:textSize="14sp" />
+                    android:layout_toEndOf="@+id/main_appointment_tools_label"
+                    android:src="@mipmap/ic_brush_yes" />
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_cards_sum_currency_et"
-                    style="@style/cardViewItem"
-                    android:layout_alignParentEnd="true"
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_hair_brush"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
                     android:layout_marginStart="5dp"
-                    android:text="@string/currency"
-                    android:textColor="@color/money_text"
-                    android:textSize="14sp" />
+                    android:layout_toEndOf="@+id/main_cards_tools_brush"
+                    android:src="@mipmap/ic_hair_brush_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_hair_dryer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_hair_brush"
+                    android:src="@mipmap/ic_hair_dryer_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_hair_band"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_hair_dryer"
+                    android:src="@mipmap/ic_hair_band_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_cut_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_hair_band"
+                    android:src="@mipmap/ic_cutset_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_spray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_cut_set"
+                    android:src="@mipmap/ic_spray_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_oxy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_spray"
+                    android:src="@mipmap/ic_soap_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_tube"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_oxy"
+                    android:src="@mipmap/ic_tube_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_tools_trimmer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_tools_tube"
+                    android:src="@mipmap/ic_trimmer_yes" />
 
             </RelativeLayout>
+
             <!-- DIVIDER -->
             <View
                 android:id="@+id/divider"
                 android:layout_width="match_parent"
                 android:layout_height="1px"
-                android:layout_below="@+id/main_appointment_services"
+                android:layout_below="@+id/main_appointment_tools"
                 android:layout_marginBottom="1dp"
                 android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"

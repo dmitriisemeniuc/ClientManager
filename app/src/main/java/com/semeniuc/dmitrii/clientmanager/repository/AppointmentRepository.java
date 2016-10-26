@@ -33,7 +33,7 @@ public class AppointmentRepository implements Repository {
         Appointment appointment = (Appointment) item;
         try {
             index = helper.getAppointmentDao().create(appointment);
-            if (DEBUG) Log.i(LOG_TAG, "index = " + index);
+            if (DEBUG) Log.i(LOG_TAG, "created: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -52,6 +52,7 @@ public class AppointmentRepository implements Repository {
             Appointment appointmentEntry = appointmentDAO.queryForFirst(preparedQuery);
             appointmentEntry = new Utils().updateAppointmentData(appointment, appointmentEntry);
             index = appointmentDAO.update(appointmentEntry);
+            if (DEBUG) Log.i(LOG_TAG, "updated: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
@@ -64,6 +65,7 @@ public class AppointmentRepository implements Repository {
         Appointment appointment = (Appointment) item;
         try {
             index = helper.getAppointmentDao().delete(appointment);
+            if (DEBUG) Log.i(LOG_TAG, "deleted: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
