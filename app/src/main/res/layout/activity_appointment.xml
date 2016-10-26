@@ -140,7 +140,7 @@
                 android:src="@mipmap/ic_hair_brush_no" />
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_service_hair_dryer_icon"
+                android:id="@+id/appointment_tools_hair_dryer_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
@@ -149,23 +149,58 @@
                 android:src="@mipmap/ic_hair_dryer_no" />
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_oxydent_icon"
+                android:id="@+id/appointment_tools_oxy_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_service_hair_dryer_icon"
+                android:layout_toEndOf="@+id/appointment_tools_hair_dryer_icon"
                 android:layout_marginStart="10dp"
                 android:src="@mipmap/ic_soap_no" />
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_color_icon"
+                android:id="@+id/appointment_tools_tube_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_oxydent_icon"
+                android:layout_toEndOf="@+id/appointment_tools_oxy_icon"
                 android:layout_marginStart="10dp"
                 android:src="@mipmap/ic_tube_no" />
 
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_cut_set_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_tube_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_cutset_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_hair_band_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_cut_set_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_hair_band_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_spray_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_hair_band_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_spray_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_trimmer_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_spray_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_trimmer_no" />
         </RelativeLayout>
         <!-- PHONE -->
         <RelativeLayout
@@ -257,9 +292,11 @@
                 android:id="@+id/appointment_cash"
                 style="@style/appointmentFormField"
                 android:layout_width="80dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginEnd="20dp"
                 android:layout_toEndOf="@+id/appointment_cash_icon"
                 android:hint="@string/hint_zero"
+                android:text="@string/hint_zero"
                 android:ellipsize="end"
                 android:gravity="start"
                 android:textColor="@color/money_text"

@@ -5,19 +5,19 @@ import android.util.Log;
 
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
-import com.semeniuc.dmitrii.clientmanager.model.Service;
+import com.semeniuc.dmitrii.clientmanager.model.Tools;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class ServiceRepository implements Repository {
+public class ToolsRepository implements Repository {
 
-    public static final String LOG_TAG = ServiceRepository.class.getSimpleName();
+    public static final String LOG_TAG = ToolsRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
 
     private DatabaseHelper helper;
 
-    public ServiceRepository(Context context) {
+    public ToolsRepository(Context context) {
         DatabaseManager.init(context);
         helper = DatabaseManager.getInstance().getHelper();
     }
@@ -25,9 +25,9 @@ public class ServiceRepository implements Repository {
     @Override
     public int create(Object item) {
         int index = -1;
-        Service service = (Service) item;
+        Tools tools = (Tools) item;
         try {
-            index = helper.getServiceDao().create(service);
+            index = helper.getToolsDao().create(tools);
             if (DEBUG) Log.i(LOG_TAG, "created: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -38,9 +38,9 @@ public class ServiceRepository implements Repository {
     @Override
     public int update(Object item) {
         int index = -1;
-        Service service = (Service) item;
+        Tools tools = (Tools) item;
         try {
-            index = helper.getServiceDao().update(service);
+            index = helper.getToolsDao().update(tools);
             if (DEBUG) Log.i(LOG_TAG, "updated: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -51,9 +51,9 @@ public class ServiceRepository implements Repository {
     @Override
     public int delete(Object item) {
         int index = -1;
-        Service service = (Service) item;
+        Tools tools = (Tools) item;
         try {
-            index = helper.getServiceDao().delete(service);
+            index = helper.getToolsDao().delete(tools);
             if (DEBUG) Log.i(LOG_TAG, "deleted: " + index);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -63,23 +63,24 @@ public class ServiceRepository implements Repository {
 
     @Override
     public Object findById(int id) {
-        Service service = null;
+        Tools tools = null;
         try {
-            service = helper.getServiceDao().queryForId(id);
+            tools = helper.getToolsDao().queryForId(id);
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-        return service;
+        return tools;
     }
 
     @Override
     public List<?> findAll() {
-        List<Service> items = null;
+        List<Tools> items = null;
         try {
-            items = helper.getServiceDao().queryForAll();
+            items = helper.getToolsDao().queryForAll();
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
         return items;
     }
 }
+

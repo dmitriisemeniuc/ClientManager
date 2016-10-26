@@ -18,6 +18,7 @@ public class Appointment implements Parcelable {
     public static final String APPOINTMENT_TITLE_FIELD_NAME = "title";
     public static final String CLIENT_PHONE_FIELD_NAME = "phone";
     public static final String SERVICE_FIELD_NAME = "service";
+    public static final String TOOLS_FIELD_NAME = "tools";
     public static final String INFO_FIELD_NAME = "info";
     public static final String DATE_FIELD_NAME = "date";
     public static final String SUM_FIELD_NAME = "sum";
@@ -36,6 +37,10 @@ public class Appointment implements Parcelable {
             columnDefinition = "integer references service(_id) on delete cascade",
             columnName = SERVICE_FIELD_NAME)
     private Service service;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnDefinition = "integer references tools(_id) on delete cascade",
+            columnName = TOOLS_FIELD_NAME)
+    private Tools tools;
     @DatabaseField(canBeNull = true, columnName = INFO_FIELD_NAME)
     private String info;
     @DatabaseField(canBeNull = false, columnName = DATE_FIELD_NAME,
@@ -53,11 +58,12 @@ public class Appointment implements Parcelable {
 
     // Constructor for creating new Appointment without id
     public Appointment(User user, String clientName, String clientPhone, Service service,
-                       String info, Date date, String sum, boolean paid, boolean done) {
+                       Tools tools, String info, Date date, String sum, boolean paid, boolean done) {
         this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
+        this.tools = tools;
         this.sum = sum;
         this.paid = paid;
         this.done = done;
@@ -67,12 +73,13 @@ public class Appointment implements Parcelable {
 
     // Constructor for creating new Appointment with specified id
     public Appointment(long id, User user, String clientName, String clientPhone, Service service,
-                       String info, Date date, String sum, boolean paid, boolean done) {
+                       Tools tools, String info, Date date, String sum, boolean paid, boolean done) {
         this.id = id;
         this.user = user;
         this.clientName = clientName;
         this.clientPhone = clientPhone;
         this.service = service;
+        this.tools = tools;
         this.info = info;
         this.date = date;
         this.sum = sum;
@@ -124,6 +131,14 @@ public class Appointment implements Parcelable {
         this.service = service;
     }
 
+    public Tools getTools() {
+        return tools;
+    }
+
+    public void setTools(Tools tools) {
+        this.tools = tools;
+    }
+
     public String getInfo() {
         return info;
     }
@@ -171,29 +186,28 @@ public class Appointment implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
         parcel.writeParcelable(user, i);
         parcel.writeString(clientName);
         parcel.writeString(clientPhone);
         parcel.writeParcelable(service, i);
+        parcel.writeParcelable(tools, i);
         parcel.writeString(info);
         parcel.writeString(date.toString());
         parcel.writeString(sum);
         parcel.writeValue(paid);
         parcel.writeValue(done);
-
     }
 
     private void readFromParcel(Parcel in) {
-
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
         user = in.readParcelable(User.class.getClassLoader());
         clientName = in.readString();
         clientPhone = in.readString();
         service = in.readParcelable(Service.class.getClassLoader());
+        tools = in.readParcelable(Tools.class.getClassLoader());
         info = in.readString();
         date = new Date(in.readString());
         sum = in.readString();

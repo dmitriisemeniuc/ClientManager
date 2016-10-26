@@ -113,12 +113,15 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     private void displayAppointmentsOrderedByDate() {
         AppointmentRepository appointmentRepo = new AppointmentRepository(this);
         List<Appointment> appointments = appointmentRepo.findAll();
-        DatabaseHelper helper = new DatabaseHelper(this);
-        for(Appointment appointment : appointments){
-            try {
-                helper.getServiceDao().refresh(appointment.getService());
-            } catch (SQLException e) {
-                e.printStackTrace();
+        if (appointments != null) {
+            DatabaseHelper helper = new DatabaseHelper(this);
+            for (Appointment appointment : appointments) {
+                try {
+                    helper.getServiceDao().refresh(appointment.getService());
+                    helper.getToolsDao().refresh(appointment.getTools());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
         // Set adapter with itemOnClickListener
@@ -132,9 +135,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
             public void onPhoneClick(String phoneNumber) {
                 if (ActivityCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                             Manifest.permission.CALL_PHONE)) {
-                    } else {
                         // No explanation needed, we can request the permission.
                         ActivityCompat.requestPermissions(MainActivity.this,
                                 new String[]{Manifest.permission.CALL_PHONE},

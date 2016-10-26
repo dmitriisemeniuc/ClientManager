@@ -43,11 +43,10 @@ public class SignInActivity extends AppCompatActivity {
     public static String USER_SAVING_MSG = Constants.EMPTY;
     public static String USER_SAVING_ERROR = Constants.EMPTY;
 
-    private ProgressDialog mProgressDialog;
-    private GoogleAuthenticator mGoogleAuthenticator;
-    private Context mCtx = MyApplication.getInstance().getApplicationContext();
-    private Utils mUtils;
-    private String mFieldRequired;
+    private ProgressDialog progressDialog;
+    private GoogleAuthenticator googleAuthenticator;
+    private Context context = MyApplication.getInstance().getApplicationContext();
+    private Utils utils;
 
     @BindView(R.id.sign_in_email_et)
     AppCompatEditText email;
@@ -121,22 +120,22 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean isSignInFieldsEmpty() {
-        mFieldRequired = this.getResources().getString(R.string.field_is_required);
+        String fieldRequired = this.getResources().getString(R.string.field_is_required);
         // email validation
-        if (mUtils.isEditTextEmpty(email)) {
-            email.setError(mFieldRequired);
+        if (utils.isEditTextEmpty(email)) {
+            email.setError(fieldRequired);
             return true;
         }
         // password validation
-        if (mUtils.isEditTextEmpty(password)) {
-            password.setError(mFieldRequired);
+        if (utils.isEditTextEmpty(password)) {
+            password.setError(fieldRequired);
             return true;
         }
         return false;
     }
 
     private boolean isEmailAndPasswordRegistered() {
-        UserRepository userRepo = new UserRepository(mCtx);
+        UserRepository userRepo = new UserRepository(context);
         List<User> users = userRepo.findByEmailAndPassword(
                 email.getText().toString(), password.getText().toString());
         if (users != null) {
@@ -150,7 +149,7 @@ public class SignInActivity extends AppCompatActivity {
     private void doLogin() {
         User user = new User(email.getText().toString(), password.getText().toString());
         MyApplication.getInstance().setUser(user);
-        mUtils.setUserInPrefs(Constants.REGISTERED_USER);
+        utils.setUserInPrefs(Constants.REGISTERED_USER);
         updateUI(true);
     }
 
@@ -173,12 +172,12 @@ public class SignInActivity extends AppCompatActivity {
      * {It can be: user signed in with google or registered with e-mail}
      */
     private void checkUserSignInType() {
-        mUtils = new Utils(this);
-        String userType = mUtils.getUserFromPrefs();
+        utils = new Utils(this);
+        String userType = utils.getUserFromPrefs();
         if (userType.equals(Constants.GOOGLE_USER)) {
             // USER REGISTERED WITH GOOGLE ACCOUNT
             initGoogleAuthenticator();
-            SharedPreferences settings = mCtx.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            SharedPreferences settings = context.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             // If previous google sign is cached
             // (user does not sign out) - google silent sign in will be made
@@ -187,7 +186,7 @@ public class SignInActivity extends AppCompatActivity {
         } // USER REGISTERED WITH EMAIL
         if (userType.equals(Constants.REGISTERED_USER)) {
 
-            SharedPreferences settings = mCtx.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            SharedPreferences settings = context.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             if (loggedIn) {
                 String email = settings.getString(Constants.EMAIL, Constants.EMPTY);
@@ -203,24 +202,23 @@ public class SignInActivity extends AppCompatActivity {
             initGoogleAuthenticator();
             return;
         }
-        Log.e(LOG_TAG, "Unknown user type");
-        Log.e(LOG_TAG, "UserType == " + userType);
+        Log.e(LOG_TAG, "Unknown user type: " + userType);
     }
 
     /**
      * Instantiates Google authenticator object
      */
     private void initGoogleAuthenticator() {
-        mGoogleAuthenticator = new GoogleAuthenticator();
-        mGoogleAuthenticator.createGoogleSignInOptions();
-        mGoogleAuthenticator.setGoogleApiClient(this, this);
+        googleAuthenticator = new GoogleAuthenticator();
+        googleAuthenticator.createGoogleSignInOptions();
+        googleAuthenticator.setGoogleApiClient(this, this);
     }
 
     /**
      * Checking if the user is signed in with Google account previously
      */
     private void silentSignInWithGoogle() {
-        OptionalPendingResult<GoogleSignInResult> opr = mGoogleAuthenticator.getOptionalPendingResult();
+        OptionalPendingResult<GoogleSignInResult> opr = googleAuthenticator.getOptionalPendingResult();
         if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
@@ -309,25 +307,25 @@ public class SignInActivity extends AppCompatActivity {
      * Showing of dialog during of sign in process
      */
     private void showProgressDialog() {
-        if (null == mProgressDialog) {
-            mProgressDialog = new ProgressDialog(this);
-            mProgressDialog.setMessage(getString(R.string.please_wait));
-            mProgressDialog.setIndeterminate(true);
+        if (null == progressDialog) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setMessage(getString(R.string.please_wait));
+            progressDialog.setIndeterminate(true);
         }
-        mProgressDialog.show();
+        progressDialog.show();
     }
 
     /**
      * Hiding of dialog after the sign in process is done
      */
     private void hideProgressDialog() {
-        if (null != mProgressDialog && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        if (null != progressDialog && progressDialog.isShowing()) {
+            progressDialog.dismiss();
         }
     }
 
     private User getUserByEmail(String email) {
-        UserRepository userRepo = new UserRepository(mCtx);
+        UserRepository userRepo = new UserRepository(context);
         List<User> users = userRepo.findByEmail(email);
         if (users != null) {
             return users.get(0);
@@ -340,7 +338,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(User... array) {
             User user = array[0];
-            UserRepository userRepo = new UserRepository(mCtx);
+            UserRepository userRepo = new UserRepository(context);
             List<User> users = userRepo.findByEmail(user.getEmail());
             if (null != users) {
                 if (users.size() == Constants.SIZE_EMPTY) {
@@ -373,13 +371,13 @@ public class SignInActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(mCtx, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            mUtils.setUserInPrefs(Constants.GOOGLE_USER);
-            Toast.makeText(mCtx, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            utils.setUserInPrefs(Constants.GOOGLE_USER);
+            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -391,7 +389,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... array) {
             String email = array[0];
-            UserRepository userRepo = new UserRepository(mCtx);
+            UserRepository userRepo = new UserRepository(context);
             List<User> users = userRepo.findByEmail(email);
             if (null != users) {
                 if (users.size() > 0) {
@@ -412,12 +410,12 @@ public class SignInActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(mCtx, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            Toast.makeText(mCtx, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 }

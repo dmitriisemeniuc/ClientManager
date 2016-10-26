@@ -13,7 +13,7 @@
         android:id="@+id/logo_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true">
 
@@ -21,8 +21,8 @@
             android:id="@+id/sign_in_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:src="@drawable/logo" />
+            android:layout_marginTop="10dp"
+            android:src="@mipmap/ic_logo" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -42,7 +42,7 @@
             style="@style/signInField"
             android:layout_below="@+id/sign_in_email_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:hint="@string/pass"
+            android:hint="@string/password"
             android:inputType="textVisiblePassword" />
 
         <android.support.v7.widget.AppCompatButton

@@ -15,7 +15,7 @@ public class User implements Parcelable {
     public static final String USER_GOOGLE_ID_FIELD_NAME = "google_id";
     public static final String USER_NAME_FIELD_NAME = "name";
     public static final String USER_EMAIL_FIELD_NAME = "email";
-    public static final String USER_PASSWORD_FIELD_NAME = "pass";
+    public static final String USER_PASSWORD_FIELD_NAME = "password";
 
     @DatabaseField(generatedId = true)
     private long id;
@@ -26,7 +26,7 @@ public class User implements Parcelable {
     @DatabaseField(canBeNull = false, columnName = USER_EMAIL_FIELD_NAME, unique = true)
     private String email;
     @DatabaseField(canBeNull = true, columnName = USER_PASSWORD_FIELD_NAME)
-    private String pass;
+    private String password;
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Appointment> appointments;
 
@@ -41,7 +41,7 @@ public class User implements Parcelable {
 
     public User(String email, String password) {
         this.email = email;
-        this.pass = password;
+        this.password = password;
     }
 
     public User(Parcel in) {
@@ -80,12 +80,12 @@ public class User implements Parcelable {
         this.email = email;
     }
 
-    public String getPass() {
-        return pass;
+    public String getPassword() {
+        return password;
     }
 
-    public void setPass(String pass) {
-        this.pass = pass;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public ForeignCollection<Appointment> getAppointments() {
@@ -108,7 +108,7 @@ public class User implements Parcelable {
         parcel.writeString(googleId);
         parcel.writeString(name);
         parcel.writeString(email);
-        parcel.writeString(pass);
+        parcel.writeString(password);
     }
 
     private void readFromParcel(Parcel in) {
@@ -118,7 +118,7 @@ public class User implements Parcelable {
         googleId = in.readString();
         name = in.readString();
         email = in.readString();
-        pass = in.readString();
+        password = in.readString();
     }
 
     public static final Parcelable.Creator CREATOR =

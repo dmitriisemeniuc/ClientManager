@@ -29,9 +29,8 @@ public class SignUpActivity extends AppCompatActivity {
     public static String USER_SAVING_MSG = Constants.EMPTY;
     public static String USER_SAVING_ERROR = Constants.EMPTY;
 
-    private String mFieldRequired;
-    private Utils mUtils = new Utils(SignUpActivity.this);
-    private Context mCtx = MyApplication.getInstance().getApplicationContext();
+    private Context context = MyApplication.getInstance().getApplicationContext();
+    private Utils utils;
 
     @OnClick(R.id.sign_in_btn)
     void submitSignUp() {
@@ -56,6 +55,7 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
+        utils = new Utils(SignUpActivity.this);
     }
 
     private void onSignUpBtnPressed() {
@@ -82,21 +82,21 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean isSignUpFieldsEmpty() {
-        mFieldRequired = this.getResources().getString(R.string.field_is_required);
+        String fieldRequired = this.getResources().getString(R.string.field_is_required);
         boolean valid = false;
         // email address validation
-        if (mUtils.isEditTextEmpty(email)) {
-            email.setError(mFieldRequired);
+        if (utils.isEditTextEmpty(email)) {
+            email.setError(fieldRequired);
             valid = true;
         }
         // password validation
-        if (mUtils.isEditTextEmpty(password)) {
-            password.setError(mFieldRequired);
+        if (utils.isEditTextEmpty(password)) {
+            password.setError(fieldRequired);
             valid = true;
         }
         // password confirmation validation
-        if (mUtils.isEditTextEmpty(confirmPassword)) {
-            confirmPassword.setError(mFieldRequired);
+        if (utils.isEditTextEmpty(confirmPassword)) {
+            confirmPassword.setError(fieldRequired);
             valid = true;
         }
         return valid;
@@ -108,12 +108,12 @@ public class SignUpActivity extends AppCompatActivity {
         if (pass.equals(confirmPass)) {
             return true;
         }
-        confirmPassword.setError(getResources().getString(R.string.passwordDoesNotMatch));
+        confirmPassword.setError(getResources().getString(R.string.passwords_not_match));
         return false;
     }
 
     private boolean isEmailRegistered() {
-        UserRepository userRepo = new UserRepository(mCtx);
+        UserRepository userRepo = new UserRepository(context);
         List<User> users = userRepo.findByEmail(email.getText().toString());
         if (users != null) {
             if (users.size() > 0) {
@@ -149,7 +149,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(User... array) {
             User user = array[0];
-            UserRepository userRepo = new UserRepository(mCtx);
+            UserRepository userRepo = new UserRepository(context);
             int index = userRepo.create(user);
             if (index == 1) {
                 List<User> users = userRepo.findByEmail(user.getEmail());
@@ -169,13 +169,13 @@ public class SignUpActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(mCtx, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            mUtils.setUserInPrefs(Constants.REGISTERED_USER);
-            Toast.makeText(mCtx, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            utils.setUserInPrefs(Constants.REGISTERED_USER);
+            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 }

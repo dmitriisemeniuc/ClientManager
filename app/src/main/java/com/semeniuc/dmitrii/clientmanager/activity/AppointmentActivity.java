@@ -23,8 +23,10 @@ import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
+import com.semeniuc.dmitrii.clientmanager.model.Tools;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
+import com.semeniuc.dmitrii.clientmanager.repository.ToolsRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
@@ -42,43 +44,62 @@ public class AppointmentActivity extends AppCompatActivity {
     public static final int DATE_PICKER_DIALOG_ID = 1;
     public static final int TIME_PICKER_DIALOG_ID = 2;
 
-    protected Utils mUtils = new Utils(AppointmentActivity.this);
-    private Appointment mAppointment;
-    protected String mClientName;
-    protected String mClientPhone;
-    protected Service mService = new Service();
-    protected String mInfo;
-    protected String mDate;
-    protected String mTime;
-    protected Date mDateTime;
-    private String mSum;
-    private boolean mPaid;
-    private boolean mDone;
+    protected Utils utils;
+    private Appointment appointment;
+    protected String clientName;
+    protected String clientPhone;
+    protected Service service;
+    protected Tools tools;
+    protected String info;
+    protected String date;
+    protected String time;
+    protected Date dateTime;
+    private String sum;
+    private boolean paid;
+    private boolean done;
 
     @BindView(R.id.appointment_client_name)
-    AppCompatEditText clientName;
+    AppCompatEditText etClientName;
     @BindView(R.id.appointment_client_phone)
-    AppCompatEditText clientPhone;
+    AppCompatEditText etClientPhone;
     @BindView(R.id.appointment_service)
-    AppCompatEditText service;
+    AppCompatEditText etService;
     @BindView(R.id.appointment_info)
-    AppCompatEditText info;
+    AppCompatEditText etInfo;
     @BindView(R.id.appointment_calendar_date)
-    AppCompatTextView date;
+    AppCompatTextView etDate;
     @BindView(R.id.appointment_time)
-    AppCompatTextView time;
+    AppCompatTextView etTime;
     @BindView(R.id.appointment_cash)
-    AppCompatEditText sum;
+    AppCompatEditText etSum;
     @BindView(R.id.appointment_paid_icon)
-    AppCompatImageView paidIcon;
+    AppCompatImageView ivPaid;
     @BindView(R.id.appointment_done_icon)
-    AppCompatImageView doneIcon;
+    AppCompatImageView ivDone;
     @BindView(R.id.appointment_service_hair_coloring_icon)
-    AppCompatImageView hairColoringIcon;
+    AppCompatImageView ivHairColoring;
     @BindView(R.id.appointment_service_hairdo_icon)
-    AppCompatImageView hairdoIcon;
+    AppCompatImageView ivHairdo;
     @BindView(R.id.appointment_service_haircut_icon)
-    AppCompatImageView haircutIcon;
+    AppCompatImageView ivHaircut;
+    @BindView(R.id.appointment_tools_brush_icon)
+    AppCompatImageView ivBrush;
+    @BindView(R.id.appointment_tools_hair_brush_icon)
+    AppCompatImageView ivHairBrush;
+    @BindView(R.id.appointment_tools_hair_dryer_icon)
+    AppCompatImageView ivHairDryer;
+    @BindView(R.id.appointment_tools_oxy_icon)
+    AppCompatImageView ivOxy;
+    @BindView(R.id.appointment_tools_cut_set_icon)
+    AppCompatImageView ivSutSet;
+    @BindView(R.id.appointment_tools_hair_band_icon)
+    AppCompatImageView ivHairBand;
+    @BindView(R.id.appointment_tools_spray_icon)
+    AppCompatImageView ivSpray;
+    @BindView(R.id.appointment_tools_tube_icon)
+    AppCompatImageView ivTube;
+    @BindView(R.id.appointment_tools_trimmer_icon)
+    AppCompatImageView ivTrimmer;
     @BindView(R.id.appointment_layout)
     ScrollView mainLayout;
 
@@ -86,50 +107,77 @@ public class AppointmentActivity extends AppCompatActivity {
     void onCalendarIconClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
-
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
-
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
-
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
-
     @OnClick(R.id.appointment_paid)
     void onPaidClicked() {
         changePaidImage();
     }
-
     @OnClick(R.id.appointment_paid_icon)
     void onPaidIconClicked() {
         changePaidImage();
     }
-
     @OnClick(R.id.appointment_done_icon)
     void onDoneIconClicked() {
         changeDoneImage();
     }
-
     @OnClick(R.id.appointment_service_hair_coloring_icon)
     void onHairColoringIconClicked() {
         changeHairColoringImage();
     }
-
     @OnClick(R.id.appointment_service_hairdo_icon)
     void onHairdoIconClicked() {
         changeHairdoImage();
     }
-
     @OnClick(R.id.appointment_service_haircut_icon)
     void onHaircutIconClicked() {
         changeHaircutImage();
+    }
+    @OnClick(R.id.appointment_tools_brush_icon)
+    void onBrushIconClicked() {
+        changeBrushImage();
+    }
+    @OnClick(R.id.appointment_tools_hair_brush_icon)
+    void onHairBrushIconClicked() {
+        changeHairBrushImage();
+    }
+    @OnClick(R.id.appointment_tools_hair_dryer_icon)
+    void onHairDryerIconClicked() {
+        changeHairDryerImage();
+    }
+    @OnClick(R.id.appointment_tools_oxy_icon)
+    void onOxyIconClicked() {
+        changeOxyImage();
+    }
+    @OnClick(R.id.appointment_tools_cut_set_icon)
+    void onCutSetIconClicked() {
+        changeCutSetImage();
+    }
+    @OnClick(R.id.appointment_tools_hair_band_icon)
+    void onHairBandIconClicked() {
+        changeHairBandImage();
+    }
+    @OnClick(R.id.appointment_tools_spray_icon)
+    void onSprayIconClicked() {
+        changeSprayImage();
+    }
+    @OnClick(R.id.appointment_tools_tube_icon)
+    void onTubeIconClicked() {
+        changeTubeImage();
+    }
+    @OnClick(R.id.appointment_tools_trimmer_icon)
+    void onTrimmerIconClicked() {
+        changeTrimmerImage();
     }
 
     @Override
@@ -138,6 +186,9 @@ public class AppointmentActivity extends AppCompatActivity {
         setContentView(LAYOUT);
 
         ButterKnife.bind(this);
+        utils = new Utils(AppointmentActivity.this);
+        service = new Service();
+        tools = new Tools();
     }
 
     @Override
@@ -152,7 +203,7 @@ public class AppointmentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_appointment:
-                if (mUtils.isAppointmentFormValid()) {
+                if (utils.isAppointmentFormValid()) {
                     setDataFromFields();
                     new SaveAppointment().execute();
                     return true;
@@ -164,15 +215,15 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     private void setDataFromFields() {
-        mClientName = clientName.getText().toString();
-        mClientPhone = clientPhone.getText().toString();
-        mService.setName(service.getText().toString());
-        mSum = sum.getText().toString();
-        mInfo = info.getText().toString();
-        mDate = date.getText().toString();
-        mTime = time.getText().toString();
-        String dateTime = mDate + " " + mTime;
-        mDateTime = mUtils.convertStringToDate(dateTime, Constants.DATE_TIME_FORMAT);
+        clientName = etClientName.getText().toString();
+        clientPhone = etClientPhone.getText().toString();
+        service.setName(etService.getText().toString());
+        sum = etSum.getText().toString();
+        info = etInfo.getText().toString();
+        date = etDate.getText().toString();
+        time = etTime.getText().toString();
+        String dateTimeStr = date + " " + time;
+        dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT);
     }
 
     @Override
@@ -194,7 +245,7 @@ public class AppointmentActivity extends AppCompatActivity {
         showDialog(dialogId);
     }
 
-    /*
+    /**
     * Open date picker dialog with current date
     * */
     private DatePickerDialog getDatePickerDialog() {
@@ -204,19 +255,19 @@ public class AppointmentActivity extends AppCompatActivity {
                 calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
-    /*
+    /**
     * Set chosen Date to date edit text
     * */
     protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            String formattedDate = mUtils.getCorrectDateFormat(year, month, day);
-            date.setText(formattedDate);
-            date.setError(null);
+            String formattedDate = utils.getCorrectDateFormat(year, month, day);
+            etDate.setText(formattedDate);
+            etDate.setError(null);
         }
     };
 
-    /*
+    /**
     * Open date picker dialog with current time
     * */
     private TimePickerDialog getTimePickerDialog() {
@@ -225,15 +276,15 @@ public class AppointmentActivity extends AppCompatActivity {
                 calendar.get(Calendar.MINUTE), true);
     }
 
-    /*
+    /**
     * Set chosen Time to time edit text
     * */
     protected TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-            String formattedTime = mUtils.getCorrectTimeFormat(hourOfDay, minute);
-            time.setText(formattedTime);
-            time.setError(null);
+            String formattedTime = utils.getCorrectTimeFormat(hourOfDay, minute);
+            etTime.setText(formattedTime);
+            etTime.setError(null);
         }
     };
 
@@ -242,7 +293,7 @@ public class AppointmentActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
 
-    /*
+    /**
     * Save Appointment to DB (Create new one)
     * */
     private class SaveAppointment extends AsyncTask<Void, Void, Integer> {
@@ -252,18 +303,20 @@ public class AppointmentActivity extends AppCompatActivity {
 
             ServiceRepository serviceRepo = new ServiceRepository(
                     MyApplication.getInstance().getApplicationContext());
-            serviceRepo.create(mService);
-            //mAppointment.setService(mService);
-            mAppointment = new Appointment(MyApplication.getInstance().getUser(), mClientName,
-                    mClientPhone, mService, mInfo, mDateTime, mSum, mPaid, mDone);
+            serviceRepo.create(service);
+            ToolsRepository toolsRepo = new ToolsRepository(
+                    MyApplication.getInstance().getApplicationContext());
+            toolsRepo.create(tools);
+            appointment = new Appointment(MyApplication.getInstance().getUser(), clientName,
+                    clientPhone, service, tools, info, dateTime, sum, paid, done);
             AppointmentRepository appointmentRepo = new AppointmentRepository(
                     MyApplication.getInstance().getApplicationContext());
-            return appointmentRepo.create(mAppointment);
+            return appointmentRepo.create(appointment);
         }
 
         @Override
         protected void onPostExecute(Integer created) {
-            mUtils.showSaveResultMessage(created, AppointmentActivity.this);
+            utils.showSaveResultMessage(created, AppointmentActivity.this);
             if (created == Constants.CREATED) finish();
             super.onPostExecute(created);
         }
@@ -271,50 +324,140 @@ public class AppointmentActivity extends AppCompatActivity {
 
     // ********** Methods of onClick Image changing
     private void changePaidImage() {
-        mPaid = !mPaid;
-        if (mPaid) {
-            paidIcon.setImageResource(R.mipmap.ic_money_paid_yes);
+        paid = !paid;
+        if (paid) {
+            ivPaid.setImageResource(R.mipmap.ic_money_paid_yes);
             return;
         }
-        paidIcon.setImageResource(R.mipmap.ic_money_paid_no);
+        ivPaid.setImageResource(R.mipmap.ic_money_paid_no);
     }
 
     private void changeDoneImage() {
-        mDone = !mDone;
-        if (!mDone) {
-            doneIcon.setImageResource(R.mipmap.ic_ok_yes);
+        done = !done;
+        if (!done) {
+            ivDone.setImageResource(R.mipmap.ic_ok_yes);
             return;
         }
-        doneIcon.setImageResource(R.mipmap.ic_ok_no);
+        ivDone.setImageResource(R.mipmap.ic_ok_no);
     }
 
     private void changeHairColoringImage() {
-        boolean hairColoring = !mService.isHairColoring();
-        mService.setHairColoring(hairColoring);
+        boolean hairColoring = !service.isHairColoring();
+        service.setHairColoring(hairColoring);
         if (hairColoring) {
-            hairColoringIcon.setImageResource(R.mipmap.ic_paint_yes);
+            ivHairColoring.setImageResource(R.mipmap.ic_paint_yes);
             return;
         }
-        hairColoringIcon.setImageResource(R.mipmap.ic_paint_no);
+        ivHairColoring.setImageResource(R.mipmap.ic_paint_no);
     }
 
     private void changeHairdoImage() {
-        boolean hairdo = !mService.isHairdo();
-        mService.setHairdo(hairdo);
+        boolean hairdo = !service.isHairdo();
+        service.setHairdo(hairdo);
         if (hairdo) {
-            hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_yes);
+            ivHairdo.setImageResource(R.mipmap.ic_womans_hair_yes);
             return;
         }
-        hairdoIcon.setImageResource(R.mipmap.ic_womans_hair_no);
+        ivHairdo.setImageResource(R.mipmap.ic_womans_hair_no);
     }
 
     private void changeHaircutImage() {
-        boolean haircut = !mService.isHaircut();
-        mService.setHaircut(haircut);
+        boolean haircut = !service.isHaircut();
+        service.setHaircut(haircut);
         if (haircut) {
-            haircutIcon.setImageResource(R.mipmap.ic_scissors_yes);
+            ivHaircut.setImageResource(R.mipmap.ic_scissors_yes);
             return;
         }
-        haircutIcon.setImageResource(R.mipmap.ic_scissors_no);
+        ivHaircut.setImageResource(R.mipmap.ic_scissors_no);
+    }
+
+    private void changeBrushImage(){
+        boolean brush = !tools.isBrush();
+        tools.setBrush(brush);
+        if (brush) {
+            ivBrush.setImageResource(R.mipmap.ic_brush_yes);
+            return;
+        }
+        ivBrush.setImageResource(R.mipmap.ic_brush_no);
+    }
+
+    private void changeHairBrushImage(){
+        boolean hairBrush = !tools.isHairBrush();
+        tools.setHairBrush(hairBrush);
+        if (hairBrush) {
+           ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_yes);
+            return;
+        }
+        ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_no);
+    }
+
+    private void changeHairDryerImage(){
+        boolean hairDryer = !tools.isHairDryer();
+        tools.setHairDryer(hairDryer);
+        if (hairDryer) {
+            ivHairDryer.setImageResource(R.mipmap.ic_hair_dryer_yes);
+            return;
+        }
+        ivHairDryer.setImageResource(R.mipmap.ic_hair_dryer_no);
+    }
+
+    private void changeOxyImage(){
+        boolean oxy = !tools.isOxy();
+        tools.setOxy(oxy);
+        if (oxy) {
+            ivOxy.setImageResource(R.mipmap.ic_soap_yes);
+            return;
+        }
+        ivOxy.setImageResource(R.mipmap.ic_soap_no);
+    }
+
+    private void changeCutSetImage(){
+        boolean cutSet = !tools.isCutSet();
+        tools.setCutSet(cutSet);
+        if (cutSet) {
+            ivSutSet.setImageResource(R.mipmap.ic_cutset_yes);
+            return;
+        }
+        ivSutSet.setImageResource(R.mipmap.ic_cutset_no);
+    }
+
+    private void changeHairBandImage(){
+        boolean hairBand = !tools.isHairBand();
+        tools.setHairBand(hairBand);
+        if (hairBand) {
+            ivHairBand.setImageResource(R.mipmap.ic_hair_band_yes);
+            return;
+        }
+        ivHairBand.setImageResource(R.mipmap.ic_hair_band_no);
+    }
+
+    private void changeSprayImage(){
+        boolean spray = !tools.isSpray();
+        tools.setSpray(spray);
+        if (spray) {
+            ivSpray.setImageResource(R.mipmap.ic_spray_yes);
+            return;
+        }
+        ivSpray.setImageResource(R.mipmap.ic_spray_no);
+    }
+
+    private void  changeTubeImage(){
+        boolean tube = !tools.isTube();
+        tools.setTube(tube);
+        if (tube) {
+            ivTube.setImageResource(R.mipmap.ic_tube_yes);
+            return;
+        }
+        ivTube.setImageResource(R.mipmap.ic_tube_no);
+    }
+
+    private void  changeTrimmerImage(){
+        boolean trimmer = !tools.isTrimmer();
+        tools.setTrimmer(trimmer);
+        if (trimmer) {
+            ivTrimmer.setImageResource(R.mipmap.ic_trimmer_yes);
+            return;
+        }
+        ivTrimmer.setImageResource(R.mipmap.ic_trimmer_no);
     }
 }
