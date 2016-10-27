@@ -24,25 +24,24 @@ import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentAdapter;
-import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
-import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static String phone;
+    private DatabaseTaskHelper dbHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         setOnClickListeners();
+        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
@@ -109,19 +108,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void displayAppointmentsOrderedByDate() {
-        AppointmentRepository appointmentRepo = new AppointmentRepository(this);
-        List<Appointment> appointments = appointmentRepo.findAll();
-        if (appointments != null) {
-            DatabaseHelper helper = new DatabaseHelper(this);
-            for (Appointment appointment : appointments) {
-                try {
-                    helper.getServiceDao().refresh(appointment.getService());
-                    helper.getToolsDao().refresh(appointment.getTools());
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+        List<Appointment> appointments = dbHelper.getAppointmentsOrderedByDate();
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
             @Override
@@ -172,7 +159,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         }
     }
 
-    /*
+    /**
     * Get Recycler View with itemAnimation and LayoutManager setting
     * */
     private RecyclerView getRecyclerView() {
@@ -185,7 +172,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         return recyclerView;
     }
 
-    /*
+    /**
     * Pass an appointment to the AppointmentReview Activity using parcelable
     * */
     private void reviewAppointment(Appointment appointment) {
@@ -209,7 +196,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         }
     }
 
-    /*
+    /**
     * Returning of the user back to sign in activity
     * */
     private void backToSignInActivity() {

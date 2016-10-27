@@ -1,8 +1,8 @@
 package com.semeniuc.dmitrii.clientmanager.repository;
 
-import android.content.Context;
 import android.util.Log;
 
+import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
@@ -10,16 +10,23 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class ToolsRepository implements Repository {
+public final class ToolsRepository implements Repository {
 
     public static final String LOG_TAG = ToolsRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
+    private static final ToolsRepository instance = new ToolsRepository();
+    private static DatabaseHelper helper;
 
-    private DatabaseHelper helper;
-
-    public ToolsRepository(Context context) {
-        DatabaseManager.init(context);
+    static {
+        DatabaseManager.init(MyApplication.getInstance().getApplicationContext());
         helper = DatabaseManager.getInstance().getHelper();
+    }
+
+    private ToolsRepository() {
+    }
+
+    public static ToolsRepository getInstance() {
+        return instance;
     }
 
     @Override

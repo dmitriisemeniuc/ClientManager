@@ -1,8 +1,8 @@
 package com.semeniuc.dmitrii.clientmanager.repository;
 
-import android.content.Context;
 import android.util.Log;
 
+import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
@@ -10,16 +10,23 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.List;
 
-public class ServiceRepository implements Repository {
+public final class ServiceRepository implements Repository {
 
     public static final String LOG_TAG = ServiceRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
+    private static final ServiceRepository instance = new ServiceRepository();
+    private static final DatabaseHelper helper;
 
-    private DatabaseHelper helper;
-
-    public ServiceRepository(Context context) {
-        DatabaseManager.init(context);
+    static {
+        DatabaseManager.init(MyApplication.getInstance().getApplicationContext());
         helper = DatabaseManager.getInstance().getHelper();
+    }
+
+    private ServiceRepository() {
+    }
+
+    public static ServiceRepository getInstance() {
+        return instance;
     }
 
     @Override

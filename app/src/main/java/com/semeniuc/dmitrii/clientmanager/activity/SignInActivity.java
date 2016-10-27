@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -23,7 +22,9 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
+import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.User;
 import com.semeniuc.dmitrii.clientmanager.repository.UserRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
@@ -36,15 +37,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInActivity extends AppCompatActivity {
-
-    public static final String LOG_TAG = SignInActivity.class.getSimpleName();
-    public static String USER_SAVING_MSG = Constants.EMPTY;
-    public static String USER_SAVING_ERROR = Constants.EMPTY;
+public class SignInActivity extends AppCompatActivity implements OnTaskCompleted {
 
     private ProgressDialog progressDialog;
     private GoogleAuthenticator googleAuthenticator;
     private Utils utils;
+    private DatabaseTaskHelper dbHelper;
 
     @BindView(R.id.sign_in_email_et)
     AppCompatEditText email;
@@ -75,6 +73,7 @@ public class SignInActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         checkUserSignInType();
+        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
@@ -133,7 +132,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean isEmailAndPasswordRegistered() {
-        UserRepository userRepo = new UserRepository(getApplicationContext());
+        UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmailAndPassword(
                 email.getText().toString(), password.getText().toString());
         if (users != null) {
@@ -183,13 +182,12 @@ public class SignInActivity extends AppCompatActivity {
             return;
         } // USER REGISTERED WITH EMAIL
         if (userType.equals(Constants.REGISTERED_USER)) {
-
             SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             if (loggedIn) {
                 String email = settings.getString(Constants.EMAIL, Constants.EMPTY);
                 if (!email.isEmpty()) {
-                    new SetGlobalUser().execute(email);
+                    new SetGlobalUser(this).execute(email);
                 }
             }
             return;
@@ -198,9 +196,7 @@ public class SignInActivity extends AppCompatActivity {
             // GoogleAuthenticator should be instantiated only once for this Activity,
             // so it's called from onCreate method
             initGoogleAuthenticator();
-            return;
         }
-        Log.e(LOG_TAG, "Unknown user type: " + userType);
     }
 
     /**
@@ -280,7 +276,7 @@ public class SignInActivity extends AppCompatActivity {
         if (null != account) {
             User user = new User(account);
             // Save Global user to DB
-            new SaveGoogleUser().execute(user);
+            new SaveGoogleUser(this).execute(user);
         }
     }
 
@@ -335,7 +331,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private User getUserByEmail(String email) {
-        UserRepository userRepo = new UserRepository(getApplicationContext());
+        UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(email);
         if (users != null) {
             return users.get(0);
@@ -343,89 +339,73 @@ public class SignInActivity extends AppCompatActivity {
         return null;
     }
 
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
     private class SaveGoogleUser extends AsyncTask<User, Void, String> {
+
+        private OnTaskCompleted listener;
+
+        public SaveGoogleUser(OnTaskCompleted listener) {
+            this.listener = listener;
+        }
 
         @Override
         protected String doInBackground(User... array) {
-            User user = array[0];
-            UserRepository userRepo = new UserRepository(getApplicationContext());
-            List<User> users = userRepo.findByEmail(user.getEmail());
-            if (null != users) {
-                if (users.size() == Constants.SIZE_EMPTY) {
-                    int index = userRepo.create(user);
-                    if (index == 1) {
-                        users = userRepo.findByEmail(user.getEmail());
-                        user = users.get(0);
-                        // Set global user
-                        MyApplication.getInstance().setUser(user);
-                        USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
-                                + ": " + user.getEmail();
-                        USER_SAVING_ERROR = Constants.EMPTY;
-                    } else {
-                        USER_SAVING_ERROR = getResources().getString(R.string.user_saving_failed);
-                    }
-                } else {
-                    user = users.get(0);
-                    MyApplication.getInstance().setUser(user);
-                    USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
-                            + ": " + user.getEmail();
-                    USER_SAVING_ERROR = Constants.EMPTY;
-                }
-                return USER_SAVING_MSG;
-            }
-            USER_SAVING_ERROR = getResources().getString(R.string.user_equal_null);
-            return USER_SAVING_MSG;
+            return dbHelper.saveGoogleUser(array[0]);
         }
 
         @Override
-        protected void onPostExecute(String msg) {
-            super.onPostExecute(msg);
-            if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            String message;
+            if (result.equals(Constants.USER_SAVED) || result.equals(Constants.USER_EXISTS)) {
+                updateUI(true);
+                utils.setUserInPrefs(Constants.GOOGLE_USER, SignInActivity.this);
+                message = getResources().getString(R.string.signed_in_as) + ": "
+                        + MyApplication.getInstance().getUser().getEmail();
+                listener.showMessage(message);
                 return;
             }
-            // Show authenticated UI
-            updateUI(true);
-            utils.setUserInPrefs(Constants.GOOGLE_USER, SignInActivity.this);
-            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            if (result.equals(Constants.USER_NOT_SAVED) || result.equals(Constants.NO_DB_RESULT)) {
+                message = getResources().getString(R.string.user_saving_failed);
+                listener.showMessage(message);
+            }
         }
     }
 
-    /*
+    /**
     * Set global User for silent sign in
     * */
     private class SetGlobalUser extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... array) {
-            String email = array[0];
-            UserRepository userRepo = new UserRepository(getApplicationContext());
-            List<User> users = userRepo.findByEmail(email);
-            if (null != users) {
-                if (users.size() > 0) {
-                    User user = users.get(0);
-                    // Set global user
-                    MyApplication.getInstance().setUser(user);
-                    USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
-                            + ": " + user.getEmail();
-                    USER_SAVING_ERROR = Constants.EMPTY;
-                } else {
-                    USER_SAVING_ERROR = getResources().getString(R.string.user_login_failed);
-                }
-            }
-            return USER_SAVING_ERROR;
+        private OnTaskCompleted listener;
+
+        public SetGlobalUser(OnTaskCompleted listener) {
+            this.listener = listener;
         }
 
         @Override
-        protected void onPostExecute(String msg) {
-            super.onPostExecute(msg);
-            if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+        protected String doInBackground(String... array) {
+          return dbHelper.setGlobalUser(array[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result.equals(Constants.USER_SAVED)) {
+                updateUI(true);
+                String message = getResources().getString(R.string.signed_in_as) + ": "
+                        + MyApplication.getInstance().getUser().getEmail();
+                listener.showMessage(message);
                 return;
             }
-            // Show authenticated UI
-            updateUI(true);
-            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            if (result.equals(Constants.USER_NOT_SAVED) || result.equals(Constants.NO_DB_RESULT)) {
+                String message = getResources().getString(R.string.user_saving_failed);
+                listener.showMessage(message);
+            }
         }
     }
 }

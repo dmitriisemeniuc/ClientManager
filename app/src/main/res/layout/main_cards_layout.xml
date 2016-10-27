@@ -98,6 +98,20 @@
                     android:text="@string/currency"
                     android:textColor="@color/money_text"
                     android:textSize="14sp" />
+
+                <RelativeLayout
+                    android:id="@+id/main_cards_sum_strike"
+                    style="@style/cardViewItem"
+                    android:layout_height="1dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_marginEnd="-3dp"
+                    android:layout_toEndOf="@+id/main_cards_paid_icon">
+                    <View
+                        android:id="@+id/strike"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@color/money_text" />
+                </RelativeLayout>
             </RelativeLayout>
 
             <!-- SERVICES -->

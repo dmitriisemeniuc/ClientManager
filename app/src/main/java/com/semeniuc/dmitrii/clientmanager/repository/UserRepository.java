@@ -1,11 +1,11 @@
 package com.semeniuc.dmitrii.clientmanager.repository;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.Where;
+import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
 import com.semeniuc.dmitrii.clientmanager.model.User;
@@ -17,12 +17,20 @@ public class UserRepository implements Repository {
 
     public static final String LOG_TAG = UserRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
+    private static final UserRepository instance = new UserRepository();
 
-    private DatabaseHelper helper;
+    private static DatabaseHelper helper;
 
-    public UserRepository(Context context) {
-        DatabaseManager.init(context);
+    static {
+        DatabaseManager.init(MyApplication.getInstance().getApplicationContext());
         helper = DatabaseManager.getInstance().getHelper();
+    }
+
+    private UserRepository() {
+    }
+
+    public static UserRepository getInstance() {
+        return instance;
     }
 
     @Override

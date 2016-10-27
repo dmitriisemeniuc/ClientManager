@@ -9,7 +9,9 @@ import android.support.v7.widget.AppCompatEditText;
 import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
+import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.User;
 import com.semeniuc.dmitrii.clientmanager.repository.UserRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
@@ -21,12 +23,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignUpActivity extends AppCompatActivity {
-
-    public static String USER_SAVING_MSG = Constants.EMPTY;
-    public static String USER_SAVING_ERROR = Constants.EMPTY;
+public class SignUpActivity extends AppCompatActivity implements OnTaskCompleted {
 
     private Utils utils;
+    private DatabaseTaskHelper dbHelper;
 
     @OnClick(R.id.sign_in_btn)
     void submitSignUp() {
@@ -52,6 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         utils = new Utils();
+        dbHelper = new DatabaseTaskHelper();
     }
 
     private void onSignUpBtnPressed() {
@@ -59,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
         if (!valid)
             return;
         User user = new User(email.getText().toString(), password.getText().toString());
-        new SaveUser().execute(user);
+        new SaveEmailUser(this).execute(user);
     }
 
     private boolean isFormValid() {
@@ -105,7 +106,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean isEmailRegistered() {
-        UserRepository userRepo = new UserRepository(getApplicationContext());
+        UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(email.getText().toString());
         if (users != null) {
             if (users.size() > 0) {
@@ -123,7 +124,7 @@ public class SignUpActivity extends AppCompatActivity {
         finish();
     }
 
-    /*
+    /**
     * Updating of UI. If true => goes to MainActivity
     * */
     private void updateUI(boolean update) {
@@ -137,38 +138,37 @@ public class SignUpActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private class SaveUser extends AsyncTask<User, Void, String> {
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
 
-        @Override
-        protected String doInBackground(User... array) {
-            User user = array[0];
-            UserRepository userRepo = new UserRepository(getApplicationContext());
-            int index = userRepo.create(user);
-            if (index == 1) {
-                List<User> users = userRepo.findByEmail(user.getEmail());
-                user = users.get(0);
-                // Set global user
-                MyApplication.getInstance().setUser(user);
-                USER_SAVING_MSG = getResources().getString(R.string.signed_in_as)
-                        + ": " + user.getEmail();
-                USER_SAVING_ERROR = Constants.EMPTY;
-            } else {
-                USER_SAVING_ERROR = getResources().getString(R.string.user_saving_failed);
-            }
-            return USER_SAVING_MSG;
+    private class SaveEmailUser extends AsyncTask<User, Void, String> {
+
+        private OnTaskCompleted listener;
+
+        public SaveEmailUser(OnTaskCompleted listener) {
+            this.listener = listener;
         }
 
         @Override
-        protected void onPostExecute(String msg) {
-            super.onPostExecute(msg);
-            if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
-                return;
+        protected String doInBackground(User... array) {
+            return dbHelper.saveRegisteredUser(array[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result.equals(Constants.USER_SAVED)) {
+                updateUI(true);
+                utils.setUserInPrefs(Constants.REGISTERED_USER, SignUpActivity.this);
+                String message = getResources().getString(R.string.signed_in_as) + ": "
+                        + MyApplication.getInstance().getUser().getEmail();
+                listener.showMessage(message);
+            } else {
+                String message = getResources().getString(R.string.user_saving_failed);
+                listener.showMessage(message);
             }
-            // Show authenticated UI
-            updateUI(true);
-            utils.setUserInPrefs(Constants.REGISTERED_USER, SignUpActivity.this);
-            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 }

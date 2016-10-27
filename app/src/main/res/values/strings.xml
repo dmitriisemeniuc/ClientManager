@@ -13,12 +13,11 @@
     <string name="menu_disconnect_account">Disconnect account</string>
 
     <string name="main_activity">Main Activity</string>
-    <string name="label_add_appointment">Add appointment</string>
+    <string name="label_add_appointment">add Appointment</string>
     <string name="appointment">Appointment</string>
-    <string name="appointment_title_hint">Appointment title</string>
     <string name="appointment_client_name">Client</string>
-    <string name="appointment_phone_number">Phone number</string>
-    <string name="appointment_service">Service name</string>
+    <string name="appointment_phone_number">Phone</string>
+    <string name="appointment_service">Service</string>
     <string name="date_label">Date:</string>
     <string name="appointment_info">Info</string>
     <string name="save">Save</string>
@@ -37,24 +36,20 @@
     <string name="appointment_deleted">Appointment deleted</string>
     <string name="deleting_failed">Deleting failed</string>
     <string name="user_saving_failed">User saving failed</string>
-    <string name="email_already_registered">Email already registered</string>
     <string name="choose_date">Choose date</string>
     <string name="choose_time">Choose time</string>
-    <string name="app_description">The Best Client Manager app</string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="or">OR</string>
     <string name="do_not_have_account">Don\'t have account yet?</string>
     <string name="sign_up_link">Sign up</string>
-    <string name="username">User Name</string>
     <string name="sign_up">Sign up</string>
     <string name="already_have_account">Already have an account?</string>
     <string name="sign_in_link">Sign In</string>
     <string name="signed_in_as">Signed in as</string>
     <string name="confirmPassword">Confirm Password</string>
     <string name="passwords_not_match">Passwords don\'t match</string>
-    <string name="user_name_registered">User name already registered</string>
     <string name="email_registered">Email already registered</string>
     <string name="unable_save_user">Unable save user</string>
     <string name="user_login_failed">User login failed</string>
@@ -69,5 +64,5 @@
     <string name="verify_internet">Please, verify internet connection</string>
     <string name="something_wrong">Something went wrong</string>
     <string name="no_internet_access">No internet access available</string>
-    <string name="grant_call_permission">To make calls - please grant call permission</string>
+    <string name="grant_call_permission">In order to make calls, please grant call permission</string>
 </resources>

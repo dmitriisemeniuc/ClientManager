@@ -1,5 +1,6 @@
 package com.semeniuc.dmitrii.clientmanager.adapter;
 
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
@@ -57,9 +58,17 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 Constants.DATE_TIME_FORMAT, MyApplication.getInstance().getApplicationContext()));
         // booleans {images}
         boolean done = appointments.get(position).isDone();
-        if (!done) holder.done.setVisibility(View.GONE);
+        if (!done) {
+            holder.done.setVisibility(View.INVISIBLE);
+        } else {
+            holder.divider.setBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.greenBackground));
+        }
         boolean paid = appointments.get(position).isPaid();
-        if (!paid) holder.paid.setVisibility(View.GONE);
+        if (!paid){
+            holder.paid.setVisibility(View.INVISIBLE);
+            holder.sumStrike.setVisibility(View.GONE);
+        }
 
         // SERVICES
         boolean hairColoring = appointments.get(position).getService().isHairColoring();
@@ -90,8 +99,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         if (!tube) holder.tube.setVisibility(View.GONE);
         boolean trimmer = appointments.get(position).getTools().isTrimmer();
         if (!trimmer) holder.trimmer.setVisibility(View.GONE);
-        if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet &&
-                !spray && !oxy && !tube && !trimmer) {
+        if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet && !spray && !oxy &&
+                !tube && !trimmer) {
             holder.toolsLayout.setVisibility(View.GONE);
         }
         // set onClickListeners
@@ -133,6 +142,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         AppCompatImageView oxy;
         AppCompatImageView tube;
         AppCompatImageView trimmer;
+        View divider;
+        RelativeLayout sumStrike;
         RelativeLayout serviceLayout;
         RelativeLayout toolsLayout;
         RelativeLayout infoLayout;
@@ -161,6 +172,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             tube = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_tube);
             trimmer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_trimmer);
 
+            divider = itemView.findViewById(R.id.divider);
+
+            sumStrike = (RelativeLayout) itemView.findViewById(R.id.main_cards_sum_strike);
             serviceLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_services);
             toolsLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_tools);
             infoLayout = (RelativeLayout) itemView.findViewById(R.id.main_cards_info_layout);

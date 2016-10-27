@@ -17,15 +17,15 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
+import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
-import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
-import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
-import com.semeniuc.dmitrii.clientmanager.repository.ToolsRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
@@ -36,12 +36,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class AppointmentActivity extends AppCompatActivity {
+public class AppointmentActivity extends AppCompatActivity implements OnTaskCompleted {
 
     public static final int DATE_PICKER_DIALOG_ID = 1;
     public static final int TIME_PICKER_DIALOG_ID = 2;
 
     protected Utils utils;
+    private DatabaseTaskHelper dbHelper;
     private Appointment appointment;
     protected String clientName;
     protected String clientPhone;
@@ -204,6 +205,7 @@ public class AppointmentActivity extends AppCompatActivity {
         utils = new Utils();
         service = new Service();
         tools = new Tools();
+        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
@@ -219,7 +221,9 @@ public class AppointmentActivity extends AppCompatActivity {
                 boolean formValid = isAppointmentFormValid();
                 if (formValid) {
                     setDataFromFields();
-                    new SaveAppointment().execute();
+                    appointment = new Appointment(MyApplication.getInstance().getUser(), clientName,
+                            clientPhone, service, tools, info, dateTime, sum, paid, done);
+                    new SaveAppointment(this).execute(appointment);
                     return true;
                 }
                 hideKeyboard();
@@ -338,30 +342,38 @@ public class AppointmentActivity extends AppCompatActivity {
         imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
     }
 
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    }
+
     /**
      * Save Appointment to DB (Create new one)
      */
-    private class SaveAppointment extends AsyncTask<Void, Void, Integer> {
+    private class SaveAppointment extends AsyncTask<Appointment, Void, Integer> {
+
+        private OnTaskCompleted listener;
+
+        public SaveAppointment(OnTaskCompleted listener) {
+            this.listener = listener;
+        }
 
         @Override
-        protected Integer doInBackground(Void... voids) {
-
-            ServiceRepository serviceRepo = new ServiceRepository(getApplicationContext());
-            serviceRepo.create(service);
-            ToolsRepository toolsRepo = new ToolsRepository(getApplicationContext());
-            toolsRepo.create(tools);
-            appointment = new Appointment(MyApplication.getInstance().getUser(), clientName,
-                    clientPhone, service, tools, info, dateTime, sum, paid, done);
-            AppointmentRepository appointmentRepo = new AppointmentRepository(getApplicationContext());
-            int created = appointmentRepo.create(appointment);
-            return created;
+        protected Integer doInBackground(Appointment... array) {
+            return dbHelper.saveAppointment(array[0]);
         }
 
         @Override
         protected void onPostExecute(Integer created) {
-            utils.showSaveResultMessage(created, AppointmentActivity.this);
-            if (created == Constants.CREATED) finish();
             super.onPostExecute(created);
+            if (created == Constants.CREATED) {
+                String message = getResources().getString(R.string.appointment_saved);
+                listener.showMessage(message);
+                finish();
+            } else {
+                String message = getResources().getString(R.string.saving_failed);
+                listener.showMessage(message);
+            }
         }
     }
 

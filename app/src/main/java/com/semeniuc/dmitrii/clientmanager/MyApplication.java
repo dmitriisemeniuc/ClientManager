@@ -4,19 +4,16 @@ import android.app.Application;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.semeniuc.dmitrii.clientmanager.model.User;
-import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 
 public class MyApplication extends Application {
 
-    private static MyApplication myApp;
-    private static AppointmentRepository appointmentRepo;
     private GoogleApiClient googleApiClient;
     private User user;
 
-
+    private static MyApplication singleton;
 
     public static MyApplication getInstance() {
-        return myApp;
+        return singleton;
     }
 
     public MyApplication() {
@@ -25,8 +22,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        myApp = this;
-
+        singleton = this;
     }
 
     public GoogleApiClient getGoogleApiClient() {

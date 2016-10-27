@@ -13,12 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ScrollView;
 
-import com.semeniuc.dmitrii.clientmanager.MyApplication;
+import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
+import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
-import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
-import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
-import com.semeniuc.dmitrii.clientmanager.repository.ToolsRepository;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 
 import java.util.Calendar;
@@ -27,9 +25,10 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class AppointmentReviewActivity extends AppointmentActivity {
+public class AppointmentReviewActivity extends AppointmentActivity implements OnTaskCompleted {
 
     private Appointment appointment;
+    private DatabaseTaskHelper dbHelper;
 
     @BindView(R.id.appointment_client_name)
     AppCompatEditText etClientName;
@@ -175,6 +174,7 @@ public class AppointmentReviewActivity extends AppointmentActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         appointment = getIntent().getExtras().getParcelable(Constants.APPOINTMENT_PATH);
+        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
@@ -197,13 +197,13 @@ public class AppointmentReviewActivity extends AppointmentActivity {
                 boolean valid = super.isAppointmentFormValid();
                 if (valid) {
                     setDataFromFields();
-                    new UpdateAppointment().execute();
+                    new UpdateAppointment(this).execute(appointment);
                 } else {
                     hideKeyboard();
                 }
                 break;
             case R.id.action_delete_appointment:
-                new DeleteAppointment().execute();
+                new DeleteAppointment(this).execute(appointment);
                 break;
         }
         return true;
@@ -260,7 +260,7 @@ public class AppointmentReviewActivity extends AppointmentActivity {
         boolean spray = appointment.getTools().isSpray();
         if (spray) ivSpray.setImageResource(R.mipmap.ic_spray_yes);
         boolean oxy = appointment.getTools().isOxy();
-        if (oxy) ivOxy.setImageResource(R.mipmap.ic_ok_yes);
+        if (oxy) ivOxy.setImageResource(R.mipmap.ic_soap_yes);
         boolean tube = appointment.getTools().isTube();
         if (tube) ivTube.setImageResource(R.mipmap.ic_tube_yes);
         boolean trimmer = appointment.getTools().isTrimmer();
@@ -307,49 +307,61 @@ public class AppointmentReviewActivity extends AppointmentActivity {
                 calendar.get(Calendar.MINUTE), true);
     }
 
-    private class UpdateAppointment extends AsyncTask<Void, Void, Integer> {
+    // ******** Async Tasks *******
 
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            ServiceRepository serviceRepo = new ServiceRepository(getApplicationContext());
-            serviceRepo.update(appointment.getService());
-            ToolsRepository toolsRepo = new ToolsRepository(getApplicationContext());
-            toolsRepo.update(appointment.getTools());
-            appointment.setUser(MyApplication.getInstance().getUser());
-            AppointmentRepository appointmentRepo =
-                    new AppointmentRepository(getApplicationContext());
-            int updated = appointmentRepo.update(appointment);
-            return updated;
+    private class UpdateAppointment extends AsyncTask<Appointment, Void, Integer> {
+
+        private OnTaskCompleted listener;
+
+        public UpdateAppointment(OnTaskCompleted listener) {
+            this.listener = listener;
         }
 
         @Override
-        protected void onPostExecute(Integer updated) {
-            utils.showUpdateResultMessage(updated, AppointmentReviewActivity.this);
-            if (updated == Constants.UPDATED) finish();
-        }
-    }
-
-    private class DeleteAppointment extends AsyncTask<Void, Void, Integer> {
-
-        @Override
-        protected Integer doInBackground(Void... voids) {
-            ServiceRepository serviceRepo = new ServiceRepository(getApplicationContext());
-            serviceRepo.delete(service);
-            ToolsRepository toolsRepo = new ToolsRepository(getApplicationContext());
-            toolsRepo.delete(tools);
-            AppointmentRepository appointmentRepo = new AppointmentRepository(getApplicationContext());
-            int deleted = appointmentRepo.delete(appointment);
-            return deleted;
+        protected Integer doInBackground(Appointment... array) {
+            return dbHelper.updateAppointment(array[0]);
         }
 
         @Override
-        protected void onPostExecute(Integer deleted) {
-            utils.showDeleteResultMessage(deleted, AppointmentReviewActivity.this);
-            if (deleted == Constants.DELETED) finish();
+        protected void onPostExecute(Integer result) {
+            if (result.equals(Constants.UPDATED)) {
+                String message = getResources().getString(R.string.appointment_updated);
+                listener.showMessage(message);
+                finish();
+            } else {
+                String message = getResources().getString(R.string.updating_failed);
+                listener.showMessage(message);
+            }
         }
     }
 
-    // ********** Methods of onClick Image changing
+    private class DeleteAppointment extends AsyncTask<Appointment, Void, Integer> {
+
+        private OnTaskCompleted listener;
+
+        public DeleteAppointment(OnTaskCompleted listener) {
+            this.listener = listener;
+        }
+
+        @Override
+        protected Integer doInBackground(Appointment... array) {
+            return dbHelper.deleteAppointment(array[0]);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            if (result.equals(Constants.DELETED)) {
+                String message = getResources().getString(R.string.appointment_deleted);
+                listener.showMessage(message);
+                finish();
+            } else {
+                String message = getResources().getString(R.string.deleting_failed);
+                listener.showMessage(message);
+            }
+        }
+    }
+
+    // ********** Methods of onClick Image changing **********
     private void changePaidImage() {
         boolean paid = !appointment.isPaid();
         appointment.setPaid(paid);

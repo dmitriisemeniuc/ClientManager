@@ -7,10 +7,8 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
-import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
-import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 
 import java.text.ParseException;
@@ -54,39 +52,6 @@ public class Utils {
             locale = context.getResources().getConfiguration().locale;
         }
         return locale;
-    }
-
-    public void showSaveResultMessage(int saved, Context context) {
-        if (saved == Constants.CREATED) {
-            Toast.makeText(context, context.getResources()
-                            .getString(R.string.appointment_saved),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.saving_failed),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showUpdateResultMessage(int updated, Context context) {
-        if (updated == Constants.UPDATED) {
-            Toast.makeText(context, context.getResources()
-                            .getString(R.string.appointment_updated),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.updating_failed),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void showDeleteResultMessage(int deleted, Context context) {
-        if (deleted == Constants.DELETED) {
-            Toast.makeText(context, context.getResources()
-                            .getString(R.string.appointment_deleted),
-                    Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(context, context.getResources().getString(R.string.deleting_failed),
-                    Toast.LENGTH_SHORT).show();
-        }
     }
 
     public Appointment updateAppointmentData(Appointment fromAppointment, Appointment toAppointment) {

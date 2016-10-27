@@ -1,6 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.repository;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.j256.ormlite.dao.Dao;
@@ -15,16 +14,23 @@ import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.List;
 
-public class AppointmentRepository implements Repository {
+public final class AppointmentRepository implements Repository {
 
+    private static final AppointmentRepository instance = new AppointmentRepository();
     public static final String LOG_TAG = AppointmentRepository.class.getSimpleName();
     public static final boolean DEBUG = Constants.DEBUG;
+    private static final DatabaseHelper helper;
 
-    private DatabaseHelper helper;
-
-    public AppointmentRepository(Context context) {
-        DatabaseManager.init(context);
+    static{
+        DatabaseManager.init(MyApplication.getInstance().getApplicationContext());
         helper = DatabaseManager.getInstance().getHelper();
+    }
+
+    private AppointmentRepository() {
+    }
+
+    public static AppointmentRepository getInstance() {
+        return instance;
     }
 
     @Override
