@@ -31,8 +31,6 @@ import butterknife.OnClick;
 
 public class AppointmentReviewActivity extends AppointmentActivity {
 
-    public static final String LOG_TAG = AppointmentReviewActivity.class.getSimpleName();
-
     private Context context = MyApplication.getInstance().getApplicationContext();
     private Appointment appointment;
 

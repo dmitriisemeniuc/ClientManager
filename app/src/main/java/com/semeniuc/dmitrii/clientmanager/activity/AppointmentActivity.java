@@ -40,7 +40,6 @@ import butterknife.OnClick;
 public class AppointmentActivity extends AppCompatActivity {
 
     public static final int LAYOUT = R.layout.activity_appointment;
-    public static final String LOG_TAG = AppointmentActivity.class.getSimpleName();
     public static final int DATE_PICKER_DIALOG_ID = 1;
     public static final int TIME_PICKER_DIALOG_ID = 2;
 

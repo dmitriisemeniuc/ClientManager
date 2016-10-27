@@ -53,6 +53,7 @@
                 android:id="@+id/appointment_service"
                 style="@style/appointmentFormField"
                 android:layout_toEndOf="@+id/appointment_service_icon"
+                android:layout_marginEnd="20dp"
                 android:hint="@string/appointment_service"
                 android:inputType="textCapSentences"
                 android:textColor="@color/service_text_color"

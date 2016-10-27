@@ -2,6 +2,8 @@ package com.semeniuc.dmitrii.clientmanager.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatTextView;
@@ -154,7 +156,7 @@ public class Utils {
 
     public String getUserFromPrefs(){
         SharedPreferences settings = context.getSharedPreferences(
-                Constants.LOGIN_PREFS, context.MODE_PRIVATE);
+                Constants.LOGIN_PREFS, Context.MODE_PRIVATE);
         // setting.getString will return NEW_USER value in case if USER value won't be found
         return settings.getString(Constants.USER, Constants.NEW_USER);
     }
@@ -175,7 +177,14 @@ public class Utils {
     }
 
     public SharedPreferences.Editor getEditor(String prefs) {
-        SharedPreferences settings = context.getSharedPreferences(prefs, context.MODE_PRIVATE);
+        SharedPreferences settings = context.getSharedPreferences(prefs, Context.MODE_PRIVATE);
         return settings.edit();
+    }
+
+    public boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }

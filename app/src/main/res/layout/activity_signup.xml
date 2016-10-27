@@ -11,15 +11,15 @@
         android:id="@+id/logo_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp"
-        android:layout_centerHorizontal="true">
+        android:layout_marginTop="10dp">
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/sign_in_logo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="10dp"
             android:src="@mipmap/ic_logo" />
     </RelativeLayout>
 
@@ -34,7 +34,7 @@
             style="@style/signInField"
             android:hint="@string/email"
             android:inputType="textEmailAddress"
-            android:maxLength="100"/>
+            android:maxLength="100" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_password_et"
@@ -43,7 +43,7 @@
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:hint="@string/password"
             android:inputType="textVisiblePassword"
-            android:maxLength="100"/>
+            android:maxLength="100" />
 
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/sign_up_confirm_password_et"
@@ -51,17 +51,17 @@
             android:layout_below="@+id/sign_up_password_et"
             android:hint="@string/confirmPassword"
             android:inputType="textVisiblePassword"
-            android:maxLength="100"/>
+            android:maxLength="100" />
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/sign_in_btn"
-           style="@style/signInField"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/sign_up_confirm_password_et"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:text="@string/sign_up"
-            android:fontFamily="sans-serif-light"
             android:background="@color/orangeBackground"
-            android:shadowColor="@android:color/white" />
+            android:shadowColor="@android:color/white"
+            android:text="@string/sign_up" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -78,8 +78,8 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:text="@string/already_have_account"
-            android:textSize="16sp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/sign_in_link"
@@ -89,8 +89,8 @@
             android:layout_toEndOf="@+id/sign_up_sign_in_question"
             android:fontFamily="sans-serif"
             android:text="@string/sign_in_link"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="@android:color/white"/>
+            android:textStyle="bold" />
     </RelativeLayout>
 </RelativeLayout>

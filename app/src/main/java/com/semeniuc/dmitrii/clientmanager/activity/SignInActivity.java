@@ -257,9 +257,21 @@ public class SignInActivity extends AppCompatActivity {
      * Makes new sign in with Google account and stores user details
      */
     private void newSignInWithGoogle(GoogleSignInResult result) {
-        if (!result.isSuccess()) return;
-        // Store user id, user name and email to the global User object
-        setGoogleUserDetails(result);
+        if (result.isSuccess()) {
+            // Store user id, user name and email to the global User object
+            setGoogleUserDetails(result);
+        } else {
+            boolean connectedToNetwork = utils.isNetworkAvailable(this);
+            if (!connectedToNetwork) {
+                Toast.makeText(this, getResources().getString(R.string.no_internet_access),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.something_wrong),
+                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getResources().getString(R.string.verify_internet),
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     /**
