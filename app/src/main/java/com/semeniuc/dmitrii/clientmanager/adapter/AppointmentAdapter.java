@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
@@ -41,9 +42,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // fields
         holder.clientName.setText(appointments.get(position).getClientName());
 
-        if(appointments.get(position).getClientPhone().isEmpty()){
+        if (appointments.get(position).getClientPhone().isEmpty()) {
             holder.clientPhoneIcon.setVisibility(View.GONE);
-        } else{
+        } else {
             holder.clientPhone.setText(appointments.get(position).getClientPhone());
         }
         holder.service.setText(appointments.get(position).getService().getName());
@@ -53,7 +54,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.infoLayout.setVisibility(View.GONE);
         }
         holder.dateTime.setText(utils.convertDateToString(appointments.get(position).getDate(),
-                Constants.DATE_TIME_FORMAT));
+                Constants.DATE_TIME_FORMAT, MyApplication.getInstance().getApplicationContext()));
         // booleans {images}
         boolean done = appointments.get(position).isDone();
         if (!done) holder.done.setVisibility(View.GONE);
@@ -90,11 +91,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         boolean trimmer = appointments.get(position).getTools().isTrimmer();
         if (!trimmer) holder.trimmer.setVisibility(View.GONE);
         if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet &&
-                !spray && !oxy && !tube && !trimmer){
+                !spray && !oxy && !tube && !trimmer) {
             holder.toolsLayout.setVisibility(View.GONE);
         }
-            // set onClickListeners
-            holder.bind(appointments.get(position), listener, phoneListener);
+        // set onClickListeners
+        holder.bind(appointments.get(position), listener, phoneListener);
     }
 
     @Override

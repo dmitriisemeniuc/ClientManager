@@ -1,6 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -24,12 +23,9 @@ import butterknife.OnClick;
 
 public class SignUpActivity extends AppCompatActivity {
 
-    public static final int LAYOUT = R.layout.activity_signup;
-    public static final String LOG_TAG = SignUpActivity.class.getSimpleName();
     public static String USER_SAVING_MSG = Constants.EMPTY;
     public static String USER_SAVING_ERROR = Constants.EMPTY;
 
-    private Context context = MyApplication.getInstance().getApplicationContext();
     private Utils utils;
 
     @OnClick(R.id.sign_in_btn)
@@ -52,31 +48,27 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(LAYOUT);
+        setContentView(R.layout.activity_signup);
 
         ButterKnife.bind(this);
-        utils = new Utils(SignUpActivity.this);
+        utils = new Utils();
     }
 
     private void onSignUpBtnPressed() {
-        boolean formValid = validateForm();
-        if (!formValid)
+        boolean valid = isFormValid();
+        if (!valid)
             return;
         User user = new User(email.getText().toString(), password.getText().toString());
         new SaveUser().execute(user);
     }
 
-    private boolean validateForm() {
+    private boolean isFormValid() {
         boolean empty = isSignUpFieldsEmpty();
         if (empty) return false;
         boolean passwordsMatch = isPasswordsEquals();
         if (!passwordsMatch) return false;
-
         boolean emailRegistered = isEmailRegistered();
-        if (emailRegistered) {
-            email.setError(getResources().getString(R.string.email_registered));
-            return false;
-        }
+        if (emailRegistered) return false;
         // Form valid
         return true;
     }
@@ -113,11 +105,12 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private boolean isEmailRegistered() {
-        UserRepository userRepo = new UserRepository(context);
+        UserRepository userRepo = new UserRepository(getApplicationContext());
         List<User> users = userRepo.findByEmail(email.getText().toString());
         if (users != null) {
             if (users.size() > 0) {
                 // Email registered
+                email.setError(getResources().getString(R.string.email_registered));
                 return true;
             }
         }
@@ -149,7 +142,7 @@ public class SignUpActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(User... array) {
             User user = array[0];
-            UserRepository userRepo = new UserRepository(context);
+            UserRepository userRepo = new UserRepository(getApplicationContext());
             int index = userRepo.create(user);
             if (index == 1) {
                 List<User> users = userRepo.findByEmail(user.getEmail());
@@ -169,13 +162,13 @@ public class SignUpActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            utils.setUserInPrefs(Constants.REGISTERED_USER);
-            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            utils.setUserInPrefs(Constants.REGISTERED_USER, SignUpActivity.this);
+            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 }

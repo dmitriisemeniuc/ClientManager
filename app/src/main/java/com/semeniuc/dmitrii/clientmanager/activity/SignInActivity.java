@@ -38,14 +38,12 @@ import butterknife.OnClick;
 
 public class SignInActivity extends AppCompatActivity {
 
-    public static final int LAYOUT = R.layout.activity_signin;
     public static final String LOG_TAG = SignInActivity.class.getSimpleName();
     public static String USER_SAVING_MSG = Constants.EMPTY;
     public static String USER_SAVING_ERROR = Constants.EMPTY;
 
     private ProgressDialog progressDialog;
     private GoogleAuthenticator googleAuthenticator;
-    private Context context = MyApplication.getInstance().getApplicationContext();
     private Utils utils;
 
     @BindView(R.id.sign_in_email_et)
@@ -73,7 +71,7 @@ public class SignInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(LAYOUT);
+        setContentView(R.layout.activity_signin);
 
         ButterKnife.bind(this);
         checkUserSignInType();
@@ -135,7 +133,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private boolean isEmailAndPasswordRegistered() {
-        UserRepository userRepo = new UserRepository(context);
+        UserRepository userRepo = new UserRepository(getApplicationContext());
         List<User> users = userRepo.findByEmailAndPassword(
                 email.getText().toString(), password.getText().toString());
         if (users != null) {
@@ -149,7 +147,7 @@ public class SignInActivity extends AppCompatActivity {
     private void doLogin() {
         User user = new User(email.getText().toString(), password.getText().toString());
         MyApplication.getInstance().setUser(user);
-        utils.setUserInPrefs(Constants.REGISTERED_USER);
+        utils.setUserInPrefs(Constants.REGISTERED_USER, this);
         updateUI(true);
     }
 
@@ -172,12 +170,12 @@ public class SignInActivity extends AppCompatActivity {
      * {It can be: user signed in with google or registered with e-mail}
      */
     private void checkUserSignInType() {
-        utils = new Utils(this);
-        String userType = utils.getUserFromPrefs();
+        utils = new Utils();
+        String userType = utils.getUserFromPrefs(this);
         if (userType.equals(Constants.GOOGLE_USER)) {
             // USER REGISTERED WITH GOOGLE ACCOUNT
             initGoogleAuthenticator();
-            SharedPreferences settings = context.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             // If previous google sign is cached
             // (user does not sign out) - google silent sign in will be made
@@ -186,7 +184,7 @@ public class SignInActivity extends AppCompatActivity {
         } // USER REGISTERED WITH EMAIL
         if (userType.equals(Constants.REGISTERED_USER)) {
 
-            SharedPreferences settings = context.getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
+            SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             if (loggedIn) {
                 String email = settings.getString(Constants.EMAIL, Constants.EMPTY);
@@ -337,7 +335,7 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private User getUserByEmail(String email) {
-        UserRepository userRepo = new UserRepository(context);
+        UserRepository userRepo = new UserRepository(getApplicationContext());
         List<User> users = userRepo.findByEmail(email);
         if (users != null) {
             return users.get(0);
@@ -350,7 +348,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(User... array) {
             User user = array[0];
-            UserRepository userRepo = new UserRepository(context);
+            UserRepository userRepo = new UserRepository(getApplicationContext());
             List<User> users = userRepo.findByEmail(user.getEmail());
             if (null != users) {
                 if (users.size() == Constants.SIZE_EMPTY) {
@@ -383,13 +381,13 @@ public class SignInActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            utils.setUserInPrefs(Constants.GOOGLE_USER);
-            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            utils.setUserInPrefs(Constants.GOOGLE_USER, SignInActivity.this);
+            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -401,7 +399,7 @@ public class SignInActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... array) {
             String email = array[0];
-            UserRepository userRepo = new UserRepository(context);
+            UserRepository userRepo = new UserRepository(getApplicationContext());
             List<User> users = userRepo.findByEmail(email);
             if (null != users) {
                 if (users.size() > 0) {
@@ -422,12 +420,12 @@ public class SignInActivity extends AppCompatActivity {
         protected void onPostExecute(String msg) {
             super.onPostExecute(msg);
             if (!USER_SAVING_ERROR.isEmpty()) {
-                Toast.makeText(context, USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), USER_SAVING_ERROR, Toast.LENGTH_SHORT).show();
                 return;
             }
             // Show authenticated UI
             updateUI(true);
-            Toast.makeText(context, USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), USER_SAVING_MSG, Toast.LENGTH_SHORT).show();
         }
     }
 }

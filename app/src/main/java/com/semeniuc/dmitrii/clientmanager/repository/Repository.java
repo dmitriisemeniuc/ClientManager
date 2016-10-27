@@ -2,8 +2,7 @@ package com.semeniuc.dmitrii.clientmanager.repository;
 
 import java.util.List;
 
-interface Repository
-{
+interface Repository {
     int create(Object item);
 
     int update(Object item);

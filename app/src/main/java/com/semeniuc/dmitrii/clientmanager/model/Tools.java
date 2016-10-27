@@ -48,19 +48,6 @@ public class Tools implements Parcelable {
         readFromParcel(in);
     }
 
-    public Tools(boolean brush, boolean hairBrush, boolean hairDryer, boolean hairBand,
-                 boolean cutSet, boolean spray, boolean oxy, boolean tube, boolean trimmer) {
-        this.brush = brush;
-        this.hairBrush = hairBrush;
-        this.hairDryer = hairDryer;
-        this.hairBand = hairBand;
-        this.cutSet = cutSet;
-        this.spray = spray;
-        this.oxy = oxy;
-        this.tube = tube;
-        this.trimmer = trimmer;
-    }
-
     @Override
     public int describeContents() {
         return 0;

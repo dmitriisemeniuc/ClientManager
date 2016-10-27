@@ -84,7 +84,7 @@ public class AppointmentRepository implements Repository {
     }
 
     @Override
-    public List<Appointment> findAll(){
+    public List<Appointment> findAll() {
         List<Appointment> items = null;
         long id = MyApplication.getInstance().getUser().getId();
         try {

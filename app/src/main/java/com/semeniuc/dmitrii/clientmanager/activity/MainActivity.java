@@ -13,7 +13,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -36,13 +35,12 @@ import java.util.List;
 
 public class MainActivity extends SignInActivity implements View.OnClickListener {
 
-    public static final int LAYOUT = R.layout.activity_main;
     public static String phone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(LAYOUT);
+        setContentView(R.layout.activity_main);
 
         setOnClickListeners();
     }
@@ -55,9 +53,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_options_menu, menu);
-
+        getMenuInflater().inflate(R.menu.main_options_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -87,12 +83,12 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     protected void signOut() {
-        Utils utils = new Utils(this);
-        String userType = utils.getUserFromPrefs();
+        Utils utils = new Utils();
+        String userType = utils.getUserFromPrefs(this);
         if (userType.equals(Constants.GOOGLE_USER)) {
             super.signOut();
         }
-        utils.setUserInPrefs(Constants.NEW_USER);
+        utils.setUserInPrefs(Constants.NEW_USER, this);
         backToSignInActivity();
     }
 
@@ -145,12 +141,12 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
-                phone = phoneNumber;
-                // Request permission. No explanation needed
-                // The callback method gets the result of the request.
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.CALL_PHONE},
-                        Constants.PERMISSIONS_REQUEST_CALL_PHONE);
+            phone = phoneNumber;
+            // Request permission. No explanation needed
+            // The callback method gets the result of the request.
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CALL_PHONE},
+                    Constants.PERMISSIONS_REQUEST_CALL_PHONE);
             return;
         }
         Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null));
@@ -159,7 +155,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
                 // If request is cancelled, the result arrays are empty.
@@ -172,7 +168,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                     Toast.makeText(this, getResources().getString(R.string.grant_call_permission),
                             Toast.LENGTH_LONG).show();
                 }
-                return;
             }
         }
     }

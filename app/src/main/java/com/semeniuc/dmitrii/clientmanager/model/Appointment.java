@@ -91,6 +91,53 @@ public class Appointment implements Parcelable {
         readFromParcel(in);
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        // Write each field into the parcel. Order is important
+        parcel.writeLong(id);
+        parcel.writeParcelable(user, i);
+        parcel.writeString(clientName);
+        parcel.writeString(clientPhone);
+        parcel.writeParcelable(service, i);
+        parcel.writeParcelable(tools, i);
+        parcel.writeString(info);
+        parcel.writeString(date.toString());
+        parcel.writeString(sum);
+        parcel.writeValue(paid);
+        parcel.writeValue(done);
+    }
+
+    private void readFromParcel(Parcel in) {
+        // Read back each field in the order that it was written to the parcel
+        id = in.readLong();
+        user = in.readParcelable(User.class.getClassLoader());
+        clientName = in.readString();
+        clientPhone = in.readString();
+        service = in.readParcelable(Service.class.getClassLoader());
+        tools = in.readParcelable(Tools.class.getClassLoader());
+        info = in.readString();
+        date = new Date(in.readString());
+        sum = in.readString();
+        paid = (Boolean) in.readValue(null);
+        done = (Boolean) in.readValue(null);
+    }
+
+    public static final Parcelable.Creator CREATOR =
+            new Parcelable.Creator() {
+                public Appointment createFromParcel(Parcel in) {
+                    return new Appointment(in);
+                }
+
+                public Appointment[] newArray(int size) {
+                    return new Appointment[size];
+                }
+            };
+
     public long getId() {
         return id;
     }
@@ -178,51 +225,4 @@ public class Appointment implements Parcelable {
     public void setDone(boolean done) {
         this.done = done;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        // Write each field into the parcel. Order is important
-        parcel.writeLong(id);
-        parcel.writeParcelable(user, i);
-        parcel.writeString(clientName);
-        parcel.writeString(clientPhone);
-        parcel.writeParcelable(service, i);
-        parcel.writeParcelable(tools, i);
-        parcel.writeString(info);
-        parcel.writeString(date.toString());
-        parcel.writeString(sum);
-        parcel.writeValue(paid);
-        parcel.writeValue(done);
-    }
-
-    private void readFromParcel(Parcel in) {
-        // Read back each field in the order that it was written to the parcel
-        id = in.readLong();
-        user = in.readParcelable(User.class.getClassLoader());
-        clientName = in.readString();
-        clientPhone = in.readString();
-        service = in.readParcelable(Service.class.getClassLoader());
-        tools = in.readParcelable(Tools.class.getClassLoader());
-        info = in.readString();
-        date = new Date(in.readString());
-        sum = in.readString();
-        paid = (Boolean) in.readValue(null);
-        done = (Boolean) in.readValue(null);
-    }
-
-    public static final Parcelable.Creator CREATOR =
-            new Parcelable.Creator() {
-                public Appointment createFromParcel(Parcel in) {
-                    return new Appointment(in);
-                }
-
-                public Appointment[] newArray(int size) {
-                    return new Appointment[size];
-                }
-            };
 }

@@ -12,7 +12,6 @@ import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
@@ -39,7 +38,6 @@ import butterknife.OnClick;
 
 public class AppointmentActivity extends AppCompatActivity {
 
-    public static final int LAYOUT = R.layout.activity_appointment;
     public static final int DATE_PICKER_DIALOG_ID = 1;
     public static final int TIME_PICKER_DIALOG_ID = 2;
 
@@ -66,9 +64,9 @@ public class AppointmentActivity extends AppCompatActivity {
     @BindView(R.id.appointment_info)
     AppCompatEditText etInfo;
     @BindView(R.id.appointment_calendar_date)
-    AppCompatTextView etDate;
+    AppCompatTextView tvDate;
     @BindView(R.id.appointment_time)
-    AppCompatTextView etTime;
+    AppCompatTextView tvTime;
     @BindView(R.id.appointment_cash)
     AppCompatEditText etSum;
     @BindView(R.id.appointment_paid_icon)
@@ -106,74 +104,92 @@ public class AppointmentActivity extends AppCompatActivity {
     void onCalendarIconClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
         showPickerDialog(DATE_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
         showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
+
     @OnClick(R.id.appointment_paid)
     void onPaidClicked() {
         changePaidImage();
     }
+
     @OnClick(R.id.appointment_paid_icon)
     void onPaidIconClicked() {
         changePaidImage();
     }
+
     @OnClick(R.id.appointment_done_icon)
     void onDoneIconClicked() {
         changeDoneImage();
     }
+
     @OnClick(R.id.appointment_service_hair_coloring_icon)
     void onHairColoringIconClicked() {
         changeHairColoringImage();
     }
+
     @OnClick(R.id.appointment_service_hairdo_icon)
     void onHairdoIconClicked() {
         changeHairdoImage();
     }
+
     @OnClick(R.id.appointment_service_haircut_icon)
     void onHaircutIconClicked() {
         changeHaircutImage();
     }
+
     @OnClick(R.id.appointment_tools_brush_icon)
     void onBrushIconClicked() {
         changeBrushImage();
     }
+
     @OnClick(R.id.appointment_tools_hair_brush_icon)
     void onHairBrushIconClicked() {
         changeHairBrushImage();
     }
+
     @OnClick(R.id.appointment_tools_hair_dryer_icon)
     void onHairDryerIconClicked() {
         changeHairDryerImage();
     }
+
     @OnClick(R.id.appointment_tools_oxy_icon)
     void onOxyIconClicked() {
         changeOxyImage();
     }
+
     @OnClick(R.id.appointment_tools_cut_set_icon)
     void onCutSetIconClicked() {
         changeCutSetImage();
     }
+
     @OnClick(R.id.appointment_tools_hair_band_icon)
     void onHairBandIconClicked() {
         changeHairBandImage();
     }
+
     @OnClick(R.id.appointment_tools_spray_icon)
     void onSprayIconClicked() {
         changeSprayImage();
     }
+
     @OnClick(R.id.appointment_tools_tube_icon)
     void onTubeIconClicked() {
         changeTubeImage();
     }
+
     @OnClick(R.id.appointment_tools_trimmer_icon)
     void onTrimmerIconClicked() {
         changeTrimmerImage();
@@ -182,19 +198,17 @@ public class AppointmentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(LAYOUT);
+        setContentView(R.layout.activity_appointment);
 
         ButterKnife.bind(this);
-        utils = new Utils(AppointmentActivity.this);
+        utils = new Utils();
         service = new Service();
         tools = new Tools();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.appointment_toolbar_menu, menu);
-
+        getMenuInflater().inflate(R.menu.appointment_toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -202,7 +216,8 @@ public class AppointmentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_save_appointment:
-                if (utils.isAppointmentFormValid()) {
+                boolean formValid = isAppointmentFormValid();
+                if (formValid) {
                     setDataFromFields();
                     new SaveAppointment().execute();
                     return true;
@@ -213,16 +228,47 @@ public class AppointmentActivity extends AppCompatActivity {
         }
     }
 
+    protected boolean isAppointmentFormValid() {
+        boolean valid = true;
+        boolean empty = utils.isEditTextEmpty(etClientName);
+        if (empty) {
+            etClientName.setError(getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        empty = utils.isEditTextEmpty(etClientPhone);
+        if (empty) {
+            etClientPhone.setError(getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        empty = utils.isEditTextEmpty(etService);
+        if (empty) {
+            etService.setError(getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        empty = utils.isTextViewEmpty(tvDate);
+        if (empty) {
+            tvDate.setError(getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        empty = utils.isTextViewEmpty(tvTime);
+        if (empty) {
+            tvTime.setError(getResources().getString(R.string.field_is_required));
+            valid = false;
+        }
+        return valid;
+    }
+
     private void setDataFromFields() {
         clientName = etClientName.getText().toString();
         clientPhone = etClientPhone.getText().toString();
         service.setName(etService.getText().toString());
         sum = etSum.getText().toString();
         info = etInfo.getText().toString();
-        date = etDate.getText().toString();
-        time = etTime.getText().toString();
+        date = tvDate.getText().toString();
+        time = tvTime.getText().toString();
         String dateTimeStr = date + " " + time;
-        dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT);
+
+        dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
     }
 
     @Override
@@ -245,8 +291,8 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     /**
-    * Open date picker dialog with current date
-    * */
+     * Open date picker dialog with current date
+     */
     private DatePickerDialog getDatePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new DatePickerDialog(
@@ -255,20 +301,20 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     /**
-    * Set chosen Date to date edit text
-    * */
+     * Set chosen Date to date edit text
+     */
     protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker datePicker, int year, int month, int day) {
             String formattedDate = utils.getCorrectDateFormat(year, month, day);
-            etDate.setText(formattedDate);
-            etDate.setError(null);
+            tvDate.setText(formattedDate);
+            tvDate.setError(null);
         }
     };
 
     /**
-    * Open date picker dialog with current time
-    * */
+     * Open date picker dialog with current time
+     */
     private TimePickerDialog getTimePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
@@ -276,14 +322,14 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     /**
-    * Set chosen Time to time edit text
-    * */
+     * Set chosen Time to time edit text
+     */
     protected TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
             String formattedTime = utils.getCorrectTimeFormat(hourOfDay, minute);
-            etTime.setText(formattedTime);
-            etTime.setError(null);
+            tvTime.setText(formattedTime);
+            tvTime.setError(null);
         }
     };
 
@@ -293,24 +339,22 @@ public class AppointmentActivity extends AppCompatActivity {
     }
 
     /**
-    * Save Appointment to DB (Create new one)
-    * */
+     * Save Appointment to DB (Create new one)
+     */
     private class SaveAppointment extends AsyncTask<Void, Void, Integer> {
 
         @Override
         protected Integer doInBackground(Void... voids) {
 
-            ServiceRepository serviceRepo = new ServiceRepository(
-                    MyApplication.getInstance().getApplicationContext());
+            ServiceRepository serviceRepo = new ServiceRepository(getApplicationContext());
             serviceRepo.create(service);
-            ToolsRepository toolsRepo = new ToolsRepository(
-                    MyApplication.getInstance().getApplicationContext());
+            ToolsRepository toolsRepo = new ToolsRepository(getApplicationContext());
             toolsRepo.create(tools);
             appointment = new Appointment(MyApplication.getInstance().getUser(), clientName,
                     clientPhone, service, tools, info, dateTime, sum, paid, done);
-            AppointmentRepository appointmentRepo = new AppointmentRepository(
-                    MyApplication.getInstance().getApplicationContext());
-            return appointmentRepo.create(appointment);
+            AppointmentRepository appointmentRepo = new AppointmentRepository(getApplicationContext());
+            int created = appointmentRepo.create(appointment);
+            return created;
         }
 
         @Override
@@ -370,7 +414,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivHaircut.setImageResource(R.mipmap.ic_scissors_no);
     }
 
-    private void changeBrushImage(){
+    private void changeBrushImage() {
         boolean brush = !tools.isBrush();
         tools.setBrush(brush);
         if (brush) {
@@ -380,17 +424,17 @@ public class AppointmentActivity extends AppCompatActivity {
         ivBrush.setImageResource(R.mipmap.ic_brush_no);
     }
 
-    private void changeHairBrushImage(){
+    private void changeHairBrushImage() {
         boolean hairBrush = !tools.isHairBrush();
         tools.setHairBrush(hairBrush);
         if (hairBrush) {
-           ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_yes);
+            ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_yes);
             return;
         }
         ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_no);
     }
 
-    private void changeHairDryerImage(){
+    private void changeHairDryerImage() {
         boolean hairDryer = !tools.isHairDryer();
         tools.setHairDryer(hairDryer);
         if (hairDryer) {
@@ -400,7 +444,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivHairDryer.setImageResource(R.mipmap.ic_hair_dryer_no);
     }
 
-    private void changeOxyImage(){
+    private void changeOxyImage() {
         boolean oxy = !tools.isOxy();
         tools.setOxy(oxy);
         if (oxy) {
@@ -410,7 +454,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivOxy.setImageResource(R.mipmap.ic_soap_no);
     }
 
-    private void changeCutSetImage(){
+    private void changeCutSetImage() {
         boolean cutSet = !tools.isCutSet();
         tools.setCutSet(cutSet);
         if (cutSet) {
@@ -420,7 +464,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivSutSet.setImageResource(R.mipmap.ic_cutset_no);
     }
 
-    private void changeHairBandImage(){
+    private void changeHairBandImage() {
         boolean hairBand = !tools.isHairBand();
         tools.setHairBand(hairBand);
         if (hairBand) {
@@ -430,7 +474,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivHairBand.setImageResource(R.mipmap.ic_hair_band_no);
     }
 
-    private void changeSprayImage(){
+    private void changeSprayImage() {
         boolean spray = !tools.isSpray();
         tools.setSpray(spray);
         if (spray) {
@@ -440,7 +484,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivSpray.setImageResource(R.mipmap.ic_spray_no);
     }
 
-    private void  changeTubeImage(){
+    private void changeTubeImage() {
         boolean tube = !tools.isTube();
         tools.setTube(tube);
         if (tube) {
@@ -450,7 +494,7 @@ public class AppointmentActivity extends AppCompatActivity {
         ivTube.setImageResource(R.mipmap.ic_tube_no);
     }
 
-    private void  changeTrimmerImage(){
+    private void changeTrimmerImage() {
         boolean trimmer = !tools.isTrimmer();
         tools.setTrimmer(trimmer);
         if (trimmer) {

@@ -40,6 +40,42 @@ public class Service implements Parcelable {
         this.haircut = haircut;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        // Write each field into the parcel. Order is important
+        parcel.writeLong(id);
+        parcel.writeString(name);
+        parcel.writeValue(hairColoring);
+        parcel.writeValue(hairdo);
+        parcel.writeValue(haircut);
+    }
+
+    private void readFromParcel(Parcel in) {
+
+        // Read back each field in the order that it was written to the parcel
+        id = in.readLong();
+        name = in.readString();
+        hairColoring = (Boolean) in.readValue(null);
+        hairdo = (Boolean) in.readValue(null);
+        haircut = (Boolean) in.readValue(null);
+    }
+
+    public static final Parcelable.Creator CREATOR =
+            new Parcelable.Creator() {
+                public Service createFromParcel(Parcel in) {
+                    return new Service(in);
+                }
+
+                public Service[] newArray(int size) {
+                    return new Service[size];
+                }
+            };
+
     public long getId() {
         return id;
     }
@@ -79,40 +115,4 @@ public class Service implements Parcelable {
     public void setHaircut(boolean haircut) {
         this.haircut = haircut;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        // Write each field into the parcel. Order is important
-        parcel.writeLong(id);
-        parcel.writeString(name);
-        parcel.writeValue(hairColoring);
-        parcel.writeValue(hairdo);
-        parcel.writeValue(haircut);
-    }
-
-    private void readFromParcel(Parcel in) {
-
-        // Read back each field in the order that it was written to the parcel
-        id = in.readLong();
-        name = in.readString();
-        hairColoring = (Boolean) in.readValue(null);
-        hairdo = (Boolean) in.readValue(null);
-        haircut = (Boolean) in.readValue(null);
-    }
-
-    public static final Parcelable.Creator CREATOR =
-            new Parcelable.Creator() {
-                public Service createFromParcel(Parcel in) {
-                    return new Service(in);
-                }
-
-                public Service[] newArray(int size) {
-                    return new Service[size];
-                }
-            };
 }
