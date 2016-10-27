@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.google.android.gms.auth.api.Auth;
@@ -35,7 +37,7 @@ import java.util.List;
 public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static final int LAYOUT = R.layout.activity_main;
-    public static final String LOG_TAG = MainActivity.class.getSimpleName();
+    public static String phone;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -133,21 +135,46 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         }, new AppointmentAdapter.OnPhoneClickListener() {
             @Override
             public void onPhoneClick(String phoneNumber) {
-                if (ActivityCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                            Manifest.permission.CALL_PHONE)) {
-                        // No explanation needed, we can request the permission.
-                        ActivityCompat.requestPermissions(MainActivity.this,
-                                new String[]{Manifest.permission.CALL_PHONE},
-                                Constants.PERMISSIONS_REQUEST_CALL_PHONE);
-                    }
-                    return;
-                }
-                Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null));
-                startActivity(intent);
+                callToNumber(phoneNumber);
             }
         }));
+    }
+
+    private void callToNumber(String phoneNumber) {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CALL_PHONE)
+                != PackageManager.PERMISSION_GRANTED) {
+                phone = phoneNumber;
+                // Request permission. No explanation needed
+                // The callback method gets the result of the request.
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.CALL_PHONE},
+                        Constants.PERMISSIONS_REQUEST_CALL_PHONE);
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.fromParts("tel", phoneNumber, null));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    callToNumber(phone);
+                } else {
+                    // permission denied
+                    Toast.makeText(this, getResources().getString(R.string.grant_call_permission),
+                            Toast.LENGTH_LONG).show();
+                }
+                return;
+            }
+        }
     }
 
     /*

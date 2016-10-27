@@ -69,4 +69,5 @@
     <string name="verify_internet">Please, verify internet connection</string>
     <string name="something_wrong">Something went wrong</string>
     <string name="no_internet_access">No internet access available</string>
+    <string name="grant_call_permission">To make calls - please grant call permission</string>
 </resources>
