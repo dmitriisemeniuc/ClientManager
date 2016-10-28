@@ -292,9 +292,6 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
         dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
     }
 
-    /**
-     * Open date picker dialog with current time
-     */
     private TimePickerDialog getTimePickerDialog() {
         final Calendar calendar = Calendar.getInstance();
         return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
