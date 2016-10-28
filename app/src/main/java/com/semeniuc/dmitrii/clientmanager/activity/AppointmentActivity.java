@@ -1,7 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,7 +12,6 @@ import android.support.v7.widget.AppCompatTextView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.DatePicker;
 import android.widget.ScrollView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -23,6 +20,7 @@ import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
+import com.semeniuc.dmitrii.clientmanager.fragment.DateDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
@@ -37,9 +35,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class AppointmentActivity extends AppCompatActivity implements OnTaskCompleted {
-
-    public static final int DATE_PICKER_DIALOG_ID = 1;
-    public static final int TIME_PICKER_DIALOG_ID = 2;
 
     protected Utils utils;
     private DatabaseTaskHelper dbHelper;
@@ -103,22 +98,24 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
-        showPickerDialog(DATE_PICKER_DIALOG_ID);
+        hideKeyboard();
+        showDatePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
-        showPickerDialog(DATE_PICKER_DIALOG_ID);
+        hideKeyboard();
+        showDatePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
-        showPickerDialog(TIME_PICKER_DIALOG_ID);
+        //showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
 
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
-        showPickerDialog(TIME_PICKER_DIALOG_ID);
+        //showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
 
     @OnClick(R.id.appointment_paid)
@@ -232,6 +229,26 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
         }
     }
 
+    /**
+     * Open picker dialog with date/time dialog id
+     */
+    protected void showDatePickerDialog(Calendar calendar) {
+        DateDialogFragment ddf = DateDialogFragment.newInstance(this, calendar);
+        ddf.setDateDialogFragmentListener(new DateDialogFragment.DateDialogFragmentListener() {
+
+            @Override
+            public void dateDialogFragmentDateSet(Calendar date) {
+                String formattedDate = utils.getCorrectDateFormat(
+                        date.get(Calendar.YEAR),
+                        date.get(Calendar.MONTH),
+                        date.get(Calendar.DAY_OF_MONTH));
+                tvDate.setText(formattedDate);
+                tvDate.setError(null);
+            }
+        });
+        ddf.show(getSupportFragmentManager(), "date picker dialog fragment");
+    }
+
     protected boolean isAppointmentFormValid() {
         boolean valid = true;
         boolean empty = utils.isEditTextEmpty(etClientName);
@@ -274,47 +291,6 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
         dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
     }
-
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        if (id == DATE_PICKER_DIALOG_ID) {
-            return getDatePickerDialog();
-        }
-        if (id == TIME_PICKER_DIALOG_ID) {
-            return getTimePickerDialog();
-        }
-        return null;
-    }
-
-    /**
-     * Open picker dialog with date/time dialog id
-     */
-    protected void showPickerDialog(int dialogId) {
-        hideKeyboard();
-        showDialog(dialogId);
-    }
-
-    /**
-     * Open date picker dialog with current date
-     */
-    private DatePickerDialog getDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        return new DatePickerDialog(
-                this, datePickerListener, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
-    }
-
-    /**
-     * Set chosen Date to date edit text
-     */
-    protected DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
-        @Override
-        public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-            String formattedDate = utils.getCorrectDateFormat(year, month, day);
-            tvDate.setText(formattedDate);
-            tvDate.setError(null);
-        }
-    };
 
     /**
      * Open date picker dialog with current time

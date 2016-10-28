@@ -1,7 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -77,22 +75,26 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
-        showPickerDialog(DATE_PICKER_DIALOG_ID);
+        hideKeyboard();
+        Calendar calendar = getDateForDialog();
+        showDatePickerDialog(calendar);
     }
 
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
-        showPickerDialog(DATE_PICKER_DIALOG_ID);
+        hideKeyboard();
+        Calendar calendar = getDateForDialog();
+        showDatePickerDialog(calendar);
     }
 
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
-        showPickerDialog(TIME_PICKER_DIALOG_ID);
+        //showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
 
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
-        showPickerDialog(TIME_PICKER_DIALOG_ID);
+        //showPickerDialog(TIME_PICKER_DIALOG_ID);
     }
 
     @OnClick(R.id.appointment_paid)
@@ -209,15 +211,13 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         return true;
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        if (id == DATE_PICKER_DIALOG_ID) {
-            return getDatePickerDialog();
-        } else if (id == TIME_PICKER_DIALOG_ID) {
-            return getTimePickerDialog();
-        } else {
-            return null;
-        }
+    private Calendar getDateForDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        // Set date for dialog coming from appointment
+        Date dateForDialog = utils.convertStringToDate(
+                tvDate.getText().toString(), Constants.DATE_FORMAT, this);
+        calendar.setTime(dateForDialog);
+        return calendar;
     }
 
     /**
@@ -278,20 +278,6 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         String dateTimeStr = date + " " + time;
         dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
         appointment.setDate(dateTime);
-    }
-
-    /**
-     * Open etDate picker dialog with etDate coming from Appointment
-     */
-    private DatePickerDialog getDatePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        // Set date for dialog coming from appointment
-        Date dateForDialog = utils.convertStringToDate(
-                tvDate.getText().toString(), Constants.DATE_FORMAT, this);
-        calendar.setTime(dateForDialog);
-        return new DatePickerDialog(
-                this, datePickerListener, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
     }
 
     /**
