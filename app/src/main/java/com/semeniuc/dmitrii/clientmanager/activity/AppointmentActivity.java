@@ -1,6 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,7 +12,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
@@ -21,6 +19,7 @@ import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.fragment.DateDialogFragment;
+import com.semeniuc.dmitrii.clientmanager.fragment.TimeDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
@@ -110,12 +109,14 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
-        //showPickerDialog(TIME_PICKER_DIALOG_ID);
+        hideKeyboard();
+        showTimePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
-        //showPickerDialog(TIME_PICKER_DIALOG_ID);
+        hideKeyboard();
+        showTimePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_paid)
@@ -230,14 +231,14 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     }
 
     /**
-     * Open picker dialog with date/time dialog id
+     * Open time picker
      */
     protected void showDatePickerDialog(Calendar calendar) {
         DateDialogFragment ddf = DateDialogFragment.newInstance(this, calendar);
         ddf.setDateDialogFragmentListener(new DateDialogFragment.DateDialogFragmentListener() {
 
             @Override
-            public void dateDialogFragmentDateSet(Calendar date) {
+            public void onDateDialogFragmentDateSet(Calendar date) {
                 String formattedDate = utils.getCorrectDateFormat(
                         date.get(Calendar.YEAR),
                         date.get(Calendar.MONTH),
@@ -247,6 +248,25 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
             }
         });
         ddf.show(getSupportFragmentManager(), "date picker dialog fragment");
+    }
+
+    /**
+     * Open time picker dialog
+     */
+    protected void showTimePickerDialog(Calendar calendar) {
+        TimeDialogFragment tdf = TimeDialogFragment.newInstance(this, calendar);
+        tdf.setTimeDialogFragmentListener(new TimeDialogFragment.TimeDialogFragmentListener() {
+
+            @Override
+            public void onTimeDialogFragmentTimeSet(Calendar time) {
+                String formattedTime = utils.getCorrectTimeFormat(
+                        time.get(Calendar.HOUR_OF_DAY),
+                        time.get(Calendar.MINUTE));
+                tvTime.setText(formattedTime);
+                tvTime.setError(null);
+            }
+        });
+        tdf.show(getSupportFragmentManager(), "time picker dialog fragment");
     }
 
     protected boolean isAppointmentFormValid() {
@@ -291,24 +311,6 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
         dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
     }
-
-    private TimePickerDialog getTimePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE), true);
-    }
-
-    /**
-     * Set chosen Time to time edit text
-     */
-    protected TimePickerDialog.OnTimeSetListener timePickerListener = new TimePickerDialog.OnTimeSetListener() {
-        @Override
-        public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
-            String formattedTime = utils.getCorrectTimeFormat(hourOfDay, minute);
-            tvTime.setText(formattedTime);
-            tvTime.setError(null);
-        }
-    };
 
     protected void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);

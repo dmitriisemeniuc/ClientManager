@@ -1,6 +1,5 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.app.TimePickerDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -89,12 +88,16 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
 
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
-        //showPickerDialog(TIME_PICKER_DIALOG_ID);
+        hideKeyboard();
+        Calendar calendar = getTimeForDialog();
+        showTimePickerDialog(calendar);
     }
 
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
-        //showPickerDialog(TIME_PICKER_DIALOG_ID);
+        hideKeyboard();
+        Calendar calendar = getTimeForDialog();
+        showTimePickerDialog(calendar);
     }
 
     @OnClick(R.id.appointment_paid)
@@ -220,8 +223,17 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         return calendar;
     }
 
+    private Calendar getTimeForDialog(){
+        final Calendar calendar = Calendar.getInstance();
+        // Set time for dialog coming from appointment
+        Date dateForDialog = utils.convertStringToDate(
+                tvTime.getText().toString(), Constants.TIME_FORMAT, this);
+        calendar.setTime(dateForDialog);
+        return calendar;
+    }
+
     /**
-     * Fill appointment form fields with coming data
+     * Fill appointment form fields with incoming data
      */
     public void populateAppointmentFields() {
         // text fields
@@ -280,20 +292,7 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         appointment.setDate(dateTime);
     }
 
-    /**
-     * Open etTime picker dialog with etTime coming from Appointment
-     */
-    private TimePickerDialog getTimePickerDialog() {
-        final Calendar calendar = Calendar.getInstance();
-        // Set time for dialog coming from appointment
-        Date dateForDialog = utils.convertStringToDate(
-                tvTime.getText().toString(), Constants.TIME_FORMAT, this);
-        calendar.setTime(dateForDialog);
-        return new TimePickerDialog(this, timePickerListener, calendar.get(Calendar.HOUR_OF_DAY),
-                calendar.get(Calendar.MINUTE), true);
-    }
-
-    // ******** Async Tasks *******
+    // Async Tasks
 
     private class UpdateAppointment extends AsyncTask<Appointment, Void, Integer> {
 
