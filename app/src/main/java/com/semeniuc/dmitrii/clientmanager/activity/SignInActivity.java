@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -242,6 +243,10 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
         GoogleSignInAccount account = result.getSignInAccount();
         if (account == null) return;
         User user = getUserByEmail(account.getEmail());
+        Uri photoUrl = account.getPhotoUrl();
+        if(null != photoUrl){
+            user.setPhotoUrl(photoUrl.toString());
+        }
         MyApplication.getInstance().setUser(user);
         // Show authenticated UI
         updateUI(true);

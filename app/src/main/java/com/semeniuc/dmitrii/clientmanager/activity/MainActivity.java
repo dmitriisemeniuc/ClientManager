@@ -19,6 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
@@ -32,6 +34,7 @@ import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -42,6 +45,14 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
+    private NavigationView navigation;
+    private View navHeader;
+    private ImageView imgProfile;
+    private TextView txtEmail;
+
+    // urls to load navigation header background image
+    // and profile image
+    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -115,6 +126,13 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         toggle.syncState();
 
         NavigationView navigation = (NavigationView) findViewById(R.id.navigation);
+
+        // Navigation view header
+        navHeader = navigation.getHeaderView(0);
+        txtEmail = (TextView) navHeader.findViewById(R.id.email);
+        //imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
+        imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
+
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -127,6 +145,20 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                 return true;
             }
         });
+
+        // load nav menu header data
+        loadNavHeader();
+    }
+
+    /***
+     * Load navigation menu header information
+     * like background image, profile image
+     * name, website, notifications action view (dot)
+     */
+    private void loadNavHeader() {
+        txtEmail.setText(MyApplication.getInstance().getUser().getEmail());
+        String photoUrl = MyApplication.getInstance().getUser().getPhotoUrl();
+        Picasso.with(this).load(photoUrl).into(imgProfile);
     }
 
     protected void signOut() {

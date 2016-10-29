@@ -29,6 +29,7 @@ public class User implements Parcelable {
     private String password;
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Appointment> appointments;
+    private String photoUrl;
 
     public User() {
     }
@@ -106,5 +107,21 @@ public class User implements Parcelable {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
+    public String getPhotoUrl() {
+        return photoUrl;
+    }
+
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }
