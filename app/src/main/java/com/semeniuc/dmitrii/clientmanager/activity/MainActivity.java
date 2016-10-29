@@ -7,9 +7,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -19,19 +21,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.github.clans.fab.FloatingActionMenu;
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.adapter.AppointmentAdapter;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.utils.CircleTransform;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 import com.squareup.picasso.Picasso;
@@ -42,17 +43,11 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     public static String phone;
     private DatabaseTaskHelper dbHelper;
-
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigation;
     private View navHeader;
     private ImageView imgProfile;
     private TextView txtEmail;
-
-    // urls to load navigation header background image
-    // and profile image
-    private static final String urlProfileImg = "https://lh3.googleusercontent.com/eCtE_G34M9ygdkmOpYvCag1vBARCmZwnVS6rS5t4JLzJ6QgQSBquM0nuTsCpLhYbKljoyS-txg";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,7 +83,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                 Toast.makeText(this, "Order by Client", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.show_done_appointments:
-                Toast.makeText(this, "Show Done appointments", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Show Done", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -103,6 +98,34 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                 collapseFabMenu();
                 break;
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted
+                    callToNumber(phone);
+                } else {
+                    // permission denied
+                    Toast.makeText(this, getResources().getString(R.string.grant_call_permission),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
+            return;
+        }
+        super.onBackPressed();
     }
 
     private void initToolbar() {
@@ -130,7 +153,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         // Navigation view header
         navHeader = navigation.getHeaderView(0);
         txtEmail = (TextView) navHeader.findViewById(R.id.email);
-        //imgNavHeaderBg = (ImageView) navHeader.findViewById(R.id.img_header_bg);
         imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
 
         navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -150,36 +172,13 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         loadNavHeader();
     }
 
-    /***
+    /**
      * Load navigation menu header information
-     * like background image, profile image
-     * name, website, notifications action view (dot)
      */
     private void loadNavHeader() {
         txtEmail.setText(MyApplication.getInstance().getUser().getEmail());
         String photoUrl = MyApplication.getInstance().getUser().getPhotoUrl();
-        Picasso.with(this).load(photoUrl).into(imgProfile);
-    }
-
-    protected void signOut() {
-        Utils utils = new Utils();
-        String userType = utils.getUserFromPrefs(this);
-        if (userType.equals(Constants.GOOGLE_USER)) {
-            super.signOut();
-        }
-        utils.setUserInPrefs(Constants.NEW_USER, this);
-        backToSignInActivity();
-    }
-
-    private void revokeAccess() {
-        Auth.GoogleSignInApi.revokeAccess(MyApplication.getInstance().getGoogleApiClient())
-                .setResultCallback(
-                        new ResultCallback<Status>() {
-                            @Override
-                            public void onResult(@NonNull Status status) {
-                                updateUI(false);
-                            }
-                        });
+        Picasso.with(this).load(photoUrl).transform(new CircleTransform()).into(imgProfile);
     }
 
     private void startAppointmentActivity() {
@@ -220,23 +219,14 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         startActivity(intent);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted
-                    callToNumber(phone);
-                } else {
-                    // permission denied
-                    Toast.makeText(this, getResources().getString(R.string.grant_call_permission),
-                            Toast.LENGTH_LONG).show();
-                }
-            }
+    protected void signOut() {
+        Utils utils = new Utils();
+        String userType = utils.getUserFromPrefs(this);
+        if (userType.equals(Constants.GOOGLE_USER)) {
+            super.signOut();
         }
+        utils.setUserInPrefs(Constants.NEW_USER, this);
+        backToSignInActivity();
     }
 
     /**
@@ -249,6 +239,21 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         // RecyclerView will be displayed as list
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                FloatingActionMenu menu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
+                if (dy > 0) {
+                    CoordinatorLayout.LayoutParams layoutParams =
+                            (CoordinatorLayout.LayoutParams) menu.getLayoutParams();
+                    int fab_bottomMargin = layoutParams.bottomMargin;
+                    menu.animate().translationY(menu.getHeight() +
+                            fab_bottomMargin).setInterpolator(new LinearInterpolator()).start();
+                } else if (dy < 0) {
+                    menu.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
+                }
+            }
+        });
         return recyclerView;
     }
 
