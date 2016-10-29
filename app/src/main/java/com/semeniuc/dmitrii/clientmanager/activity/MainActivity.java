@@ -7,11 +7,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -36,12 +40,18 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     public static String phone;
     private DatabaseTaskHelper dbHelper;
 
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setOnClickListeners();
         dbHelper = new DatabaseTaskHelper();
+
+        initToolbar();
+        initNavigationView();
     }
 
     @Override
@@ -60,11 +70,14 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.menu_sign_out:
-                signOut();
+            case R.id.show_ordered_by_date:
+                Toast.makeText(this, "Order by date", Toast.LENGTH_SHORT).show();
                 return true;
-            case R.id.menu_disconnect_account:
-                revokeAccess();
+            case R.id.show_ordered_by_client:
+                Toast.makeText(this, "Order by Client", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.show_done_appointments:
+                Toast.makeText(this, "Show Done appointments", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -79,6 +92,41 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                 collapseFabMenu();
                 break;
         }
+    }
+
+    private void initToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.app_name);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+
+        toolbar.inflateMenu(R.menu.main_options_menu);
+    }
+
+    private void initNavigationView() {
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+        drawerLayout.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigation = (NavigationView) findViewById(R.id.navigation);
+        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                switch (item.getItemId()) {
+                    case R.id.action_logout:
+                        signOut();
+                        break;
+                }
+                return true;
+            }
+        });
     }
 
     protected void signOut() {
@@ -160,8 +208,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     /**
-    * Get Recycler View with itemAnimation and LayoutManager setting
-    * */
+     * Get Recycler View with itemAnimation and LayoutManager setting
+     */
     private RecyclerView getRecyclerView() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recyclerview);
         recyclerView.setHasFixedSize(true);
@@ -173,8 +221,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     /**
-    * Pass an appointment to the AppointmentReview Activity using parcelable
-    * */
+     * Pass an appointment to the AppointmentReview Activity using parcelable
+     */
     private void reviewAppointment(Appointment appointment) {
         Intent i = new Intent(this, AppointmentReviewActivity.class);
         i.putExtra(Constants.APPOINTMENT_PATH, appointment);
@@ -197,8 +245,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     /**
-    * Returning of the user back to sign in activity
-    * */
+     * Returning of the user back to sign in activity
+     */
     private void backToSignInActivity() {
         Intent intent = new Intent(this, SignInActivity.class);
         startActivity(intent);

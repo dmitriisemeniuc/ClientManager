@@ -34,7 +34,7 @@
         <activity
             android:name=".activity.MainActivity"
             android:label=""
-            android:theme="@style/Theme.AppCompat.Light">
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
         <activity
