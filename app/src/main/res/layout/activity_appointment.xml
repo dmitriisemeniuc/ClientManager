@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/appointment_layout_padding">
+    android:padding="@dimen/activity_vertical_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,182 +59,13 @@
                 android:textColor="@color/service_text_color"
                 android:textColorHint="@color/service_hint_text_color" />
         </RelativeLayout>
-        <!-- SERVICE TYPE AND TOOLS-->
-        <RelativeLayout
-            android:id="@+id/appointment_service_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_service_name_layout"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center_horizontal">
 
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_service_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/services"
-                android:fontFamily="sans-serif-light"
-                android:textSize="18sp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_service_hair_coloring_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_service_label"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_paint_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_service_hairdo_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_service_hair_coloring_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_womans_hair_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_service_haircut_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_service_hairdo_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_scissors_no" />
-
-        </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/appointment_tools_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_service_layout"
-            android:gravity="center_horizontal">
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_tools_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/tools"
-                android:fontFamily="sans-serif-light"
-                android:textSize="18sp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_brush_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_label"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_brush_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_hair_brush_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_brush_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_hair_brush_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_hair_dryer_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_hair_brush_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_hair_dryer_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_oxy_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_hair_dryer_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_soap_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_tube_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_oxy_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_tube_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_cut_set_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_tube_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_cutset_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_hair_band_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_cut_set_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_hair_band_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_spray_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_hair_band_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_spray_no" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_tools_trimmer_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_spray_icon"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_trimmer_no" />
-        </RelativeLayout>
-        <!-- PHONE -->
-        <RelativeLayout
-            android:id="@+id/appointment_client_phone_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_tools_layout"
-            android:layout_marginStart="20dp">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_client_phone_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_smartphone" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/appointment_client_phone"
-                style="@style/appointmentFormField"
-                android:layout_marginEnd="20dp"
-                android:layout_toEndOf="@+id/appointment_client_phone_icon"
-                android:hint="@string/appointment_phone_number"
-                android:inputType="phone"
-                android:digits="0123456789+"
-                android:maxLength="30"
-                android:textColorHint="@color/text_hint" />
-        </RelativeLayout>
         <!-- DATE -->
         <RelativeLayout
             android:id="@+id/appointment_date_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_client_phone_layout"
+            android:layout_below="@+id/appointment_service_name_layout"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp">
@@ -274,12 +105,40 @@
                 android:textColorHint="@color/text_hint"
                 android:textSize="18sp" />
         </RelativeLayout>
+
+        <!-- PHONE -->
+        <RelativeLayout
+            android:id="@+id/appointment_client_phone_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_date_layout"
+            android:layout_marginStart="20dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_client_phone_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_smartphone" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/appointment_client_phone"
+                style="@style/appointmentFormField"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/appointment_client_phone_icon"
+                android:hint="@string/appointment_phone_number"
+                android:inputType="phone"
+                android:digits="0123456789+"
+                android:maxLength="30"
+                android:textColorHint="@color/text_hint" />
+        </RelativeLayout>
+
         <!-- MONEY -->
         <RelativeLayout
             android:id="@+id/appointment_money_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_date_layout"
+            android:layout_below="@+id/appointment_client_phone_layout"
             android:gravity="center_horizontal">
 
             <android.support.v7.widget.AppCompatImageView
@@ -346,12 +205,167 @@
                 android:src="@mipmap/ic_ok_no" />
 
         </RelativeLayout>
+
+        <!-- SERVICE TYPE AND TOOLS-->
+        <RelativeLayout
+            android:id="@+id/appointment_service_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_money_layout"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_service_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/services"
+                android:fontFamily="sans-serif-light"
+                android:textSize="18sp"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_service_hair_coloring_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_service_label"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_paint_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_service_hairdo_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_service_hair_coloring_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_womans_hair_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_service_haircut_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_service_hairdo_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_scissors_no" />
+
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/appointment_tools_layout_top"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_service_layout"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_tools_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/tools"
+                android:fontFamily="sans-serif-light"
+                android:textSize="18sp"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_brush_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_label"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_brush_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_hair_brush_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_brush_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_hair_brush_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_hair_dryer_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_hair_brush_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_hair_dryer_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_oxy_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_hair_dryer_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_soap_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_tube_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_oxy_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_tube_no" />
+
+            </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/appointment_tools_layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_tools_layout_top"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_cut_set_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_cutset_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_hair_band_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_cut_set_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_hair_band_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_spray_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_hair_band_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_spray_no" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_tools_trimmer_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/appointment_tools_spray_icon"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_trimmer_no" />
+        </RelativeLayout>
+
         <!-- INFO -->
         <RelativeLayout
             android:id="@+id/appointment_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_money_layout"
+            android:layout_below="@+id/appointment_tools_layout_bottom"
             android:layout_marginStart="20dp">
 
             <android.support.v7.widget.AppCompatImageView
