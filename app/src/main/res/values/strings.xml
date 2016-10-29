@@ -70,7 +70,8 @@
     <string name="logout">Logout</string>
     <string name="order_by_date">Order by Date</string>
     <string name="order_by_client">Order by Client</string>
-    <string name="show_done_appointments">Show Done</string>
+    <string name="show_done_by_date">Show Done by Date</string>
     <string name="profile_image">Profile image</string>
     <string name="background_image">Background image</string>
+    <string name="show_done_by_client">Show Done by Client</string>
 </resources>

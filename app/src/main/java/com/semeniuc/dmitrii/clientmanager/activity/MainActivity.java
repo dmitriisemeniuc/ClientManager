@@ -18,7 +18,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
@@ -63,31 +62,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     @Override
     public void onStart() {
         super.onStart();
-        displayAppointmentsOrderedByDate();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_options_menu, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.show_ordered_by_date:
-                Toast.makeText(this, "Order by date", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.show_ordered_by_client:
-                Toast.makeText(this, "Order by Client", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.show_done_appointments:
-                Toast.makeText(this, "Show Done", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+        displayAppointments(Constants.ORDER_BY_DATE);
     }
 
     @Override
@@ -134,10 +109,24 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                return false;
+                switch (item.getItemId()) {
+                    case R.id.show_ordered_by_date:
+                        displayAppointments(Constants.ORDER_BY_DATE);
+                        return true;
+                    case R.id.show_ordered_by_client:
+                        displayAppointments(Constants.ORDER_BY_CLIENT);
+                        return true;
+                    case R.id.show_done_by_date:
+                        displayAppointments(Constants.SHOW_DONE_BY_DATE);
+                        return true;
+                    case R.id.show_done_by_client:
+                        displayAppointments(Constants.SHOW_DONE_BY_CLIENT);
+                        return true;
+                    default:
+                        return false;
+                }
             }
         });
-
         toolbar.inflateMenu(R.menu.main_options_menu);
     }
 
@@ -167,7 +156,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                 return true;
             }
         });
-
         // load nav menu header data
         loadNavHeader();
     }
@@ -186,8 +174,20 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         startActivity(intent);
     }
 
-    private void displayAppointmentsOrderedByDate() {
-        List<Appointment> appointments = dbHelper.getAppointmentsOrderedByDate();
+    private void displayAppointments(int option) {
+        List<Appointment> appointments = null;
+        if (option == Constants.ORDER_BY_DATE) {
+            appointments = dbHelper.getAppointmentsOrderedByDate();
+        }
+        if (option == Constants.ORDER_BY_CLIENT) {
+            appointments = dbHelper.getAppointmentsOrderedByClient();
+        }
+        if (option == Constants.SHOW_DONE_BY_DATE) {
+            appointments = dbHelper.getDoneAppointmentsOrderedByDate();
+        }
+        if (option == Constants.SHOW_DONE_BY_CLIENT) {
+            appointments = dbHelper.getDoneAppointmentsOrderedByClient();
+        }
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
             @Override

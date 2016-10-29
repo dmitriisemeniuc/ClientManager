@@ -53,7 +53,7 @@ public final class AppointmentRepository implements Repository {
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.APPOINTMENT_ID_FIELD_NAME, appointment.getId());
+            queryBuilder.where().eq(Appointment.ID_FIELD_NAME, appointment.getId());
             PreparedQuery<Appointment> preparedQuery = queryBuilder.prepare();
             Appointment appointmentEntry = appointmentDAO.queryForFirst(preparedQuery);
             appointmentEntry = new Utils().updateAppointmentData(appointment, appointmentEntry);
@@ -91,13 +91,72 @@ public final class AppointmentRepository implements Repository {
 
     @Override
     public List<Appointment> findAll() {
+        List<Appointment> appointment = null;
+        try {
+            appointment = helper.getAppointmentDao().queryForAll();
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return appointment;
+    }
+
+    public List<Appointment> findAllOrderedByDate() {
         List<Appointment> items = null;
         long id = MyApplication.getInstance().getUser().getId();
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
             queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
+            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, false);
             queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true); // true for ascending
+            items = appointmentDAO.query(queryBuilder.prepare());
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    public List<Appointment> findAllOrderedByClient() {
+        List<Appointment> items = null;
+        long id = MyApplication.getInstance().getUser().getId();
+        try {
+            Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
+            QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
+            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
+            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, false);
+            queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true); // true for ascending
+            items = appointmentDAO.query(queryBuilder.prepare());
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    public List<Appointment> findDoneOrderedByDate() {
+        List<Appointment> items = null;
+        long id = MyApplication.getInstance().getUser().getId();
+        try {
+            Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
+            QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
+            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
+            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, true);
+            queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true); // true for ascending
+            items = appointmentDAO.query(queryBuilder.prepare());
+        } catch (java.sql.SQLException e) {
+            e.printStackTrace();
+        }
+        return items;
+    }
+
+    public List<Appointment> findDoneOrderedByClient() {
+        List<Appointment> items = null;
+        long id = MyApplication.getInstance().getUser().getId();
+        try {
+            Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
+            QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
+            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
+            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, true);
+            queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true); // true for ascending
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();

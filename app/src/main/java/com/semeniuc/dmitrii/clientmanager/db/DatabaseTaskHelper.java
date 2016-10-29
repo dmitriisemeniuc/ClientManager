@@ -100,7 +100,58 @@ public class DatabaseTaskHelper {
 
     public List<Appointment> getAppointmentsOrderedByDate(){
         AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
-        List<Appointment> appointments = appointmentRepo.findAll();
+        List<Appointment> appointments = appointmentRepo.findAllOrderedByDate();
+        if (appointments != null) {
+            DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
+            for (Appointment appointment : appointments) {
+                try {
+                    helper.getServiceDao().refresh(appointment.getService());
+                    helper.getToolsDao().refresh(appointment.getTools());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getAppointmentsOrderedByClient(){
+        AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
+        List<Appointment> appointments = appointmentRepo.findAllOrderedByClient();
+        if (appointments != null) {
+            DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
+            for (Appointment appointment : appointments) {
+                try {
+                    helper.getServiceDao().refresh(appointment.getService());
+                    helper.getToolsDao().refresh(appointment.getTools());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getDoneAppointmentsOrderedByDate(){
+        AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
+        List<Appointment> appointments = appointmentRepo.findDoneOrderedByDate();
+        if (appointments != null) {
+            DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
+            for (Appointment appointment : appointments) {
+                try {
+                    helper.getServiceDao().refresh(appointment.getService());
+                    helper.getToolsDao().refresh(appointment.getTools());
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return appointments;
+    }
+
+    public List<Appointment> getDoneAppointmentsOrderedByClient(){
+        AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
+        List<Appointment> appointments = appointmentRepo.findDoneOrderedByClient();
         if (appointments != null) {
             DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
             for (Appointment appointment : appointments) {

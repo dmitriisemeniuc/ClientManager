@@ -13,9 +13,9 @@ import java.util.Date;
 @DatabaseTable
 public class Appointment implements Parcelable {
 
-    public static final String APPOINTMENT_ID_FIELD_NAME = "_ID";
+    public static final String ID_FIELD_NAME = "_ID";
     public static final String USER_FIELD_NAME = "user_id";
-    public static final String APPOINTMENT_TITLE_FIELD_NAME = "title";
+    public static final String CLIENT_FIELD_NAME = "client";
     public static final String CLIENT_PHONE_FIELD_NAME = "phone";
     public static final String SERVICE_FIELD_NAME = "service";
     public static final String TOOLS_FIELD_NAME = "tools";
@@ -25,11 +25,11 @@ public class Appointment implements Parcelable {
     public static final String PAID_FIELD_NAME = "paid";
     public static final String DONE_FIELD_NAME = "done";
 
-    @DatabaseField(generatedId = true, columnName = APPOINTMENT_ID_FIELD_NAME)
+    @DatabaseField(generatedId = true, columnName = ID_FIELD_NAME)
     private long id;
     @DatabaseField(canBeNull = false, foreign = true, columnName = USER_FIELD_NAME)
     private User user;
-    @DatabaseField(canBeNull = false, columnName = APPOINTMENT_TITLE_FIELD_NAME)
+    @DatabaseField(canBeNull = false, columnName = CLIENT_FIELD_NAME)
     private String clientName;
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
