@@ -45,13 +45,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // CLIENT
         holder.clientName.setText(appointments.get(position).getClientName());
         // PHONE ICON
-        if (appointments.get(position).getClientPhone().isEmpty())
-            holder.clientPhoneIcon.setVisibility(View.GONE);
+        if (appointments.get(position).getClientPhone().isEmpty()){
+            holder.clientPhoneIcon.setVisibility(View.INVISIBLE);
+        }
         // SERVICE
         holder.service.setText(appointments.get(position).getService().getName());
         // SUM
         if (appointments.get(position).getSum().isEmpty()) {
-            holder.currency.setVisibility(View.GONE);
+            holder.currency.setVisibility(View.INVISIBLE);
             holder.sumStrike.setVisibility(View.GONE);
         } else {
             holder.sum.setText(appointments.get(position).getSum());
