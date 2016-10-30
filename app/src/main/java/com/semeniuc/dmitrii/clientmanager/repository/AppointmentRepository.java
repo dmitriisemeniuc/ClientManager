@@ -5,6 +5,7 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
+import com.j256.ormlite.stmt.Where;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseHelper;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseManager;
@@ -106,9 +107,21 @@ public final class AppointmentRepository implements Repository {
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
-            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, false);
-            queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true); // true for ascending
+            Where<Appointment, Integer> where = queryBuilder.where();
+            where.or(
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, false),
+                            where.eq(Appointment.PAID_FIELD_NAME, true)),
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, true),
+                            where.eq(Appointment.PAID_FIELD_NAME, false)),
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, false),
+                            where.eq(Appointment.PAID_FIELD_NAME, false)));
+            queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true);
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -122,9 +135,21 @@ public final class AppointmentRepository implements Repository {
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
-            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, false);
-            queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true); // true for ascending
+            Where<Appointment, Integer> where = queryBuilder.where();
+            where.or(
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, false),
+                            where.eq(Appointment.PAID_FIELD_NAME, true)),
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, true),
+                            where.eq(Appointment.PAID_FIELD_NAME, false)),
+                    where.and(
+                            where.eq(Appointment.USER_FIELD_NAME, id),
+                            where.eq(Appointment.DONE_FIELD_NAME, false),
+                            where.eq(Appointment.PAID_FIELD_NAME, false)));
+            queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true);
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
@@ -132,14 +157,17 @@ public final class AppointmentRepository implements Repository {
         return items;
     }
 
-    public List<Appointment> findDoneOrderedByDate() {
+    public List<Appointment> findDoneAndPaidOrderedByDate() {
         List<Appointment> items = null;
         long id = MyApplication.getInstance().getUser().getId();
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
-            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, true);
+            Where<Appointment, Integer> where = queryBuilder.where();
+            where.and(
+                    where.eq(Appointment.USER_FIELD_NAME, id),
+                    where.eq(Appointment.DONE_FIELD_NAME, true),
+                    where.eq(Appointment.PAID_FIELD_NAME, true));
             queryBuilder.orderBy(Appointment.DATE_FIELD_NAME, true); // true for ascending
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
@@ -148,14 +176,17 @@ public final class AppointmentRepository implements Repository {
         return items;
     }
 
-    public List<Appointment> findDoneOrderedByClient() {
+    public List<Appointment> findDoneAndPaidOrderedByClient() {
         List<Appointment> items = null;
         long id = MyApplication.getInstance().getUser().getId();
         try {
             Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
             QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
-            queryBuilder.where().eq(Appointment.USER_FIELD_NAME, id);
-            queryBuilder.where().eq(Appointment.DONE_FIELD_NAME, true);
+            Where<Appointment, Integer> where = queryBuilder.where();
+            where.and(
+                    where.eq(Appointment.USER_FIELD_NAME, id),
+                    where.eq(Appointment.DONE_FIELD_NAME, true),
+                    where.eq(Appointment.PAID_FIELD_NAME, true));
             queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true); // true for ascending
             items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {

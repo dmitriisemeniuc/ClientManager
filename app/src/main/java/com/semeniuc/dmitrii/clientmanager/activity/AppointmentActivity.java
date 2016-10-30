@@ -270,11 +270,6 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
             etClientName.setError(getResources().getString(R.string.field_is_required));
             valid = false;
         }
-        empty = utils.isEditTextEmpty(etClientPhone);
-        if (empty) {
-            etClientPhone.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
         empty = utils.isEditTextEmpty(etService);
         if (empty) {
             etService.setError(getResources().getString(R.string.field_is_required));

@@ -18,11 +18,68 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
+
+            <RelativeLayout
+                android:id="@+id/main_cards_time_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_date_time_icon"
+                    style="@style/cardViewItem"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/ic_datetime" />
+
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_appointment_date_time"
+                    style="@style/cardViewItem"
+                    android:layout_marginStart="5dp"
+                    android:layout_toEndOf="@+id/main_cards_date_time_icon"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/date_text_color"
+                    android:textSize="16sp" />
+
+                <RelativeLayout
+                    android:id="@+id/main_appointment_services"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp">
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/main_cards_services_hair_coloring"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:src="@mipmap/ic_paint_yes" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/main_cards_services_hairdo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_toEndOf="@+id/main_cards_services_hair_coloring"
+                        android:src="@mipmap/ic_womans_hair_yes" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/main_cards_services_haircut"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_toEndOf="@+id/main_cards_services_hairdo"
+                        android:src="@mipmap/ic_scissors_yes" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+
             <!-- CLIENT -->
             <RelativeLayout
                 android:id="@+id/main_cards_client_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/main_cards_time_layout"
+                android:layout_marginTop="10dp">
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_client_icon"
@@ -34,20 +91,38 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_client_name"
                     style="@style/cardViewItem"
-                    android:layout_marginEnd="70dp"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_client_icon"
+                    android:layout_toStartOf="@+id/main_cards_date_and_phone_layout"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/client_name_text_color"
                     android:textSize="18sp" />
 
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_done_icon"
+                <RelativeLayout
+                    android:id="@+id/main_cards_date_and_phone_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_ok_yes" />
+                    android:layout_centerVertical="true">
+
+                    <android.support.v7.widget.AppCompatTextView
+                        android:id="@+id/main_appointment_client_phone"
+                        style="@style/cardViewItem"
+                        android:fontFamily="sans-serif-light"
+                        android:textColor="@color/phone_number_text_color"
+                        android:textSize="16sp"
+                        android:textStyle="italic" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/main_cards_phone_call_icon"
+                        style="@style/cardViewItem"
+                        android:layout_height="28dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/main_appointment_client_phone"
+                        android:src="@mipmap/ic_phone_call" />
+
+                </RelativeLayout>
+
             </RelativeLayout>
             <!-- SERVICE -->
             <RelativeLayout
@@ -68,7 +143,7 @@
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
-                    android:layout_marginEnd="70dp"
+                    android:layout_toStartOf="@+id/main_cards_paid_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/service_text_color"
                     android:textSize="18sp" />
@@ -103,9 +178,10 @@
                     android:id="@+id/main_cards_sum_strike"
                     style="@style/cardViewItem"
                     android:layout_height="1dp"
-                    android:layout_marginStart="3dp"
                     android:layout_marginEnd="-3dp"
+                    android:layout_marginStart="3dp"
                     android:layout_toEndOf="@+id/main_cards_paid_icon">
+
                     <View
                         android:id="@+id/strike"
                         android:layout_width="match_parent"
@@ -115,52 +191,13 @@
             </RelativeLayout>
 
             <!-- SERVICES -->
-            <RelativeLayout
-                android:id="@+id/main_appointment_services"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/main_cards_service_layout"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="15dp">
 
-                <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_appointment_services_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/services"
-                    android:textSize="16sp" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_services_hair_coloring"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_appointment_services_label"
-                    android:src="@mipmap/ic_paint_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_services_hairdo"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_services_hair_coloring"
-                    android:src="@mipmap/ic_womans_hair_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_services_haircut"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_services_hairdo"
-                    android:src="@mipmap/ic_scissors_yes" />
-
-            </RelativeLayout>
             <!-- TOOLS -->
             <RelativeLayout
                 android:id="@+id/main_appointment_tools"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/main_appointment_services"
+                android:layout_below="@+id/main_cards_service_layout"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="15dp">
 
@@ -245,78 +282,12 @@
 
             </RelativeLayout>
 
-            <!-- DIVIDER -->
-            <View
-                android:id="@+id/divider"
-                android:layout_width="match_parent"
-                android:layout_height="1px"
-                android:layout_below="@+id/main_appointment_tools"
-                android:layout_marginBottom="1dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="15dp"
-                android:background="@color/colorPrimary" />
-            <!-- DATE, PHONE -->
-            <RelativeLayout
-                android:id="@+id/main_cards_date_and_phone_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/divider"
-                android:layout_marginTop="5dp">
-
-                <RelativeLayout
-                    android:id="@+id/main_cards_time_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="5dp">
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_date_time_icon"
-                        style="@style/cardViewItem"
-                        android:layout_height="20dp"
-                        android:src="@mipmap/ic_datetime" />
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/main_appointment_date_time"
-                        style="@style/cardViewItem"
-                        android:layout_marginStart="5dp"
-                        android:layout_toEndOf="@+id/main_cards_date_time_icon"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/date_text_color"
-                        android:textSize="16sp" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/main_cards_client_phone_layout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true">
-
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/main_appointment_client_phone"
-                        style="@style/cardViewItem"
-                        android:fontFamily="sans-serif-light"
-                        android:textColor="@color/phone_number_text_color"
-                        android:textSize="16sp"
-                        android:textStyle="italic" />
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_phone_call_icon"
-                        style="@style/cardViewItem"
-                        android:layout_height="28dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/main_appointment_client_phone"
-                        android:src="@mipmap/ic_phone_call" />
-                </RelativeLayout>
-            </RelativeLayout>
             <!-- INFO -->
             <RelativeLayout
                 android:id="@+id/main_cards_info_layout"
                 style="@style/cardViewItem"
-                android:layout_below="@+id/main_cards_date_and_phone_layout"
-                android:layout_marginTop="5dp">
+                android:layout_below="@+id/main_appointment_tools"
+                android:layout_marginTop="10dp">
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_info_icon"
@@ -329,9 +300,18 @@
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_info_icon"
+                    android:layout_toStartOf="@+id/main_cards_done_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/info_text_color"
                     android:textSize="16sp" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_done_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/ic_ok_yes" />
 
             </RelativeLayout>
 

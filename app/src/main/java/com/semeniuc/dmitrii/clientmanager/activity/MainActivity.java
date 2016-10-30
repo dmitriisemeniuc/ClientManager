@@ -116,11 +116,11 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                     case R.id.show_ordered_by_client:
                         displayAppointments(Constants.ORDER_BY_CLIENT);
                         return true;
-                    case R.id.show_done_by_date:
-                        displayAppointments(Constants.SHOW_DONE_BY_DATE);
+                    case R.id.show_archived_order_by_date:
+                        displayAppointments(Constants.ARCHIVED_ORDER_BY_DATE);
                         return true;
-                    case R.id.show_done_by_client:
-                        displayAppointments(Constants.SHOW_DONE_BY_CLIENT);
+                    case R.id.show_archived_order_by_client:
+                        displayAppointments(Constants.ARCHIVED_ORDER_BY_CLIENT);
                         return true;
                     default:
                         return false;
@@ -182,11 +182,11 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         if (option == Constants.ORDER_BY_CLIENT) {
             appointments = dbHelper.getAppointmentsOrderedByClient();
         }
-        if (option == Constants.SHOW_DONE_BY_DATE) {
-            appointments = dbHelper.getDoneAppointmentsOrderedByDate();
+        if (option == Constants.ARCHIVED_ORDER_BY_DATE) {
+            appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByDate();
         }
-        if (option == Constants.SHOW_DONE_BY_CLIENT) {
-            appointments = dbHelper.getDoneAppointmentsOrderedByClient();
+        if (option == Constants.ARCHIVED_ORDER_BY_CLIENT) {
+            appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByClient();
         }
         // Set adapter with itemOnClickListener
         getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {

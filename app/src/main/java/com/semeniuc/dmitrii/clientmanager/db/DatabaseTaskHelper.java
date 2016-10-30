@@ -132,9 +132,9 @@ public class DatabaseTaskHelper {
         return appointments;
     }
 
-    public List<Appointment> getDoneAppointmentsOrderedByDate(){
+    public List<Appointment> getDoneAndPaidAppointmentsOrderedByDate(){
         AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
-        List<Appointment> appointments = appointmentRepo.findDoneOrderedByDate();
+        List<Appointment> appointments = appointmentRepo.findDoneAndPaidOrderedByDate();
         if (appointments != null) {
             DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
             for (Appointment appointment : appointments) {
@@ -149,9 +149,9 @@ public class DatabaseTaskHelper {
         return appointments;
     }
 
-    public List<Appointment> getDoneAppointmentsOrderedByClient(){
+    public List<Appointment> getDoneAndPaidAppointmentsOrderedByClient(){
         AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
-        List<Appointment> appointments = appointmentRepo.findDoneOrderedByClient();
+        List<Appointment> appointments = appointmentRepo.findDoneAndPaidOrderedByClient();
         if (appointments != null) {
             DatabaseHelper helper = new DatabaseHelper(MyApplication.getInstance().getApplicationContext());
             for (Appointment appointment : appointments) {

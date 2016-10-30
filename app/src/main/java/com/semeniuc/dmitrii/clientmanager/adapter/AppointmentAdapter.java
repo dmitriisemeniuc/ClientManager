@@ -3,6 +3,7 @@ package com.semeniuc.dmitrii.clientmanager.adapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private final OnPhoneClickListener phoneListener;
     private Utils utils = new Utils();
 
-    public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener, OnPhoneClickListener phoneListener) {
+    public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener,
+                              OnPhoneClickListener phoneListener) {
         this.appointments = appointments;
         this.listener = listener;
         this.phoneListener = phoneListener;
@@ -40,36 +42,51 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     @Override
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
-        // fields
+        // CLIENT
         holder.clientName.setText(appointments.get(position).getClientName());
-
-        if (appointments.get(position).getClientPhone().isEmpty()) {
+        // PHONE ICON
+        if (appointments.get(position).getClientPhone().isEmpty())
             holder.clientPhoneIcon.setVisibility(View.GONE);
-        } else {
-            holder.clientPhone.setText(appointments.get(position).getClientPhone());
-        }
+        // SERVICE
         holder.service.setText(appointments.get(position).getService().getName());
-        holder.sum.setText(appointments.get(position).getSum());
-        holder.info.setText(appointments.get(position).getInfo());
-        if (appointments.get(position).getInfo().isEmpty()) {
-            holder.infoLayout.setVisibility(View.GONE);
+        // SUM
+        if (appointments.get(position).getSum().isEmpty()) {
+            holder.currency.setVisibility(View.GONE);
+            holder.sumStrike.setVisibility(View.GONE);
+        } else {
+            holder.sum.setText(appointments.get(position).getSum());
         }
+        // DATE
         holder.dateTime.setText(utils.convertDateToString(appointments.get(position).getDate(),
                 Constants.DATE_TIME_FORMAT, MyApplication.getInstance().getApplicationContext()));
-        // booleans {images}
+        // PAID
+        boolean paid = appointments.get(position).isPaid();
+        if (!paid) {
+            holder.paid.setVisibility(View.GONE);
+            holder.sumStrike.setVisibility(View.GONE);
+        } else {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.light_yellow));
+        }
+        // DONE
         boolean done = appointments.get(position).isDone();
         if (!done) {
-            holder.done.setVisibility(View.INVISIBLE);
+            holder.done.setVisibility(View.GONE);
         } else {
-            holder.divider.setBackgroundColor(ContextCompat.getColor(
-                    MyApplication.getInstance().getApplicationContext(), R.color.greenBackground));
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.light_green));
         }
-        boolean paid = appointments.get(position).isPaid();
-        if (!paid){
-            holder.paid.setVisibility(View.INVISIBLE);
-            holder.sumStrike.setVisibility(View.GONE);
+        // INFO
+        if (appointments.get(position).getInfo().isEmpty()) {
+            holder.infoIcon.setVisibility(View.GONE);
+            if (!done) holder.infoLayout.setVisibility(View.GONE);
+        } else {
+            holder.info.setText(appointments.get(position).getInfo());
         }
-
+        if (paid && done) {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.white));
+        }
         // SERVICES
         boolean hairColoring = appointments.get(position).getService().isHairColoring();
         if (!hairColoring) holder.hairColoring.setVisibility(View.GONE);
@@ -121,41 +138,24 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView clientName;
-        AppCompatTextView clientPhone;
-        AppCompatTextView service;
-        AppCompatTextView sum;
-        AppCompatTextView info;
-        AppCompatTextView dateTime;
-        AppCompatImageView clientPhoneIcon;
-        AppCompatImageView paid;
-        AppCompatImageView done;
-        AppCompatImageView hairColoring;
-        AppCompatImageView hairdo;
-        AppCompatImageView haircut;
-        AppCompatImageView brush;
-        AppCompatImageView hairBrush;
-        AppCompatImageView hairDryer;
-        AppCompatImageView hairBand;
-        AppCompatImageView cutSet;
-        AppCompatImageView spray;
-        AppCompatImageView oxy;
-        AppCompatImageView tube;
-        AppCompatImageView trimmer;
-        View divider;
-        RelativeLayout sumStrike;
-        RelativeLayout serviceLayout;
-        RelativeLayout toolsLayout;
-        RelativeLayout infoLayout;
+        AppCompatTextView clientName, clientPhone, service, sum, currency, info, dateTime;
+        AppCompatImageView paid, done, clientPhoneIcon, hairColoring, hairdo, haircut, brush,
+                hairBrush, hairDryer, hairBand, cutSet, spray, oxy, tube, trimmer, infoIcon;
+        RelativeLayout sumStrike, serviceLayout, toolsLayout, infoLayout;
+        CardView cardView;
+
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
+            cardView = (CardView) itemView.findViewById(R.id.main_recyclerview);
             clientName = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_name);
             clientPhone = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_phone);
             service = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_service_name);
             sum = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum);
+            currency = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum_currency);
             paid = (AppCompatImageView) itemView.findViewById(R.id.main_cards_paid_icon);
             done = (AppCompatImageView) itemView.findViewById(R.id.main_cards_done_icon);
+            infoIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_info_icon);
             info = (AppCompatTextView) itemView.findViewById(R.id.main_cards_info);
             dateTime = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_date_time);
             clientPhoneIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_phone_call_icon);
@@ -171,16 +171,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             oxy = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_oxy);
             tube = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_tube);
             trimmer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_trimmer);
-
-            divider = itemView.findViewById(R.id.divider);
-
             sumStrike = (RelativeLayout) itemView.findViewById(R.id.main_cards_sum_strike);
             serviceLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_services);
             toolsLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_tools);
             infoLayout = (RelativeLayout) itemView.findViewById(R.id.main_cards_info_layout);
         }
 
-        public void bind(final Appointment appointment, final OnItemClickListener listener, final OnPhoneClickListener phoneListener) {
+        public void bind(final Appointment appointment, final OnItemClickListener listener,
+                         final OnPhoneClickListener phoneListener) {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

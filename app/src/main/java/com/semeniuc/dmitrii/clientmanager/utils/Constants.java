@@ -28,8 +28,8 @@ public class Constants {
 
     public static final int ORDER_BY_DATE = 111;
     public static final int ORDER_BY_CLIENT = 222;
-    public static final int SHOW_DONE_BY_DATE = 333;
-    public static final int SHOW_DONE_BY_CLIENT = 4444;
+    public static final int ARCHIVED_ORDER_BY_DATE = 333;
+    public static final int ARCHIVED_ORDER_BY_CLIENT = 4444;
 
     public static final String TIME_FORMAT = "HH:mm";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
