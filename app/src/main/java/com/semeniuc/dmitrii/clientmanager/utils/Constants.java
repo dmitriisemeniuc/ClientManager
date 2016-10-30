@@ -26,6 +26,11 @@ public class Constants {
     public static final int UPDATED = 1;
     public static final int DELETED = 1;
 
+    public static final int ORDER_BY_DATE = 111;
+    public static final int ORDER_BY_CLIENT = 222;
+    public static final int ARCHIVED_ORDER_BY_DATE = 333;
+    public static final int ARCHIVED_ORDER_BY_CLIENT = 4444;
+
     public static final String TIME_FORMAT = "HH:mm";
     public static final String DATE_FORMAT = "dd/MM/yyyy";
     public static final String DATE_TIME_FORMAT = "dd/MM/yyyy HH:mm";

@@ -25,4 +25,7 @@
     <color name="date_text_color">#2c3e50</color>
     <color name="phone_number_text_color">#27ae60</color>
     <color name="info_text_color">#666666</color>
+    <color name="light_green">#CCFF90</color>
+    <color name="light_yellow">#F4FF81</color>
+    <color name="white">#fff</color>
 </resources>

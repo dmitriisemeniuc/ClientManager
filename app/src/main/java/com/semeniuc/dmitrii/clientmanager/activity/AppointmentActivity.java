@@ -38,17 +38,11 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     protected Utils utils;
     private DatabaseTaskHelper dbHelper;
     private Appointment appointment;
-    protected String clientName;
-    protected String clientPhone;
+    protected String clientName, clientPhone, info, date, time, sum;
     protected Service service;
     protected Tools tools;
-    protected String info;
-    protected String date;
-    protected String time;
     protected Date dateTime;
-    private String sum;
-    private boolean paid;
-    private boolean done;
+    private boolean paid, done;
 
     @BindView(R.id.appointment_client_name)
     AppCompatEditText etClientName;
@@ -276,11 +270,6 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
             etClientName.setError(getResources().getString(R.string.field_is_required));
             valid = false;
         }
-        empty = utils.isEditTextEmpty(etClientPhone);
-        if (empty) {
-            etClientPhone.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
         empty = utils.isEditTextEmpty(etService);
         if (empty) {
             etService.setError(getResources().getString(R.string.field_is_required));
@@ -364,7 +353,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
     private void changeDoneImage() {
         done = !done;
-        if (!done) {
+        if (done) {
             ivDone.setImageResource(R.mipmap.ic_ok_yes);
             return;
         }

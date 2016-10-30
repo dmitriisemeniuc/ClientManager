@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/appointment_layout_padding">
+    android:padding="@dimen/activity_vertical_margin">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -26,6 +26,7 @@
                 android:id="@+id/appointment_client_name"
                 style="@style/appointmentFormField"
                 android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
                 android:layout_toEndOf="@+id/appointment_cards_client_icon"
 
@@ -53,20 +54,166 @@
                 android:id="@+id/appointment_service"
                 style="@style/appointmentFormField"
                 android:layout_toEndOf="@+id/appointment_service_icon"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
                 android:hint="@string/appointment_service"
                 android:inputType="textCapSentences"
                 android:textColor="@color/service_text_color"
                 android:textColorHint="@color/service_hint_text_color" />
         </RelativeLayout>
+
+        <!-- DATE -->
+        <RelativeLayout
+            android:id="@+id/appointment_date_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_service_name_layout"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_calendar_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_calendar" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_calendar_date"
+                style="@style/appointmentFormField"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/appointment_calendar_icon"
+
+                android:hint="@string/choose_date"
+                android:textColorHint="@color/text_hint"
+                android:textSize="18sp" />
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_time_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:layout_toEndOf="@+id/appointment_calendar_date"
+                android:src="@mipmap/ic_clock" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_time"
+                style="@style/appointmentFormField"
+                android:layout_width="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_toEndOf="@+id/appointment_time_icon"
+                android:hint="@string/choose_time"
+                android:textColorHint="@color/text_hint"
+                android:textSize="18sp" />
+        </RelativeLayout>
+
+        <!-- PHONE -->
+        <RelativeLayout
+            android:id="@+id/appointment_client_phone_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_date_layout">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_client_phone_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_smartphone" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/appointment_client_phone"
+                style="@style/appointmentFormField"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/appointment_client_phone_icon"
+                android:hint="@string/appointment_phone_number"
+                android:inputType="phone"
+                android:digits="0123456789+"
+                android:maxLength="30"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/phone_number_text_color"/>
+        </RelativeLayout>
+
+        <!-- MONEY -->
+        <RelativeLayout
+            android:id="@+id/appointment_money_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_client_phone_layout"
+            android:gravity="center_horizontal">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_cash_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_money" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/appointment_cash"
+                style="@style/appointmentFormField"
+                android:layout_width="80dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/appointment_cash_icon"
+                android:hint="@string/hint_zero"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:textColor="@color/money_text"
+                android:inputType="numberDecimal"
+                android:digits="0123456789." />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_paid"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/appointment_cash"
+                android:text="@string/paid"
+                android:layout_centerVertical="true"
+                android:fontFamily="sans-serif-light"
+                android:textSize="18sp"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_paid_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_toEndOf="@+id/appointment_paid"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_money_paid_no" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/appointment_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/appointment_paid_icon"
+                android:layout_marginStart="20dp"
+                android:textColor="@color/colorPrimaryDark"
+                android:text="@string/done"
+                android:layout_centerVertical="true"
+                android:fontFamily="sans-serif-light"
+                android:textSize="18sp"/>
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_done_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_toEndOf="@+id/appointment_done"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:src="@mipmap/ic_ok_no" />
+
+        </RelativeLayout>
+
         <!-- SERVICE TYPE AND TOOLS-->
         <RelativeLayout
             android:id="@+id/appointment_service_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_service_name_layout"
+            android:layout_below="@+id/appointment_money_layout"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:gravity="center_horizontal">
 
             <android.support.v7.widget.AppCompatTextView
@@ -106,11 +253,24 @@
                 android:src="@mipmap/ic_scissors_no" />
 
         </RelativeLayout>
+
+        <!-- DIVIDER -->
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_below="@+id/appointment_service_layout"
+            android:layout_marginBottom="15dp"
+            android:layout_marginEnd="35dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="15dp"
+            android:background="@color/colorPrimary" />
+
         <RelativeLayout
-            android:id="@+id/appointment_tools_layout"
+            android:id="@+id/appointment_tools_layout_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_service_layout"
+            android:layout_below="@+id/divider"
             android:gravity="center_horizontal">
 
             <android.support.v7.widget.AppCompatTextView
@@ -167,12 +327,21 @@
                 android:layout_marginStart="10dp"
                 android:src="@mipmap/ic_tube_no" />
 
+            </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/appointment_tools_layout_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_tools_layout_top"
+            android:gravity="center_horizontal"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="30dp">
+
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/appointment_tools_cut_set_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/appointment_tools_tube_icon"
                 android:layout_marginStart="10dp"
                 android:src="@mipmap/ic_cutset_no" />
 
@@ -203,156 +372,13 @@
                 android:layout_marginStart="10dp"
                 android:src="@mipmap/ic_trimmer_no" />
         </RelativeLayout>
-        <!-- PHONE -->
-        <RelativeLayout
-            android:id="@+id/appointment_client_phone_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_tools_layout"
-            android:layout_marginStart="20dp">
 
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_client_phone_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_smartphone" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/appointment_client_phone"
-                style="@style/appointmentFormField"
-                android:layout_marginEnd="20dp"
-                android:layout_toEndOf="@+id/appointment_client_phone_icon"
-                android:hint="@string/appointment_phone_number"
-                android:inputType="phone"
-                android:digits="0123456789+"
-                android:maxLength="30"
-                android:textColorHint="@color/text_hint" />
-        </RelativeLayout>
-        <!-- DATE -->
-        <RelativeLayout
-            android:id="@+id/appointment_date_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_client_phone_layout"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginTop="20dp">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_calendar_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@mipmap/ic_calendar" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_calendar_date"
-                style="@style/appointmentFormField"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@+id/appointment_calendar_icon"
-
-                android:hint="@string/choose_date"
-                android:textColorHint="@color/text_hint"
-                android:textSize="18sp" />
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_time_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="30dp"
-                android:layout_toEndOf="@+id/appointment_calendar_date"
-                android:src="@mipmap/ic_clock" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_time"
-                style="@style/appointmentFormField"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@+id/appointment_time_icon"
-                android:hint="@string/choose_time"
-                android:textColorHint="@color/text_hint"
-                android:textSize="18sp" />
-        </RelativeLayout>
-        <!-- MONEY -->
-        <RelativeLayout
-            android:id="@+id/appointment_money_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_date_layout"
-            android:gravity="center_horizontal">
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_cash_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_centerVertical="true"
-                android:src="@mipmap/ic_money" />
-
-            <android.support.v7.widget.AppCompatEditText
-                android:id="@+id/appointment_cash"
-                style="@style/appointmentFormField"
-                android:layout_width="80dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="20dp"
-                android:layout_toEndOf="@+id/appointment_cash_icon"
-                android:hint="@string/hint_zero"
-                android:text="@string/hint_zero"
-                android:ellipsize="end"
-                android:gravity="start"
-                android:textColor="@color/money_text"
-                android:inputType="numberDecimal"
-                android:digits="0123456789." />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_paid"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/appointment_cash"
-                android:textColor="@color/money_text"
-                android:text="@string/paid"
-                android:layout_centerVertical="true"
-                android:fontFamily="sans-serif-light"
-                android:textSize="18sp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_paid_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_toEndOf="@+id/appointment_paid"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_money_paid_no" />
-
-            <android.support.v7.widget.AppCompatTextView
-                android:id="@+id/appointment_done"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/appointment_paid_icon"
-                android:layout_marginStart="20dp"
-                android:textColor="@color/colorPrimaryDark"
-                android:text="@string/done"
-                android:layout_centerVertical="true"
-                android:fontFamily="sans-serif-light"
-                android:textSize="18sp"/>
-
-            <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/appointment_done_icon"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_toEndOf="@+id/appointment_done"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="10dp"
-                android:src="@mipmap/ic_ok_no" />
-
-        </RelativeLayout>
         <!-- INFO -->
         <RelativeLayout
             android:id="@+id/appointment_info_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_money_layout"
-            android:layout_marginStart="20dp">
+            android:layout_below="@+id/appointment_tools_layout_bottom">
 
             <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/appointment_info_icon"
@@ -364,13 +390,13 @@
             <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/appointment_info"
                 style="@style/appointmentFormField"
+                android:layout_marginStart="10dp"
                 android:layout_marginEnd="20dp"
                 android:layout_toEndOf="@+id/appointment_info_icon"
-                android:gravity="top|start"
                 android:hint="@string/appointment_info"
                 android:inputType="textMultiLine|textCapSentences"
                 android:lines="4"
-                android:maxLength="150"
+                android:maxLength="200"
                 android:maxLines="6"
                 android:minLines="1"
                 android:textColorHint="@color/text_hint" />
