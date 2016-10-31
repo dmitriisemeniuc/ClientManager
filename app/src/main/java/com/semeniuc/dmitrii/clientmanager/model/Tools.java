@@ -57,29 +57,29 @@ public class Tools implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
-        parcel.writeValue(brush);
-        parcel.writeValue(hairBrush);
-        parcel.writeValue(hairDryer);
-        parcel.writeValue(hairBand);
-        parcel.writeValue(cutSet);
-        parcel.writeValue(spray);
-        parcel.writeValue(oxy);
-        parcel.writeValue(tube);
-        parcel.writeValue(trimmer);
+        parcel.writeInt(brush ? 1 : 0);
+        parcel.writeInt(hairBrush ? 1 : 0);
+        parcel.writeInt(hairDryer ? 1 : 0);
+        parcel.writeInt(hairBand ? 1 : 0);
+        parcel.writeInt(cutSet ? 1 : 0);
+        parcel.writeInt(spray ? 1 : 0);
+        parcel.writeInt(oxy ? 1 : 0);
+        parcel.writeInt(tube ? 1 : 0);
+        parcel.writeInt(trimmer ? 1 : 0);
     }
 
     private void readFromParcel(Parcel in) {
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
-        brush = (Boolean) in.readValue(null);
-        hairBrush = (Boolean) in.readValue(null);
-        hairDryer = (Boolean) in.readValue(null);
-        hairBand = (Boolean) in.readValue(null);
-        cutSet = (Boolean) in.readValue(null);
-        spray = (Boolean) in.readValue(null);
-        oxy = (Boolean) in.readValue(null);
-        tube = (Boolean) in.readValue(null);
-        trimmer = (Boolean) in.readValue(null);
+        brush = in.readInt() == 1;
+        hairBrush = in.readInt() == 1;
+        hairDryer = in.readInt() == 1;
+        hairBand = in.readInt() == 1;
+        cutSet = in.readInt() == 1;
+        spray = in.readInt() == 1;
+        oxy = in.readInt() == 1;
+        tube = in.readInt() == 1;
+        trimmer = in.readInt() == 1;
     }
 
     public static final Parcelable.Creator CREATOR =

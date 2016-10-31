@@ -237,7 +237,7 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
      */
     public void populateAppointmentFields() {
         // text fields
-        etClientName.setText(appointment.getClientName());
+        etClientName.setText(appointment.getClient().getName());
         etClientPhone.setText(appointment.getClientPhone());
         etService.setText(appointment.getService().getName());
         etSum.setText(appointment.getSum());
@@ -280,7 +280,7 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
     }
 
     private void setDataFromFields() {
-        appointment.setClientName(etClientName.getText().toString());
+        appointment.getClient().setName(etClientName.getText().toString());
         appointment.setClientPhone(etClientPhone.getText().toString());
         appointment.getService().setName(etService.getText().toString());
         appointment.setInfo(etInfo.getText().toString());
