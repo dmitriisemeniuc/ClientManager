@@ -141,6 +141,7 @@
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/main_appointment_service_name"
                     style="@style/cardViewItem"
+                    android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
                     android:layout_toStartOf="@+id/main_cards_paid_icon"
@@ -148,48 +149,49 @@
                     android:textColor="@color/service_text_color"
                     android:textSize="18sp" />
 
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_paid_icon"
-                        style="@style/cardViewItem"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_toStartOf="@+id/main_cards_sum"
-                        android:src="@mipmap/ic_money_paid_yes" />
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/main_cards_paid_icon"
+                    style="@style/cardViewItem"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_toStartOf="@+id/main_cards_sum"
+                    android:src="@mipmap/ic_money_paid_yes" />
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/main_cards_sum"
-                        style="@style/cardViewItem"
-                        android:layout_marginStart="5dp"
-                        android:layout_toStartOf="@+id/main_cards_sum_currency"
-                        android:textColor="@color/money_text"
-                        android:textSize="14sp" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_cards_sum"
+                    style="@style/cardViewItem"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/main_cards_sum_currency"
+                    android:textColor="@color/money_text"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-light"/>
 
-                    <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/main_cards_sum_currency"
-                        style="@style/cardViewItem"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/currency"
-                        android:textColor="@color/money_text"
-                        android:textSize="14sp" />
+                <android.support.v7.widget.AppCompatTextView
+                    android:id="@+id/main_cards_sum_currency"
+                    style="@style/cardViewItem"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/currency"
+                    android:textColor="@color/money_text"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-light"/>
 
-                    <RelativeLayout
-                        android:id="@+id/main_cards_sum_strike"
-                        style="@style/cardViewItem"
+                <RelativeLayout
+                    android:id="@+id/main_cards_sum_strike"
+                    style="@style/cardViewItem"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="-3dp"
+                    android:layout_marginStart="3dp"
+                    android:layout_toEndOf="@+id/main_cards_paid_icon">
+
+                    <View
+                        android:id="@+id/strike"
+                        android:layout_width="match_parent"
                         android:layout_height="1dp"
-                        android:layout_marginEnd="-3dp"
-                        android:layout_marginStart="3dp"
-                        android:layout_toEndOf="@+id/main_cards_paid_icon">
-
-                        <View
-                            android:id="@+id/strike"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/money_text" />
-                    </RelativeLayout>
+                        android:background="@color/money_text" />
+                </RelativeLayout>
             </RelativeLayout>
-
-            <!-- SERVICES -->
 
             <!-- TOOLS -->
             <RelativeLayout
@@ -205,7 +207,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/tools"
-                    android:textSize="16sp" />
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-light"/>
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_tools_brush"

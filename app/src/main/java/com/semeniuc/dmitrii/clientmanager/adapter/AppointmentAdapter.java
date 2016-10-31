@@ -45,7 +45,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // CLIENT
         holder.clientName.setText(appointments.get(position).getClientName());
         // PHONE ICON
-        if (appointments.get(position).getClientPhone().isEmpty()){
+        if (appointments.get(position).getClientPhone().isEmpty()) {
             holder.clientPhoneIcon.setVisibility(View.INVISIBLE);
         }
         // SERVICE
@@ -54,8 +54,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         if (appointments.get(position).getSum().isEmpty()) {
             holder.currency.setVisibility(View.INVISIBLE);
             holder.sumStrike.setVisibility(View.GONE);
+            holder.paid.setVisibility(View.GONE);
         } else {
             holder.sum.setText(appointments.get(position).getSum());
+            holder.paid.setImageDrawable(ContextCompat.getDrawable(
+                    MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_no));
         }
         // DATE
         holder.dateTime.setText(utils.convertDateToString(appointments.get(position).getDate(),
@@ -63,11 +66,12 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // PAID
         boolean paid = appointments.get(position).isPaid();
         if (!paid) {
-            holder.paid.setVisibility(View.GONE);
             holder.sumStrike.setVisibility(View.GONE);
         } else {
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
                     MyApplication.getInstance().getApplicationContext(), R.color.light_yellow));
+            holder.paid.setImageDrawable(ContextCompat.getDrawable(
+                    MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_yes));
         }
         // DONE
         boolean done = appointments.get(position).isDone();
