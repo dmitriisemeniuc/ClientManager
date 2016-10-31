@@ -50,9 +50,9 @@ public class Service implements Parcelable {
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
         parcel.writeString(name);
-        parcel.writeValue(hairColoring);
-        parcel.writeValue(hairdo);
-        parcel.writeValue(haircut);
+        parcel.writeInt(hairColoring ? 1 : 0);
+        parcel.writeInt(hairdo ? 1 : 0);
+        parcel.writeInt(haircut ? 1 : 0);
     }
 
     private void readFromParcel(Parcel in) {
@@ -60,9 +60,9 @@ public class Service implements Parcelable {
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
         name = in.readString();
-        hairColoring = (Boolean) in.readValue(null);
-        hairdo = (Boolean) in.readValue(null);
-        haircut = (Boolean) in.readValue(null);
+        hairColoring = in.readInt() == 1;
+        hairdo = in.readInt() == 1;
+        haircut = in.readInt() == 1;
     }
 
     public static final Parcelable.Creator CREATOR =

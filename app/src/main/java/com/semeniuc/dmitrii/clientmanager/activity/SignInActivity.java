@@ -244,12 +244,14 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
         if (account == null) return;
         User user = getUserByEmail(account.getEmail());
         Uri photoUrl = account.getPhotoUrl();
-        if(null != photoUrl){
-            user.setPhotoUrl(photoUrl.toString());
+        if (null != user) {
+            if (null != photoUrl) {
+                user.setPhotoUrl(photoUrl.toString());
+            }
+            MyApplication.getInstance().setUser(user);
+            // Show authenticated UI
+            updateUI(true);
         }
-        MyApplication.getInstance().setUser(user);
-        // Show authenticated UI
-        updateUI(true);
     }
 
     /**
@@ -382,8 +384,8 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     }
 
     /**
-    * Set global User for silent sign in
-    * */
+     * Set global User for silent sign in
+     */
     private class SetGlobalUser extends AsyncTask<String, Void, String> {
 
         private OnTaskCompleted listener;
@@ -394,7 +396,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
 
         @Override
         protected String doInBackground(String... array) {
-          return dbHelper.setGlobalUser(array[0]);
+            return dbHelper.setGlobalUser(array[0]);
         }
 
         @Override
@@ -414,4 +416,3 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
         }
     }
 }
-

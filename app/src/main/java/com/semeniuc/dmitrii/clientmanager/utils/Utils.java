@@ -55,7 +55,7 @@ public class Utils {
     }
 
     public Appointment updateAppointmentData(Appointment fromAppointment, Appointment toAppointment) {
-        toAppointment.setClientName(fromAppointment.getClientName());
+        toAppointment.setClient(fromAppointment.getClient());
         toAppointment.setClientPhone(fromAppointment.getClientPhone());
         toAppointment.setService(fromAppointment.getService());
         toAppointment.setTools(fromAppointment.getTools());

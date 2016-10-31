@@ -43,7 +43,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
         // CLIENT
-        holder.clientName.setText(appointments.get(position).getClientName());
+        holder.clientName.setText(appointments.get(position).getClient().getName());
         // PHONE ICON
         if (appointments.get(position).getClientPhone().isEmpty()) {
             holder.clientPhoneIcon.setVisibility(View.INVISIBLE);

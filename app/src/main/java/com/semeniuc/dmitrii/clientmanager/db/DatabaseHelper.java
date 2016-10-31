@@ -10,6 +10,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.Client;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
 import com.semeniuc.dmitrii.clientmanager.model.User;
@@ -31,6 +32,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     // The DAO object we use to access the SimpleData table pressure
     private Dao<User, Integer> userDao = null;
+    private Dao<Client, Integer> clientDao = null;
     private Dao<Service, Integer> serviceDao = null;
     private Dao<Tools, Integer> toolsDao = null;
     private Dao<Appointment, Integer> appointmentDao = null;
@@ -44,6 +46,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         try {
 
             TableUtils.createTable(connectionSource, User.class);
+            TableUtils.createTable(connectionSource, Client.class);
             TableUtils.createTable(connectionSource, Service.class);
             TableUtils.createTable(connectionSource, Tools.class);
             TableUtils.createTable(connectionSource, Appointment.class);
@@ -57,7 +60,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
+    public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource,
+                          int oldVersion, int newVersion) {
         try {
             List<String> allSql = new ArrayList<>();
             switch (oldVersion) {
@@ -108,6 +112,17 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return serviceDao;
     }
 
+    public Dao<Client, Integer> getClientDao() {
+        if (null == clientDao) {
+            try {
+                clientDao = getDao(Client.class);
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return clientDao;
+    }
+
     public Dao<Tools, Integer> getToolsDao() {
         if (null == toolsDao) {
             try {
@@ -123,6 +138,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     public void close() {
         super.close();
         userDao = null;
+        clientDao = null;
         serviceDao = null;
         toolsDao = null;
         appointmentDao = null;

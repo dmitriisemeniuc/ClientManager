@@ -29,6 +29,8 @@ public class User implements Parcelable {
     private String password;
     @ForeignCollectionField(eager = false)
     private ForeignCollection<Appointment> appointments;
+    @ForeignCollectionField(eager = false)
+    private ForeignCollection<Client> clients;
     private String photoUrl;
 
     public User() {
@@ -123,5 +125,29 @@ public class User implements Parcelable {
 
     public void setPhotoUrl(String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public ForeignCollection<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(ForeignCollection<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
+    public ForeignCollection<Client> getClients() {
+        return clients;
+    }
+
+    public void setClients(ForeignCollection<Client> clients) {
+        this.clients = clients;
     }
 }

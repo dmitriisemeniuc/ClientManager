@@ -29,8 +29,10 @@ public class Appointment implements Parcelable {
     private long id;
     @DatabaseField(canBeNull = false, foreign = true, columnName = USER_FIELD_NAME)
     private User user;
-    @DatabaseField(canBeNull = false, columnName = CLIENT_FIELD_NAME)
-    private String clientName;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnDefinition = "integer references client(_id) on delete cascade",
+            columnName = CLIENT_FIELD_NAME)
+    private Client client;
     @DatabaseField(canBeNull = true, columnName = CLIENT_PHONE_FIELD_NAME)
     private String clientPhone;
     @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
@@ -57,10 +59,10 @@ public class Appointment implements Parcelable {
     }
 
     // Constructor for creating new Appointment without id
-    public Appointment(User user, String clientName, String clientPhone, Service service,
+    public Appointment(User user, Client client, String clientPhone, Service service,
                        Tools tools, String info, Date date, String sum, boolean paid, boolean done) {
         this.user = user;
-        this.clientName = clientName;
+        this.client = client;
         this.clientPhone = clientPhone;
         this.service = service;
         this.tools = tools;
@@ -72,11 +74,11 @@ public class Appointment implements Parcelable {
     }
 
     // Constructor for creating new Appointment with specified id
-    public Appointment(long id, User user, String clientName, String clientPhone, Service service,
+    public Appointment(long id, User user, Client client, String clientPhone, Service service,
                        Tools tools, String info, Date date, String sum, boolean paid, boolean done) {
         this.id = id;
         this.user = user;
-        this.clientName = clientName;
+        this.client = client;
         this.clientPhone = clientPhone;
         this.service = service;
         this.tools = tools;
@@ -101,30 +103,30 @@ public class Appointment implements Parcelable {
         // Write each field into the parcel. Order is important
         parcel.writeLong(id);
         parcel.writeParcelable(user, i);
-        parcel.writeString(clientName);
+        parcel.writeParcelable(client, i);
         parcel.writeString(clientPhone);
         parcel.writeParcelable(service, i);
         parcel.writeParcelable(tools, i);
         parcel.writeString(info);
         parcel.writeString(date.toString());
         parcel.writeString(sum);
-        parcel.writeValue(paid);
-        parcel.writeValue(done);
+        parcel.writeInt(paid ? 1 : 0);
+        parcel.writeInt(done ? 1 : 0);
     }
 
     private void readFromParcel(Parcel in) {
         // Read back each field in the order that it was written to the parcel
         id = in.readLong();
         user = in.readParcelable(User.class.getClassLoader());
-        clientName = in.readString();
+        client = in.readParcelable(Client.class.getClassLoader());
         clientPhone = in.readString();
         service = in.readParcelable(Service.class.getClassLoader());
         tools = in.readParcelable(Tools.class.getClassLoader());
         info = in.readString();
         date = new Date(in.readString());
         sum = in.readString();
-        paid = (Boolean) in.readValue(null);
-        done = (Boolean) in.readValue(null);
+        paid = in.readInt() == 1;
+        done = in.readInt() == 1;
     }
 
     public static final Parcelable.Creator CREATOR =
@@ -154,12 +156,12 @@ public class Appointment implements Parcelable {
         this.user = user;
     }
 
-    public String getClientName() {
-        return clientName;
+    public Client getClient() {
+        return client;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     public String getClientPhone() {

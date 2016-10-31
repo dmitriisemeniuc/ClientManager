@@ -92,13 +92,19 @@ public final class AppointmentRepository implements Repository {
 
     @Override
     public List<Appointment> findAll() {
-        List<Appointment> appointment = null;
+        List<Appointment> items = null;
+        long id = MyApplication.getInstance().getUser().getId();
         try {
-            appointment = helper.getAppointmentDao().queryForAll();
+            Dao<Appointment, Integer> appointmentDAO = helper.getAppointmentDao();
+            QueryBuilder<Appointment, Integer> queryBuilder = appointmentDAO.queryBuilder();
+            Where<Appointment, Integer> where = queryBuilder.where();
+            where.eq(Appointment.USER_FIELD_NAME, id);
+            queryBuilder.orderBy(Appointment.CLIENT_FIELD_NAME, true); // true for ascending
+            items = appointmentDAO.query(queryBuilder.prepare());
         } catch (java.sql.SQLException e) {
             e.printStackTrace();
         }
-        return appointment;
+        return items;
     }
 
     public List<Appointment> findAllOrderedByDate() {

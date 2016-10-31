@@ -21,6 +21,7 @@ import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.fragment.DateDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.fragment.TimeDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
+import com.semeniuc.dmitrii.clientmanager.model.Client;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
@@ -38,7 +39,8 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     protected Utils utils;
     private DatabaseTaskHelper dbHelper;
     private Appointment appointment;
-    protected String clientName, clientPhone, info, date, time, sum;
+    protected Client client;
+    protected String clientPhone, info, date, time, sum;
     protected Service service;
     protected Tools tools;
     protected Date dateTime;
@@ -195,6 +197,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
         ButterKnife.bind(this);
         utils = new Utils();
+        client = new Client(MyApplication.getInstance().getUser());
         service = new Service();
         tools = new Tools();
         dbHelper = new DatabaseTaskHelper();
@@ -213,7 +216,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
                 boolean formValid = isAppointmentFormValid();
                 if (formValid) {
                     setDataFromFields();
-                    appointment = new Appointment(MyApplication.getInstance().getUser(), clientName,
+                    appointment = new Appointment(MyApplication.getInstance().getUser(), client,
                             clientPhone, service, tools, info, dateTime, sum, paid, done);
                     new SaveAppointment(this).execute(appointment);
                     return true;
@@ -289,7 +292,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     }
 
     private void setDataFromFields() {
-        clientName = etClientName.getText().toString();
+        client.setName(etClientName.getText().toString());
         clientPhone = etClientPhone.getText().toString();
         service.setName(etService.getText().toString());
         sum = etSum.getText().toString();
