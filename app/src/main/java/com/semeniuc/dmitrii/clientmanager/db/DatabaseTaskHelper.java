@@ -5,6 +5,7 @@ import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.User;
 import com.semeniuc.dmitrii.clientmanager.repository.AppointmentRepository;
 import com.semeniuc.dmitrii.clientmanager.repository.ClientRepository;
+import com.semeniuc.dmitrii.clientmanager.repository.ContactRepository;
 import com.semeniuc.dmitrii.clientmanager.repository.ServiceRepository;
 import com.semeniuc.dmitrii.clientmanager.repository.ToolsRepository;
 import com.semeniuc.dmitrii.clientmanager.repository.UserRepository;
@@ -76,6 +77,8 @@ public class DatabaseTaskHelper {
         serviceRepo.create(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();
         toolsRepo.create(appointment.getTools());
+        ContactRepository contactRepo = ContactRepository.getInstance();
+        contactRepo.create(appointment.getClient().getContact());
         ClientRepository clientRepo = ClientRepository.getInstance();
         clientRepo.create(appointment.getClient());
         AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
@@ -87,6 +90,8 @@ public class DatabaseTaskHelper {
         serviceRepo.update(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();
         toolsRepo.update(appointment.getTools());
+        ContactRepository contactRepo = ContactRepository.getInstance();
+        contactRepo.update(appointment.getClient().getContact());
         ClientRepository clientRepo = ClientRepository.getInstance();
         clientRepo.update(appointment.getClient());
         appointment.setUser(MyApplication.getInstance().getUser());
@@ -99,6 +104,8 @@ public class DatabaseTaskHelper {
         serviceRepo.delete(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();
         toolsRepo.delete(appointment.getTools());
+        ContactRepository contactRepo = ContactRepository.getInstance();
+        contactRepo.delete(appointment.getClient().getContact());
         ClientRepository clientRepo = ClientRepository.getInstance();
         clientRepo.delete(appointment.getClient());
         AppointmentRepository appointmentRepo = AppointmentRepository.getInstance();
@@ -113,6 +120,7 @@ public class DatabaseTaskHelper {
             for (Appointment appointment : appointments) {
                 try {
                     helper.getClientDao().refresh(appointment.getClient());
+                    helper.getContactDao().refresh(appointment.getClient().getContact());
                     helper.getServiceDao().refresh(appointment.getService());
                     helper.getToolsDao().refresh(appointment.getTools());
                 } catch (SQLException e) {
@@ -131,6 +139,7 @@ public class DatabaseTaskHelper {
             for (Appointment appointment : appointments) {
                 try {
                     helper.getClientDao().refresh(appointment.getClient());
+                    helper.getContactDao().refresh(appointment.getClient().getContact());
                     helper.getServiceDao().refresh(appointment.getService());
                     helper.getToolsDao().refresh(appointment.getTools());
                 } catch (SQLException e) {
@@ -149,6 +158,7 @@ public class DatabaseTaskHelper {
             for (Appointment appointment : appointments) {
                 try {
                     helper.getClientDao().refresh(appointment.getClient());
+                    helper.getContactDao().refresh(appointment.getClient().getContact());
                     helper.getServiceDao().refresh(appointment.getService());
                     helper.getToolsDao().refresh(appointment.getTools());
                 } catch (SQLException e) {
@@ -167,6 +177,7 @@ public class DatabaseTaskHelper {
             for (Appointment appointment : appointments) {
                 try {
                     helper.getClientDao().refresh(appointment.getClient());
+                    helper.getContactDao().refresh(appointment.getClient().getContact());
                     helper.getServiceDao().refresh(appointment.getService());
                     helper.getToolsDao().refresh(appointment.getTools());
                 } catch (SQLException e) {

@@ -12,6 +12,7 @@ public class Client implements Parcelable {
     public static final String CLIENT_ID_FIELD_NAME = "_ID";
     public static final String CLIENT_NAME_FIELD_NAME = "name";
     public static final String USER_FIELD_NAME = "user_id";
+    public static final String CONTACT_FIELD_NAME = "contact_id";
 
     @DatabaseField(generatedId = true, columnName = CLIENT_ID_FIELD_NAME)
     private long id;
@@ -19,6 +20,10 @@ public class Client implements Parcelable {
     private String name;
     @DatabaseField(canBeNull = false, foreign = true, columnName = USER_FIELD_NAME)
     private User user;
+    @DatabaseField(canBeNull = false, foreign = true, foreignAutoCreate = true,
+            columnDefinition = "integer references contact(_id) on delete cascade",
+            columnName = CONTACT_FIELD_NAME)
+    private Contact contact;
 
     public Client() {
     }
@@ -42,6 +47,7 @@ public class Client implements Parcelable {
         parcel.writeLong(id);
         parcel.writeString(name);
         parcel.writeParcelable(user, i);
+        parcel.writeParcelable(contact, i);
     }
 
     private void readFromParcel(Parcel in) {
@@ -49,6 +55,7 @@ public class Client implements Parcelable {
         id = in.readLong();
         name = in.readString();
         user = in.readParcelable(User.class.getClassLoader());
+        contact = in.readParcelable(Contact.class.getClassLoader());
     }
 
     public static final Parcelable.Creator CREATOR =
@@ -84,5 +91,13 @@ public class Client implements Parcelable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public void setContact(Contact contact) {
+        this.contact = contact;
     }
 }

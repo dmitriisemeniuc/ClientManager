@@ -45,7 +45,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // CLIENT
         holder.clientName.setText(appointments.get(position).getClient().getName());
         // PHONE ICON
-        if (appointments.get(position).getClientPhone().isEmpty()) {
+        if (appointments.get(position).getClient().getContact().getPhone().isEmpty()) {
             holder.clientPhoneIcon.setVisibility(View.INVISIBLE);
         }
         // SERVICE
@@ -193,7 +193,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             clientPhoneIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    phoneListener.onPhoneClick(appointment.getClientPhone());
+                    phoneListener.onPhoneClick(appointment.getClient().getContact().getPhone());
                 }
             });
 
