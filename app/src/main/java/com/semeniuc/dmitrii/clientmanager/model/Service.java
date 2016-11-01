@@ -9,15 +9,15 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable
 public class Service implements Parcelable {
 
-    public static final String SERVICE_ID_FIELD_NAME = "_ID";
-    public static final String SERVICE_NAME_FIELD_NAME = "name";
+    public static final String ID_FIELD_NAME = "_ID";
+    public static final String NAME_FIELD_NAME = "name";
     public static final String HAIR_COLORING_FIELD_NAME = "hair_coloring";
     public static final String HAIRDO_FIELD_NAME = "hairdo";
     public static final String HAIRCUT_FIELD_NAME = "haircut";
 
-    @DatabaseField(generatedId = true, columnName = SERVICE_ID_FIELD_NAME)
+    @DatabaseField(generatedId = true, columnName = ID_FIELD_NAME)
     private long id;
-    @DatabaseField(canBeNull = false, columnName = SERVICE_NAME_FIELD_NAME)
+    @DatabaseField(canBeNull = false, columnName = NAME_FIELD_NAME)
     private String name;
     @DatabaseField(canBeNull = false, columnName = HAIR_COLORING_FIELD_NAME)
     private boolean hairColoring;

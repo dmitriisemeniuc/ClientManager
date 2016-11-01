@@ -22,6 +22,7 @@ import com.semeniuc.dmitrii.clientmanager.fragment.DateDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.fragment.TimeDialogFragment;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.model.Client;
+import com.semeniuc.dmitrii.clientmanager.model.Contact;
 import com.semeniuc.dmitrii.clientmanager.model.Service;
 import com.semeniuc.dmitrii.clientmanager.model.Tools;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
@@ -40,7 +41,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     private DatabaseTaskHelper dbHelper;
     private Appointment appointment;
     protected Client client;
-    protected String clientPhone, info, date, time, sum;
+    protected String info, date, time, sum;
     protected Service service;
     protected Tools tools;
     protected Date dateTime;
@@ -50,6 +51,8 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     AppCompatEditText etClientName;
     @BindView(R.id.appointment_client_phone)
     AppCompatEditText etClientPhone;
+    @BindView(R.id.appointment_client_address)
+    AppCompatEditText etAddress;
     @BindView(R.id.appointment_service)
     AppCompatEditText etService;
     @BindView(R.id.appointment_info)
@@ -196,11 +199,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
         setContentView(R.layout.activity_appointment);
 
         ButterKnife.bind(this);
-        utils = new Utils();
-        client = new Client(MyApplication.getInstance().getUser());
-        service = new Service();
-        tools = new Tools();
-        dbHelper = new DatabaseTaskHelper();
+        initInstances();
     }
 
     @Override
@@ -217,7 +216,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
                 if (formValid) {
                     setDataFromFields();
                     appointment = new Appointment(MyApplication.getInstance().getUser(), client,
-                            clientPhone, service, tools, info, dateTime, sum, paid, done);
+                            service, tools, info, dateTime, sum, paid, done);
                     new SaveAppointment(this).execute(appointment);
                     return true;
                 }
@@ -225,6 +224,16 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void initInstances() {
+        utils = new Utils();
+        Contact contact = new Contact();
+        client = new Client(MyApplication.getInstance().getUser());
+        client.setContact(contact);
+        service = new Service();
+        tools = new Tools();
+        dbHelper = new DatabaseTaskHelper();
     }
 
     /**
@@ -293,7 +302,8 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
 
     private void setDataFromFields() {
         client.setName(etClientName.getText().toString());
-        clientPhone = etClientPhone.getText().toString();
+        client.getContact().setPhone(etClientPhone.getText().toString());
+        client.getContact().setAddress(etAddress.getText().toString());
         service.setName(etService.getText().toString());
         sum = etSum.getText().toString();
         info = etInfo.getText().toString();

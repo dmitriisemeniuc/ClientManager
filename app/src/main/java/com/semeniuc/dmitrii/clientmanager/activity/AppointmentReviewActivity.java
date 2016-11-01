@@ -31,6 +31,8 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
     AppCompatEditText etClientName;
     @BindView(R.id.appointment_client_phone)
     AppCompatEditText etClientPhone;
+    @BindView(R.id.appointment_client_address)
+    AppCompatEditText etAddress;
     @BindView(R.id.appointment_service)
     AppCompatEditText etService;
     @BindView(R.id.appointment_info)
@@ -238,7 +240,8 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
     public void populateAppointmentFields() {
         // text fields
         etClientName.setText(appointment.getClient().getName());
-        etClientPhone.setText(appointment.getClientPhone());
+        etClientPhone.setText(appointment.getClient().getContact().getPhone());
+        etAddress.setText(appointment.getClient().getContact().getAddress());
         etService.setText(appointment.getService().getName());
         etSum.setText(appointment.getSum());
         etInfo.setText(appointment.getInfo());
@@ -281,7 +284,8 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
 
     private void setDataFromFields() {
         appointment.getClient().setName(etClientName.getText().toString());
-        appointment.setClientPhone(etClientPhone.getText().toString());
+        appointment.getClient().getContact().setPhone(etClientPhone.getText().toString());
+        appointment.getClient().getContact().setAddress(etAddress.getText().toString());
         appointment.getService().setName(etService.getText().toString());
         appointment.setInfo(etInfo.getText().toString());
         appointment.setSum(etSum.getText().toString());
