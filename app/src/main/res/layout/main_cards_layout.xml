@@ -10,8 +10,8 @@
         android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="4dp"
-        card_view:cardElevation="4dp"
+        card_view:cardCornerRadius="1dp"
+        card_view:cardElevation="3dp"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
@@ -43,9 +43,9 @@
                     android:id="@+id/services"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="end"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginStart="5dp">
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="5dp"
+                    android:layout_alignParentEnd="true">
 
                     <android.support.v7.widget.AppCompatImageView
                         android:id="@+id/card_services_coloring"
@@ -60,7 +60,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_marginStart="5dp"
-                        android:layout_centerVertical="true"
                         android:layout_toStartOf="@+id/card_services_haircut"
                         android:src="@mipmap/ic_womans_hair_yes" />
 
@@ -68,24 +67,12 @@
                         android:id="@+id/card_services_haircut"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
-                        android:layout_marginStart="5dp"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@+id/card_done_icon"
-                        android:src="@mipmap/ic_scissors_yes" />
-
-                    <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/card_done_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_marginStart="10dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:src="@mipmap/ic_ok_yes" />
-
+                        android:layout_marginStart="5dp"
+                        android:src="@mipmap/ic_scissors_yes" />
                 </RelativeLayout>
 
             </RelativeLayout>
-
 
             <!-- CLIENT -->
             <RelativeLayout
@@ -176,35 +163,19 @@
                     style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
                     android:layout_toStartOf="@+id/card_sum_currency"
+                    android:fontFamily="sans-serif-light"
                     android:textColor="@color/money_text"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-light"/>
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/card_sum_currency"
                     style="@style/cardViewItem"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="sans-serif-light"
                     android:text="@string/currency"
                     android:textColor="@color/money_text"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-light"/>
-
-                <RelativeLayout
-                    android:id="@+id/card_sum_strike"
-                    style="@style/cardViewItem"
-                    android:layout_height="1dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="-3dp"
-                    android:layout_marginStart="3dp"
-                    android:layout_toEndOf="@+id/card_paid_icon">
-
-                    <View
-                        android:id="@+id/strike"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/money_text" />
-                </RelativeLayout>
+                    android:textSize="16sp" />
             </RelativeLayout>
 
             <!-- ADDRESS -->
@@ -333,8 +304,8 @@
                     android:id="@+id/card_tools_trimmer"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginStart="5dp"
                     android:src="@mipmap/ic_trimmer_yes" />
 
             </RelativeLayout>

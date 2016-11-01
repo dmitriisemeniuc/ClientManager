@@ -5,12 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -20,8 +20,6 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
@@ -37,18 +35,27 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class SignInActivity extends AppCompatActivity implements OnTaskCompleted {
+
+    public static final String LOG_TAG = SignInActivity.class.getSimpleName();
 
     private ProgressDialog progressDialog;
     private GoogleAuthenticator googleAuthenticator;
     private Utils utils;
     private DatabaseTaskHelper dbHelper;
+    private User user;
+    private OnTaskCompleted listener;
+    private String email;
 
     @BindView(R.id.sign_in_email_et)
-    AppCompatEditText email;
+    AppCompatEditText etEmail;
     @BindView(R.id.sign_in_password_et)
-    AppCompatEditText password;
+    AppCompatEditText etPassword;
     @BindView(R.id.main_sign_in_layout)
     RelativeLayout mainLayout;
 
@@ -75,6 +82,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
         ButterKnife.bind(this);
         checkUserSignInType();
         dbHelper = new DatabaseTaskHelper();
+        listener = this;
     }
 
     @Override
@@ -85,6 +93,11 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             newSignInWithGoogle(result);
         }
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -120,13 +133,13 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     private boolean isSignInFieldsEmpty() {
         String fieldRequired = this.getResources().getString(R.string.field_is_required);
         // email validation
-        if (utils.isEditTextEmpty(email)) {
-            email.setError(fieldRequired);
+        if (utils.isEditTextEmpty(etEmail)) {
+            etEmail.setError(fieldRequired);
             return true;
         }
         // password validation
-        if (utils.isEditTextEmpty(password)) {
-            password.setError(fieldRequired);
+        if (utils.isEditTextEmpty(etPassword)) {
+            etPassword.setError(fieldRequired);
             return true;
         }
         return false;
@@ -135,7 +148,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     private boolean isEmailAndPasswordRegistered() {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmailAndPassword(
-                email.getText().toString(), password.getText().toString());
+                etEmail.getText().toString(), etPassword.getText().toString());
         if (users != null) {
             if (users.size() > 0) {
                 return true; // User registered
@@ -145,7 +158,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     }
 
     private void doLogin() {
-        User user = new User(email.getText().toString(), password.getText().toString());
+        user = new User(etEmail.getText().toString(), etPassword.getText().toString());
         MyApplication.getInstance().setUser(user);
         utils.setUserInPrefs(Constants.REGISTERED_USER, this);
         updateUI(true);
@@ -186,9 +199,9 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
             SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
             boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
             if (loggedIn) {
-                String email = settings.getString(Constants.EMAIL, Constants.EMPTY);
+                email = settings.getString(Constants.EMAIL, Constants.EMPTY);
                 if (!email.isEmpty()) {
-                    new SetGlobalUser(this).execute(email);
+                    setGlobalUser();
                 }
             }
             return;
@@ -199,6 +212,50 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
             initGoogleAuthenticator();
         }
     }
+
+    /**
+     * Set global user for silent sign in
+     * */
+    private void setGlobalUser() {
+        setGlobalUserObservable.subscribe(new Subscriber() {
+
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.USER_SAVED) {
+                    String message = getResources().getString(R.string.signed_in_as) + ": "
+                            + MyApplication.getInstance().getUser().getEmail();
+                    listener.showMessage(message);
+                    updateUI(true);
+                }
+                if (result == Constants.USER_NOT_SAVED || result == Constants.NO_DB_RESULT) {
+                    String message = getResources().getString(R.string.user_saving_failed);
+                    listener.showMessage(message);
+                }
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    // SET GLOBAL USER OBSERVABLE
+    final Observable setGlobalUserObservable = Observable.create(new Observable.OnSubscribe() {
+        @Override
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.setGlobalUser(email));
+            subscriber.onCompleted();
+        }
+    })
+            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
 
     /**
      * Instantiates Google authenticator object
@@ -224,12 +281,9 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
             // this asynchronous branch will attempt to sign in the user silently.
             // Cross-device single sign-on will occur in this branch.
             showProgressDialog();
-            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
-                @Override
-                public void onResult(@NonNull GoogleSignInResult googleSignInResult) {
-                    hideProgressDialog();
-                    handleGoogleSignInResult(googleSignInResult);
-                }
+            opr.setResultCallback(googleSignInResult -> {
+                hideProgressDialog();
+                handleGoogleSignInResult(googleSignInResult);
             });
         }
     }
@@ -242,7 +296,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
         if (!result.isSuccess()) return;
         GoogleSignInAccount account = result.getSignInAccount();
         if (account == null) return;
-        User user = getUserByEmail(account.getEmail());
+        user = getUserByEmail(account.getEmail());
         Uri photoUrl = account.getPhotoUrl();
         if (null != user) {
             if (null != photoUrl) {
@@ -281,11 +335,55 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     private void setGoogleUserDetails(@NonNull GoogleSignInResult result) {
         GoogleSignInAccount account = result.getSignInAccount();
         if (null != account) {
-            User user = new User(account);
-            // Save Global user to DB
-            new SaveGoogleUser(this).execute(user);
+            user = new User(account);
+            saveGoogleUser();
         }
     }
+
+    /**
+     * Set Google user to Global user and save it to DB
+     * */
+    private void saveGoogleUser() {
+        saveGoogleUserObservable.subscribe(new Subscriber() {
+
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.USER_SAVED || result == Constants.USER_EXISTS) {
+                    utils.setUserInPrefs(Constants.GOOGLE_USER, SignInActivity.this);
+                    updateUI(true);
+                    String message = getResources().getString(R.string.signed_in_as) + ": "
+                            + MyApplication.getInstance().getUser().getEmail();
+                    listener.showMessage(message);
+                }
+                if (result == Constants.USER_NOT_SAVED || result == Constants.NO_DB_RESULT) {
+                    String message = getResources().getString(R.string.user_saving_failed);
+                    listener.showMessage(message);
+                }
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    // SAVE GOOGLE USER OBSERVABLE
+    final Observable saveGoogleUserObservable = Observable.create(new Observable.OnSubscribe() {
+        @Override
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.saveGoogleUser(user));
+            subscriber.onCompleted();
+        }
+    })
+            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
 
     /**
      * Sign out from Google account
@@ -293,12 +391,7 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
     protected void signOut() {
         Auth.GoogleSignInApi.signOut(
                 MyApplication.getInstance().getGoogleApiClient())
-                .setResultCallback(new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(@NonNull Status status) {
-                        updateUI(false);
-                    }
-                });
+                .setResultCallback(status -> updateUI(false));
     }
 
     /**
@@ -344,75 +437,5 @@ public class SignInActivity extends AppCompatActivity implements OnTaskCompleted
             return users.get(0);
         }
         return null;
-    }
-
-    @Override
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    private class SaveGoogleUser extends AsyncTask<User, Void, String> {
-
-        private OnTaskCompleted listener;
-
-        public SaveGoogleUser(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected String doInBackground(User... array) {
-            return dbHelper.saveGoogleUser(array[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            String message;
-            if (result.equals(Constants.USER_SAVED) || result.equals(Constants.USER_EXISTS)) {
-                updateUI(true);
-                utils.setUserInPrefs(Constants.GOOGLE_USER, SignInActivity.this);
-                message = getResources().getString(R.string.signed_in_as) + ": "
-                        + MyApplication.getInstance().getUser().getEmail();
-                listener.showMessage(message);
-                return;
-            }
-            if (result.equals(Constants.USER_NOT_SAVED) || result.equals(Constants.NO_DB_RESULT)) {
-                message = getResources().getString(R.string.user_saving_failed);
-                listener.showMessage(message);
-            }
-        }
-    }
-
-    /**
-     * Set global User for silent sign in
-     */
-    private class SetGlobalUser extends AsyncTask<String, Void, String> {
-
-        private OnTaskCompleted listener;
-
-        public SetGlobalUser(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected String doInBackground(String... array) {
-            return dbHelper.setGlobalUser(array[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result.equals(Constants.USER_SAVED)) {
-                updateUI(true);
-                String message = getResources().getString(R.string.signed_in_as) + ": "
-                        + MyApplication.getInstance().getUser().getEmail();
-                listener.showMessage(message);
-                return;
-            }
-            if (result.equals(Constants.USER_NOT_SAVED) || result.equals(Constants.NO_DB_RESULT)) {
-                String message = getResources().getString(R.string.user_saving_failed);
-                listener.showMessage(message);
-            }
-        }
     }
 }

@@ -26,7 +26,7 @@
     <color name="phone_number_text_color">#27ae60</color>
     <color name="info_text_color">#666666</color>
     <color name="address_text_color">#34495e</color>
-    <color name="light_green">#CCFF90</color>
-    <color name="light_yellow">#F4FF81</color>
+    <color name="light_green">#DCEDC8</color>
+    <color name="light_yellow">#FFF9C4</color>
     <color name="white">#fff</color>
 </resources>
