@@ -33,7 +33,7 @@
                 android:hint="@string/appointment_client_name"
                 android:inputType="textCapWords"
                 android:textColor="@color/client_name_text_color"
-                android:textColorHint="@color/client_name_hint_text_color" />
+                android:textColorHint="@color/text_hint" />
 
         </RelativeLayout>
         <!-- SERVICE-->
@@ -59,7 +59,7 @@
                 android:hint="@string/appointment_service"
                 android:inputType="textCapSentences"
                 android:textColor="@color/service_text_color"
-                android:textColorHint="@color/service_hint_text_color" />
+                android:textColorHint="@color/text_hint" />
         </RelativeLayout>
 
         <!-- DATE -->
@@ -136,12 +136,39 @@
                 android:textColor="@color/phone_number_text_color"/>
         </RelativeLayout>
 
+        <!-- ADDRESS -->
+        <RelativeLayout
+            android:id="@+id/appointment_client_address_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/appointment_client_phone_layout">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/appointment_client_address_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="25dp"
+                android:layout_centerVertical="true"
+                android:src="@mipmap/ic_address" />
+
+            <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/appointment_client_address"
+                style="@style/appointmentFormField"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_toEndOf="@+id/appointment_client_address_icon"
+                android:hint="@string/address"
+                android:inputType="textCapSentences"
+                android:maxLength="100"
+                android:textColorHint="@color/text_hint"
+                android:textColor="@color/address_text_color"/>
+        </RelativeLayout>
+
         <!-- MONEY -->
         <RelativeLayout
             android:id="@+id/appointment_money_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/appointment_client_phone_layout"
+            android:layout_below="@+id/appointment_client_address_layout"
             android:gravity="center_horizontal">
 
             <android.support.v7.widget.AppCompatImageView

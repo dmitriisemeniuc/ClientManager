@@ -51,6 +51,8 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     AppCompatEditText etClientName;
     @BindView(R.id.appointment_client_phone)
     AppCompatEditText etClientPhone;
+    @BindView(R.id.appointment_client_address)
+    AppCompatEditText etAddress;
     @BindView(R.id.appointment_service)
     AppCompatEditText etService;
     @BindView(R.id.appointment_info)
@@ -301,6 +303,7 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
     private void setDataFromFields() {
         client.setName(etClientName.getText().toString());
         client.getContact().setPhone(etClientPhone.getText().toString());
+        client.getContact().setAddress(etAddress.getText().toString());
         service.setName(etService.getText().toString());
         sum = etSum.getText().toString();
         info = etInfo.getText().toString();

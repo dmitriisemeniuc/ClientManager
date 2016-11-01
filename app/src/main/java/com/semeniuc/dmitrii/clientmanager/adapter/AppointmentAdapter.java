@@ -43,10 +43,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
         // CLIENT
-        holder.clientName.setText(appointments.get(position).getClient().getName());
+        holder.client.setText(appointments.get(position).getClient().getName());
         // PHONE ICON
         if (appointments.get(position).getClient().getContact().getPhone().isEmpty()) {
-            holder.clientPhoneIcon.setVisibility(View.INVISIBLE);
+            holder.phoneIcon.setVisibility(View.INVISIBLE);
         }
         // SERVICE
         holder.service.setText(appointments.get(position).getService().getName());
@@ -73,24 +73,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.paid.setImageDrawable(ContextCompat.getDrawable(
                     MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_yes));
         }
-        // DONE
-        boolean done = appointments.get(position).isDone();
-        if (!done) {
-            holder.done.setVisibility(View.GONE);
+        // ADDRESS
+        if (appointments.get(position).getClient().getContact().getAddress().isEmpty()) {
+            holder.addressLayout.setVisibility(View.GONE);
         } else {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
-                    MyApplication.getInstance().getApplicationContext(), R.color.light_green));
+            holder.address.setText(appointments.get(position).getClient().getContact().getAddress());
         }
+
         // INFO
         if (appointments.get(position).getInfo().isEmpty()) {
-            holder.infoIcon.setVisibility(View.GONE);
-            if (!done) holder.infoLayout.setVisibility(View.GONE);
+            holder.infoLayout.setVisibility(View.GONE);
         } else {
             holder.info.setText(appointments.get(position).getInfo());
-        }
-        if (paid && done) {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
-                    MyApplication.getInstance().getApplicationContext(), R.color.white));
         }
         // SERVICES
         boolean hairColoring = appointments.get(position).getService().isHairColoring();
@@ -99,9 +93,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         if (!hairdo) holder.hairdo.setVisibility(View.GONE);
         boolean haircut = appointments.get(position).getService().isHaircut();
         if (!haircut) holder.haircut.setVisibility(View.GONE);
-        if (!hairColoring && !hairdo && !haircut) {
-            holder.serviceLayout.setVisibility(View.GONE);
-        }
+        if (!hairColoring && !hairdo && !haircut) holder.serviceLayout.setVisibility(View.GONE);
         // TOOLS
         boolean brush = appointments.get(position).getTools().isBrush();
         if (!brush) holder.brush.setVisibility(View.GONE);
@@ -122,8 +114,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         boolean trimmer = appointments.get(position).getTools().isTrimmer();
         if (!trimmer) holder.trimmer.setVisibility(View.GONE);
         if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet && !spray && !oxy &&
-                !tube && !trimmer) {
-            holder.toolsLayout.setVisibility(View.GONE);
+                !tube && !trimmer) holder.toolsLayout.setVisibility(View.GONE);
+        // DONE
+        boolean done = appointments.get(position).isDone();
+        if (!done) {
+            holder.done.setVisibility(View.INVISIBLE);
+        } else {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.light_green));
+        }
+        if (paid && done) {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.white));
         }
         // set onClickListeners
         holder.bind(appointments.get(position), listener, phoneListener);
@@ -143,43 +145,46 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView clientName, clientPhone, service, sum, currency, info, dateTime;
-        AppCompatImageView paid, done, clientPhoneIcon, hairColoring, hairdo, haircut, brush,
-                hairBrush, hairDryer, hairBand, cutSet, spray, oxy, tube, trimmer, infoIcon;
-        RelativeLayout sumStrike, serviceLayout, toolsLayout, infoLayout;
+        AppCompatTextView client, phone, address, service, sum, currency, info, dateTime;
+        AppCompatImageView paid, done, phoneIcon, hairColoring, hairdo, haircut, brush, hairBrush,
+                hairDryer, hairBand, cutSet, spray, oxy, tube, trimmer, infoIcon, addressIcon;
+        RelativeLayout sumStrike, serviceLayout, toolsLayout, addressLayout, infoLayout;
         CardView cardView;
 
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
-            cardView = (CardView) itemView.findViewById(R.id.main_recyclerview);
-            clientName = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_name);
-            clientPhone = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_client_phone);
-            service = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_service_name);
-            sum = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum);
-            currency = (AppCompatTextView) itemView.findViewById(R.id.main_cards_sum_currency);
-            paid = (AppCompatImageView) itemView.findViewById(R.id.main_cards_paid_icon);
-            done = (AppCompatImageView) itemView.findViewById(R.id.main_cards_done_icon);
-            infoIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_info_icon);
-            info = (AppCompatTextView) itemView.findViewById(R.id.main_cards_info);
-            dateTime = (AppCompatTextView) itemView.findViewById(R.id.main_appointment_date_time);
-            clientPhoneIcon = (AppCompatImageView) itemView.findViewById(R.id.main_cards_phone_call_icon);
-            hairColoring = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hair_coloring);
-            hairdo = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_hairdo);
-            haircut = (AppCompatImageView) itemView.findViewById(R.id.main_cards_services_haircut);
-            brush = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_brush);
-            hairBrush = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_brush);
-            hairDryer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_dryer);
-            hairBand = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_hair_band);
-            cutSet = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_cut_set);
-            spray = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_spray);
-            oxy = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_oxy);
-            tube = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_tube);
-            trimmer = (AppCompatImageView) itemView.findViewById(R.id.main_cards_tools_trimmer);
-            sumStrike = (RelativeLayout) itemView.findViewById(R.id.main_cards_sum_strike);
-            serviceLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_services);
-            toolsLayout = (RelativeLayout) itemView.findViewById(R.id.main_appointment_tools);
-            infoLayout = (RelativeLayout) itemView.findViewById(R.id.main_cards_info_layout);
+            cardView = (CardView) itemView.findViewById(R.id.recycler);
+            client = (AppCompatTextView) itemView.findViewById(R.id.card_client_name);
+            phone = (AppCompatTextView) itemView.findViewById(R.id.card_client_phone);
+            address = (AppCompatTextView) itemView.findViewById(R.id.card_client_address);
+            addressIcon = (AppCompatImageView) itemView.findViewById(R.id.card_address_icon);
+            service = (AppCompatTextView) itemView.findViewById(R.id.card_service_name);
+            sum = (AppCompatTextView) itemView.findViewById(R.id.card_sum);
+            currency = (AppCompatTextView) itemView.findViewById(R.id.card_sum_currency);
+            paid = (AppCompatImageView) itemView.findViewById(R.id.card_paid_icon);
+            done = (AppCompatImageView) itemView.findViewById(R.id.card_done_icon);
+            infoIcon = (AppCompatImageView) itemView.findViewById(R.id.card_info_icon);
+            info = (AppCompatTextView) itemView.findViewById(R.id.card_info);
+            dateTime = (AppCompatTextView) itemView.findViewById(R.id.card_date_time);
+            phoneIcon = (AppCompatImageView) itemView.findViewById(R.id.card_phone_call_icon);
+            hairColoring = (AppCompatImageView) itemView.findViewById(R.id.card_services_coloring);
+            hairdo = (AppCompatImageView) itemView.findViewById(R.id.card_services_hairdo);
+            haircut = (AppCompatImageView) itemView.findViewById(R.id.card_services_haircut);
+            brush = (AppCompatImageView) itemView.findViewById(R.id.card_tools_brush);
+            hairBrush = (AppCompatImageView) itemView.findViewById(R.id.card_tools_hair_brush);
+            hairDryer = (AppCompatImageView) itemView.findViewById(R.id.card_tools_hair_dryer);
+            hairBand = (AppCompatImageView) itemView.findViewById(R.id.card_tools_hair_band);
+            cutSet = (AppCompatImageView) itemView.findViewById(R.id.card_tools_cut_set);
+            spray = (AppCompatImageView) itemView.findViewById(R.id.card_tools_spray);
+            oxy = (AppCompatImageView) itemView.findViewById(R.id.card_tools_oxy);
+            tube = (AppCompatImageView) itemView.findViewById(R.id.card_tools_tube);
+            trimmer = (AppCompatImageView) itemView.findViewById(R.id.card_tools_trimmer);
+            sumStrike = (RelativeLayout) itemView.findViewById(R.id.card_sum_strike);
+            serviceLayout = (RelativeLayout) itemView.findViewById(R.id.services);
+            toolsLayout = (RelativeLayout) itemView.findViewById(R.id.tools);
+            addressLayout = (RelativeLayout) itemView.findViewById(R.id.address);
+            infoLayout = (RelativeLayout) itemView.findViewById(R.id.info);
         }
 
         public void bind(final Appointment appointment, final OnItemClickListener listener,
@@ -190,13 +195,12 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                     listener.onItemClick(appointment);
                 }
             });
-            clientPhoneIcon.setOnClickListener(new View.OnClickListener() {
+            phoneIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     phoneListener.onPhoneClick(appointment.getClient().getContact().getPhone());
                 }
             });
-
         }
     }
 

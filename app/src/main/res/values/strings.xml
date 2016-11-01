@@ -74,5 +74,6 @@
     <string name="archived_order_by_client">Archived order by Client</string>
     <string name="profile_image">Profile image</string>
     <string name="background_image">Background image</string>
+    <string name="address">Address</string>
 
 </resources>

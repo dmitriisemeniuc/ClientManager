@@ -233,7 +233,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
      * Get Recycler View with itemAnimation and LayoutManager setting
      */
     private RecyclerView getRecyclerView() {
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.main_recyclerview);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         // RecyclerView will be displayed as list

@@ -7,66 +7,80 @@
     android:tag="cards main container">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/main_recyclerview"
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        card_view:cardCornerRadius="2dp"
-        card_view:cardElevation="2dp"
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp"
         card_view:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp">
+            android:padding="10dp">
 
             <RelativeLayout
-                android:id="@+id/main_cards_time_layout"
+                android:id="@+id/time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_date_time_icon"
+                    android:id="@+id/date_time_icon"
                     style="@style/cardViewItem"
                     android:layout_height="20dp"
                     android:src="@mipmap/ic_datetime" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_appointment_date_time"
+                    android:id="@+id/card_date_time"
                     style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_date_time_icon"
+                    android:layout_toEndOf="@+id/date_time_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/date_text_color"
                     android:textSize="16sp" />
 
                 <RelativeLayout
-                    android:id="@+id/main_appointment_services"
+                    android:id="@+id/services"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="end"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="5dp">
 
                     <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_services_hair_coloring"
+                        android:id="@+id/card_services_coloring"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/card_services_hairdo"
                         android:src="@mipmap/ic_paint_yes" />
 
                     <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_services_hairdo"
+                        android:id="@+id/card_services_hairdo"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_marginStart="5dp"
-                        android:layout_toEndOf="@+id/main_cards_services_hair_coloring"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/card_services_haircut"
                         android:src="@mipmap/ic_womans_hair_yes" />
 
                     <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_services_haircut"
+                        android:id="@+id/card_services_haircut"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_marginStart="5dp"
-                        android:layout_toEndOf="@+id/main_cards_services_hairdo"
+                        android:layout_centerVertical="true"
+                        android:layout_toStartOf="@+id/card_done_icon"
                         android:src="@mipmap/ic_scissors_yes" />
+
+                    <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/card_done_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginStart="10dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:src="@mipmap/ic_ok_yes" />
 
                 </RelativeLayout>
 
@@ -75,38 +89,38 @@
 
             <!-- CLIENT -->
             <RelativeLayout
-                android:id="@+id/main_cards_client_layout"
+                android:id="@+id/client"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/main_cards_time_layout"
-                android:layout_marginTop="10dp">
+                android:layout_below="@+id/time"
+                android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_client_icon"
+                    android:id="@+id/card_client_icon"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_centerVertical="true"
                     android:src="@mipmap/ic_client" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_appointment_client_name"
+                    android:id="@+id/card_client_name"
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/main_cards_client_icon"
-                    android:layout_toStartOf="@+id/main_cards_phone_layout"
+                    android:layout_toEndOf="@+id/card_client_icon"
+                    android:layout_toStartOf="@+id/phone"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/client_name_text_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <RelativeLayout
-                    android:id="@+id/main_cards_phone_layout"
+                    android:id="@+id/phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true">
 
                     <android.support.v7.widget.AppCompatTextView
-                        android:id="@+id/main_appointment_client_phone"
+                        android:id="@+id/card_client_phone"
                         style="@style/cardViewItem"
                         android:fontFamily="sans-serif-light"
                         android:textColor="@color/phone_number_text_color"
@@ -114,11 +128,11 @@
                         android:textStyle="italic" />
 
                     <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/main_cards_phone_call_icon"
+                        android:id="@+id/card_phone_call_icon"
                         style="@style/cardViewItem"
-                        android:layout_height="28dp"
+                        android:layout_height="25dp"
                         android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/main_appointment_client_phone"
+                        android:layout_toEndOf="@+id/card_client_phone"
                         android:src="@mipmap/ic_phone_call" />
 
                 </RelativeLayout>
@@ -126,11 +140,11 @@
             </RelativeLayout>
             <!-- SERVICE -->
             <RelativeLayout
-                android:id="@+id/main_cards_service_layout"
+                android:id="@+id/service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/main_cards_client_layout"
-                android:layout_marginTop="10dp">
+                android:layout_below="@+id/client"
+                android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/main_cards_service_icon"
@@ -139,35 +153,35 @@
                     android:src="@mipmap/ic_service" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_appointment_service_name"
+                    android:id="@+id/card_service_name"
                     style="@style/cardViewItem"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
-                    android:layout_toStartOf="@+id/main_cards_paid_icon"
+                    android:layout_toStartOf="@+id/card_paid_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/service_text_color"
-                    android:textSize="18sp" />
+                    android:textSize="16sp" />
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_paid_icon"
+                    android:id="@+id/card_paid_icon"
                     style="@style/cardViewItem"
                     android:layout_height="20dp"
                     android:layout_marginStart="10dp"
-                    android:layout_toStartOf="@+id/main_cards_sum"
+                    android:layout_toStartOf="@+id/card_sum"
                     android:src="@mipmap/ic_money_paid_yes" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_cards_sum"
+                    android:id="@+id/card_sum"
                     style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
-                    android:layout_toStartOf="@+id/main_cards_sum_currency"
+                    android:layout_toStartOf="@+id/card_sum_currency"
                     android:textColor="@color/money_text"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-light"/>
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_cards_sum_currency"
+                    android:id="@+id/card_sum_currency"
                     style="@style/cardViewItem"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="5dp"
@@ -177,13 +191,13 @@
                     android:fontFamily="sans-serif-light"/>
 
                 <RelativeLayout
-                    android:id="@+id/main_cards_sum_strike"
+                    android:id="@+id/card_sum_strike"
                     style="@style/cardViewItem"
                     android:layout_height="1dp"
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="-3dp"
                     android:layout_marginStart="3dp"
-                    android:layout_toEndOf="@+id/main_cards_paid_icon">
+                    android:layout_toEndOf="@+id/card_paid_icon">
 
                     <View
                         android:id="@+id/strike"
@@ -193,127 +207,135 @@
                 </RelativeLayout>
             </RelativeLayout>
 
-            <!-- TOOLS -->
+            <!-- ADDRESS -->
             <RelativeLayout
-                android:id="@+id/main_appointment_tools"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/main_cards_service_layout"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="15dp">
+                android:id="@+id/address"
+                style="@style/cardViewItem"
+                android:layout_below="@+id/service"
+                android:layout_marginTop="5dp">
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_address_icon"
+                    style="@style/cardViewItem"
+                    android:layout_height="20dp"
+                    android:src="@mipmap/ic_address" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_appointment_tools_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tools"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-light"/>
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_brush"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_appointment_tools_label"
-                    android:src="@mipmap/ic_brush_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_hair_brush"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_brush"
-                    android:src="@mipmap/ic_hair_brush_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_hair_dryer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_hair_brush"
-                    android:src="@mipmap/ic_hair_dryer_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_hair_band"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_hair_dryer"
-                    android:src="@mipmap/ic_hair_band_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_cut_set"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_hair_band"
-                    android:src="@mipmap/ic_cutset_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_spray"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_cut_set"
-                    android:src="@mipmap/ic_spray_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_oxy"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_spray"
-                    android:src="@mipmap/ic_soap_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_tube"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_oxy"
-                    android:src="@mipmap/ic_tube_yes" />
-
-                <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_tools_trimmer"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_marginStart="5dp"
-                    android:layout_toEndOf="@+id/main_cards_tools_tube"
-                    android:src="@mipmap/ic_trimmer_yes" />
+                    android:id="@+id/card_client_address"
+                    style="@style/cardViewItem"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/card_address_icon"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/address_text_color"
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
             <!-- INFO -->
             <RelativeLayout
-                android:id="@+id/main_cards_info_layout"
+                android:id="@+id/info"
                 style="@style/cardViewItem"
-                android:layout_below="@+id/main_appointment_tools"
-                android:layout_marginTop="10dp">
+                android:layout_below="@+id/address"
+                android:layout_marginTop="5dp">
 
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_info_icon"
+                    android:id="@+id/card_info_icon"
                     style="@style/cardViewItem"
                     android:layout_height="20dp"
                     android:src="@mipmap/ic_info" />
 
                 <android.support.v7.widget.AppCompatTextView
-                    android:id="@+id/main_cards_info"
+                    android:id="@+id/card_info"
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
-                    android:layout_toEndOf="@+id/main_cards_info_icon"
-                    android:layout_toStartOf="@+id/main_cards_done_icon"
+                    android:layout_toEndOf="@+id/card_info_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/info_text_color"
                     android:textSize="16sp" />
 
+            </RelativeLayout>
+
+            <!-- TOOLS -->
+            <RelativeLayout
+                android:id="@+id/tools"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/info"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:gravity="end">
+
                 <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/main_cards_done_icon"
+                    android:id="@+id/card_tools_brush"
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_hair_brush"
+                    android:src="@mipmap/ic_brush_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_hair_brush"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_hair_dryer"
+                    android:src="@mipmap/ic_hair_brush_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_hair_dryer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_hair_band"
+                    android:src="@mipmap/ic_hair_dryer_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_hair_band"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_cut_set"
+                    android:src="@mipmap/ic_hair_band_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_cut_set"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_spray"
+                    android:src="@mipmap/ic_cutset_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_spray"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_oxy"
+                    android:src="@mipmap/ic_spray_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_oxy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_tube"
+                    android:src="@mipmap/ic_soap_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_tube"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_toStartOf="@+id/card_tools_trimmer"
+                    android:src="@mipmap/ic_tube_yes" />
+
+                <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/card_tools_trimmer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@mipmap/ic_ok_yes" />
+                    android:src="@mipmap/ic_trimmer_yes" />
 
             </RelativeLayout>
 
