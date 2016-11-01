@@ -1,13 +1,13 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
@@ -34,17 +34,24 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class AppointmentActivity extends AppCompatActivity implements OnTaskCompleted {
+public class AppointmentCreateActivity extends AppCompatActivity implements OnTaskCompleted {
 
-    protected Utils utils;
+    public static final String LOG_TAG = AppointmentCreateActivity.class.getSimpleName();
+
     private DatabaseTaskHelper dbHelper;
     private Appointment appointment;
-    protected Client client;
-    protected String info, date, time, sum;
-    protected Service service;
-    protected Tools tools;
-    protected Date dateTime;
+    private OnTaskCompleted listener;
+    private Utils utils;
+    private Client client;
+    private String info, date, time, sum;
+    private Service service;
+    private Tools tools;
+    private Date dateTime;
     private boolean paid, done;
 
     @BindView(R.id.appointment_client_name)
@@ -217,13 +224,18 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
                     setDataFromFields();
                     appointment = new Appointment(MyApplication.getInstance().getUser(), client,
                             service, tools, info, dateTime, sum, paid, done);
-                    new SaveAppointment(this).execute(appointment);
+                    saveAppointment();
                     return true;
                 }
                 hideKeyboard();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void initInstances() {
@@ -234,24 +246,63 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
         service = new Service();
         tools = new Tools();
         dbHelper = new DatabaseTaskHelper();
+        listener = this;
     }
+
+    /**
+     * Save Appointment to DB (Create new one) using RXJava
+     */
+    private void saveAppointment() {
+
+        observable.subscribe(new Subscriber() {
+
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.CREATED) {
+                    String message = getResources().getString(R.string.appointment_saved);
+                    listener.showMessage(message);
+                    finish();
+                    return;
+                }
+                String message = getResources().getString(R.string.saving_failed);
+                listener.showMessage(message);
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    final Observable observable = Observable.create(new Observable.OnSubscribe() {
+        @Override
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.saveAppointment(appointment));
+            subscriber.onCompleted();
+        }
+    })
+            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
 
     /**
      * Open time picker
      */
     protected void showDatePickerDialog(Calendar calendar) {
         DateDialogFragment ddf = DateDialogFragment.newInstance(this, calendar);
-        ddf.setDateDialogFragmentListener(new DateDialogFragment.DateDialogFragmentListener() {
-
-            @Override
-            public void onDateDialogFragmentDateSet(Calendar date) {
-                String formattedDate = utils.getCorrectDateFormat(
-                        date.get(Calendar.YEAR),
-                        date.get(Calendar.MONTH),
-                        date.get(Calendar.DAY_OF_MONTH));
-                tvDate.setText(formattedDate);
-                tvDate.setError(null);
-            }
+        ddf.setDateDialogFragmentListener(date1 -> {
+            String formattedDate = utils.getCorrectDateFormat(
+                    date1.get(Calendar.YEAR),
+                    date1.get(Calendar.MONTH),
+                    date1.get(Calendar.DAY_OF_MONTH));
+            tvDate.setText(formattedDate);
+            tvDate.setError(null);
         });
         ddf.show(getSupportFragmentManager(), "date picker dialog fragment");
     }
@@ -261,16 +312,12 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
      */
     protected void showTimePickerDialog(Calendar calendar) {
         TimeDialogFragment tdf = TimeDialogFragment.newInstance(this, calendar);
-        tdf.setTimeDialogFragmentListener(new TimeDialogFragment.TimeDialogFragmentListener() {
-
-            @Override
-            public void onTimeDialogFragmentTimeSet(Calendar time) {
-                String formattedTime = utils.getCorrectTimeFormat(
-                        time.get(Calendar.HOUR_OF_DAY),
-                        time.get(Calendar.MINUTE));
-                tvTime.setText(formattedTime);
-                tvTime.setError(null);
-            }
+        tdf.setTimeDialogFragmentListener(time1 -> {
+            String formattedTime = utils.getCorrectTimeFormat(
+                    time1.get(Calendar.HOUR_OF_DAY),
+                    time1.get(Calendar.MINUTE));
+            tvTime.setText(formattedTime);
+            tvTime.setError(null);
         });
         tdf.show(getSupportFragmentManager(), "time picker dialog fragment");
     }
@@ -310,48 +357,12 @@ public class AppointmentActivity extends AppCompatActivity implements OnTaskComp
         date = tvDate.getText().toString();
         time = tvTime.getText().toString();
         String dateTimeStr = date + " " + time;
-
         dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
     }
 
     protected void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
-    }
-
-    @Override
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Save Appointment to DB (Create new one)
-     */
-    private class SaveAppointment extends AsyncTask<Appointment, Void, Integer> {
-
-        private OnTaskCompleted listener;
-
-        public SaveAppointment(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected Integer doInBackground(Appointment... array) {
-            return dbHelper.saveAppointment(array[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Integer created) {
-            super.onPostExecute(created);
-            if (created == Constants.CREATED) {
-                String message = getResources().getString(R.string.appointment_saved);
-                listener.showMessage(message);
-                finish();
-            } else {
-                String message = getResources().getString(R.string.saving_failed);
-                listener.showMessage(message);
-            }
-        }
     }
 
     // ********** Methods of onClick Image changing

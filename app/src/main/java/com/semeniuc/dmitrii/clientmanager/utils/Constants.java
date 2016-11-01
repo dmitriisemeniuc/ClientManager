@@ -12,10 +12,10 @@ public class Constants {
     public static final String NEW_USER = "new";
     public static final String EMPTY = "";
     public static final String LOGIN_PREFS = "loginPrefs";
-    public static final String USER_SAVED = "saved";
-    public static final String USER_NOT_SAVED = "not saved";
-    public static final String USER_EXISTS = "exists";
-    public static final String NO_DB_RESULT = "no db response";
+    public static final int USER_SAVED = 101;
+    public static final int USER_NOT_SAVED = 102;
+    public static final int USER_EXISTS = 103;
+    public static final int NO_DB_RESULT = 404;
     public static final int SIZE_EMPTY = 0;
     public static final int RC_SIGN_IN = 9001;
 

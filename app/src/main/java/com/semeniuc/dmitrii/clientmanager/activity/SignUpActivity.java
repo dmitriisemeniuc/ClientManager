@@ -1,11 +1,11 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
@@ -22,11 +22,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
 
 public class SignUpActivity extends AppCompatActivity implements OnTaskCompleted {
 
+    public static final String LOG_TAG = SignUpActivity.class.getSimpleName();
+
     private Utils utils;
     private DatabaseTaskHelper dbHelper;
+    private User user;
+    private OnTaskCompleted listener;
 
     @OnClick(R.id.sign_in_btn)
     void submitSignUp() {
@@ -53,15 +59,63 @@ public class SignUpActivity extends AppCompatActivity implements OnTaskCompleted
         ButterKnife.bind(this);
         utils = new Utils();
         dbHelper = new DatabaseTaskHelper();
+        listener = this;
+    }
+
+    @Override
+    public void showMessage(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void onSignUpBtnPressed() {
         boolean valid = isFormValid();
         if (!valid)
             return;
-        User user = new User(email.getText().toString(), password.getText().toString());
-        new SaveEmailUser(this).execute(user);
+        user = new User(email.getText().toString(), password.getText().toString());
+        saveRegisteredUser();
     }
+
+    /**
+     * Save the registered user to DB and set it to the Global user
+     * */
+    private void saveRegisteredUser() {
+        saveRegisteredUserObservable.subscribe(new Subscriber() {
+
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.USER_SAVED) {
+                    utils.setUserInPrefs(Constants.REGISTERED_USER, SignUpActivity.this);
+                    String message = getResources().getString(R.string.signed_in_as) + ": "
+                            + MyApplication.getInstance().getUser().getEmail();
+                    listener.showMessage(message);
+                    updateUI(true);
+                } else {
+                    String message = getResources().getString(R.string.user_saving_failed);
+                    listener.showMessage(message);
+                }
+            }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
+    }
+
+    // SAVE REGISTERED USER OBSERVABLE
+    final Observable saveRegisteredUserObservable = Observable.create(new Observable.OnSubscribe() {
+        @Override
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.saveRegisteredUser(user));
+            subscriber.onCompleted();
+        }
+    });
 
     private boolean isFormValid() {
         boolean empty = isSignUpFieldsEmpty();
@@ -136,39 +190,5 @@ public class SignUpActivity extends AppCompatActivity implements OnTaskCompleted
     private void startMainActivity() {
         Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
-    }
-
-    private class SaveEmailUser extends AsyncTask<User, Void, String> {
-
-        private OnTaskCompleted listener;
-
-        public SaveEmailUser(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected String doInBackground(User... array) {
-            return dbHelper.saveRegisteredUser(array[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            if (result.equals(Constants.USER_SAVED)) {
-                updateUI(true);
-                utils.setUserInPrefs(Constants.REGISTERED_USER, SignUpActivity.this);
-                String message = getResources().getString(R.string.signed_in_as) + ": "
-                        + MyApplication.getInstance().getUser().getEmail();
-                listener.showMessage(message);
-            } else {
-                String message = getResources().getString(R.string.user_saving_failed);
-                listener.showMessage(message);
-            }
-        }
     }
 }

@@ -16,7 +16,7 @@ import java.util.List;
 
 public class DatabaseTaskHelper {
 
-    public String saveGoogleUser(User user) {
+    public Integer saveGoogleUser(User user) {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(user.getEmail());
         if (null != users) {
@@ -43,7 +43,7 @@ public class DatabaseTaskHelper {
         }
     }
 
-    public String saveRegisteredUser(User user) {
+    public Integer saveRegisteredUser(User user) {
         UserRepository userRepo = UserRepository.getInstance();
         int index = userRepo.create(user);
         if (index == 1) {
@@ -56,7 +56,7 @@ public class DatabaseTaskHelper {
         return Constants.USER_NOT_SAVED;
     }
 
-    public String setGlobalUser(String email) {
+    public Integer setGlobalUser(String email) {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(email);
         if (null != users) {

@@ -1,11 +1,11 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ScrollView;
@@ -15,17 +15,26 @@ import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.model.Appointment;
 import com.semeniuc.dmitrii.clientmanager.utils.Constants;
+import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
 import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
-public class AppointmentReviewActivity extends AppointmentActivity implements OnTaskCompleted {
+public class AppointmentReviewActivity extends AppointmentCreateActivity implements OnTaskCompleted {
+
+    public static final String LOG_TAG = AppointmentReviewActivity.class.getSimpleName();
 
     private Appointment appointment;
     private DatabaseTaskHelper dbHelper;
+    private OnTaskCompleted listener;
+    private Utils utils;
 
     @BindView(R.id.appointment_client_name)
     AppCompatEditText etClientName;
@@ -182,6 +191,8 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         super.onCreate(savedInstanceState);
         appointment = getIntent().getExtras().getParcelable(Constants.APPOINTMENT_PATH);
         dbHelper = new DatabaseTaskHelper();
+        utils = new Utils();
+        listener = this;
     }
 
     @Override
@@ -204,13 +215,13 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
                 boolean valid = super.isAppointmentFormValid();
                 if (valid) {
                     setDataFromFields();
-                    new UpdateAppointment(this).execute(appointment);
+                    updateAppointment();
                 } else {
                     hideKeyboard();
                 }
                 break;
             case R.id.action_delete_appointment:
-                new DeleteAppointment(this).execute(appointment);
+                deleteAppointment();
                 break;
         }
         return true;
@@ -218,16 +229,14 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
 
     private Calendar getDateForDialog() {
         final Calendar calendar = Calendar.getInstance();
-        // Set date for dialog coming from appointment
         Date dateForDialog = utils.convertStringToDate(
                 tvDate.getText().toString(), Constants.DATE_FORMAT, this);
         calendar.setTime(dateForDialog);
         return calendar;
     }
 
-    private Calendar getTimeForDialog(){
+    private Calendar getTimeForDialog() {
         final Calendar calendar = Calendar.getInstance();
-        // Set time for dialog coming from appointment
         Date dateForDialog = utils.convertStringToDate(
                 tvTime.getText().toString(), Constants.TIME_FORMAT, this);
         calendar.setTime(dateForDialog);
@@ -245,11 +254,8 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         etService.setText(appointment.getService().getName());
         etSum.setText(appointment.getSum());
         etInfo.setText(appointment.getInfo());
-        tvDate.setText(
-                utils.convertDateToString(appointment.getDate(), Constants.DATE_FORMAT, this));
-        tvTime.setText(
-                utils.convertDateToString(appointment.getDate(), Constants.TIME_FORMAT, this));
-        // booleans
+        tvDate.setText(utils.convertDateToString(appointment.getDate(), Constants.DATE_FORMAT, this));
+        tvTime.setText(utils.convertDateToString(appointment.getDate(), Constants.TIME_FORMAT, this));
         // Services
         boolean hairColoring = appointment.getService().isHairColoring();
         if (hairColoring) ivHairColoring.setImageResource(R.mipmap.ic_paint_yes);
@@ -289,66 +295,98 @@ public class AppointmentReviewActivity extends AppointmentActivity implements On
         appointment.getService().setName(etService.getText().toString());
         appointment.setInfo(etInfo.getText().toString());
         appointment.setSum(etSum.getText().toString());
-        date = tvDate.getText().toString();
-        time = tvTime.getText().toString();
+        String date = tvDate.getText().toString();
+        String time = tvTime.getText().toString();
         String dateTimeStr = date + " " + time;
-        dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
+        Date dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
         appointment.setDate(dateTime);
     }
 
-    // Async Tasks
+    /**
+     * Update Appointment in DB using RXJava
+     */
+    private void updateAppointment() {
 
-    private class UpdateAppointment extends AsyncTask<Appointment, Void, Integer> {
+        updateObservable.subscribe(new Subscriber() {
 
-        private OnTaskCompleted listener;
-
-        public UpdateAppointment(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        protected Integer doInBackground(Appointment... array) {
-            return dbHelper.updateAppointment(array[0]);
-        }
-
-        @Override
-        protected void onPostExecute(Integer result) {
-            if (result.equals(Constants.UPDATED)) {
-                String message = getResources().getString(R.string.appointment_updated);
-                listener.showMessage(message);
-                finish();
-            } else {
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.UPDATED) {
+                    String message = getResources().getString(R.string.appointment_updated);
+                    listener.showMessage(message);
+                    finish();
+                    return;
+                }
                 String message = getResources().getString(R.string.updating_failed);
                 listener.showMessage(message);
             }
-        }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
     }
 
-    private class DeleteAppointment extends AsyncTask<Appointment, Void, Integer> {
-
-        private OnTaskCompleted listener;
-
-        public DeleteAppointment(OnTaskCompleted listener) {
-            this.listener = listener;
-        }
-
+    // OBSERVABLE
+    final Observable updateObservable = Observable.create(new Observable.OnSubscribe() {
         @Override
-        protected Integer doInBackground(Appointment... array) {
-            return dbHelper.deleteAppointment(array[0]);
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.updateAppointment(appointment));
+            subscriber.onCompleted();
         }
+    })
+            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
 
-        @Override
-        protected void onPostExecute(Integer result) {
-            if (result.equals(Constants.DELETED)) {
-                String message = getResources().getString(R.string.appointment_deleted);
-                listener.showMessage(message);
-                finish();
-            } else {
+    /**
+     * Delete Appointment from DB using RXJava
+     */
+    private void deleteAppointment() {
+
+        deleteObservable.subscribe(new Subscriber() {
+
+            @Override
+            public void onNext(Object o) {
+                Integer result = (Integer) o;
+                if (result == Constants.DELETED) {
+                    String message = getResources().getString(R.string.appointment_deleted);
+                    listener.showMessage(message);
+                    finish();
+                    return;
+                }
                 String message = getResources().getString(R.string.deleting_failed);
                 listener.showMessage(message);
             }
-        }
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(LOG_TAG, "Error: " + e.getMessage());
+            }
+        });
     }
+
+    // DELETE OBSERVABLE
+    final Observable deleteObservable = Observable.create(new Observable.OnSubscribe() {
+        @Override
+        public void call(Object o) {
+            Subscriber subscriber = (Subscriber) o;
+            subscriber.onNext(dbHelper.deleteAppointment(appointment));
+            subscriber.onCompleted();
+        }
+    })
+            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
+            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
 
     // ********** Methods of onClick Image changing **********
     private void changePaidImage() {

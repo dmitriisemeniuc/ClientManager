@@ -18,7 +18,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
@@ -76,8 +75,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
             case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
                 // If request is cancelled, the result arrays are empty.
@@ -106,25 +105,22 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     private void initToolbar() {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(R.string.app_name);
-        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.show_ordered_by_date:
-                        displayAppointments(Constants.ORDER_BY_DATE);
-                        return true;
-                    case R.id.show_ordered_by_client:
-                        displayAppointments(Constants.ORDER_BY_CLIENT);
-                        return true;
-                    case R.id.show_archived_order_by_date:
-                        displayAppointments(Constants.ARCHIVED_ORDER_BY_DATE);
-                        return true;
-                    case R.id.show_archived_order_by_client:
-                        displayAppointments(Constants.ARCHIVED_ORDER_BY_CLIENT);
-                        return true;
-                    default:
-                        return false;
-                }
+        toolbar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.show_ordered_by_date:
+                    displayAppointments(Constants.ORDER_BY_DATE);
+                    return true;
+                case R.id.show_ordered_by_client:
+                    displayAppointments(Constants.ORDER_BY_CLIENT);
+                    return true;
+                case R.id.show_archived_order_by_date:
+                    displayAppointments(Constants.ARCHIVED_ORDER_BY_DATE);
+                    return true;
+                case R.id.show_archived_order_by_client:
+                    displayAppointments(Constants.ARCHIVED_ORDER_BY_CLIENT);
+                    return true;
+                default:
+                    return false;
             }
         });
         toolbar.inflateMenu(R.menu.main_options_menu);
@@ -133,28 +129,25 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     private void initNavigationView() {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.view_navigation_open, R.string.view_navigation_close);
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigation = (NavigationView) findViewById(R.id.navigation);
-
         // Navigation view header
         navHeader = navigation.getHeaderView(0);
         txtEmail = (TextView) navHeader.findViewById(R.id.email);
         imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
 
-        navigation.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                drawerLayout.closeDrawers();
-                switch (item.getItemId()) {
-                    case R.id.action_logout:
-                        signOut();
-                        break;
-                }
-                return true;
+        navigation.setNavigationItemSelectedListener(item -> {
+            drawerLayout.closeDrawers();
+            switch (item.getItemId()) {
+                case R.id.action_logout:
+                    signOut();
+                    break;
             }
+            return true;
         });
         // load nav menu header data
         loadNavHeader();
@@ -170,48 +163,40 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void startAppointmentActivity() {
-        Intent intent = new Intent(this, AppointmentActivity.class);
+        Intent intent = new Intent(this, AppointmentCreateActivity.class);
         startActivity(intent);
     }
 
     private void displayAppointments(int option) {
-        List<Appointment> appointments = null;
-        if (option == Constants.ORDER_BY_DATE) {
-            appointments = dbHelper.getAppointmentsOrderedByDate();
+        List<Appointment> appointments;
+        switch (option) {
+            case Constants.ORDER_BY_DATE:
+                appointments = dbHelper.getAppointmentsOrderedByDate();
+                break;
+            case Constants.ORDER_BY_CLIENT:
+                appointments = dbHelper.getAppointmentsOrderedByClient();
+                break;
+            case Constants.ARCHIVED_ORDER_BY_DATE:
+                appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByDate();
+                break;
+            case Constants.ARCHIVED_ORDER_BY_CLIENT:
+                appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByClient();
+                break;
+            default:
+                return;
         }
-        if (option == Constants.ORDER_BY_CLIENT) {
-            appointments = dbHelper.getAppointmentsOrderedByClient();
-        }
-        if (option == Constants.ARCHIVED_ORDER_BY_DATE) {
-            appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByDate();
-        }
-        if (option == Constants.ARCHIVED_ORDER_BY_CLIENT) {
-            appointments = dbHelper.getDoneAndPaidAppointmentsOrderedByClient();
-        }
-        // Set adapter with itemOnClickListener
-        getRecyclerView().setAdapter(new AppointmentAdapter(appointments, new AppointmentAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(Appointment appointment) {
-                reviewAppointment(appointment);
-            }
-        }, new AppointmentAdapter.OnPhoneClickListener() {
-            @Override
-            public void onPhoneClick(String phoneNumber) {
-                callToNumber(phoneNumber);
-            }
-        }));
+        getRecyclerView().setAdapter(new AppointmentAdapter(appointments,
+                appointment -> reviewAppointment(appointment),
+                phoneNumber -> callToNumber(phoneNumber)));
     }
 
     private void callToNumber(String phoneNumber) {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CALL_PHONE)
+        // Request permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
             phone = phoneNumber;
-            // Request permission. No explanation needed
             // The callback method gets the result of the request.
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.CALL_PHONE},
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},
                     Constants.PERMISSIONS_REQUEST_CALL_PHONE);
             return;
         }
@@ -222,9 +207,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     protected void signOut() {
         Utils utils = new Utils();
         String userType = utils.getUserFromPrefs(this);
-        if (userType.equals(Constants.GOOGLE_USER)) {
-            super.signOut();
-        }
+        if (userType.equals(Constants.GOOGLE_USER)) super.signOut();
         utils.setUserInPrefs(Constants.NEW_USER, this);
         backToSignInActivity();
     }
@@ -242,6 +225,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                // Set hiding animation for fab menu
                 FloatingActionMenu menu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
                 if (dy > 0) {
                     CoordinatorLayout.LayoutParams layoutParams =
@@ -249,9 +233,8 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                     int fab_bottomMargin = layoutParams.bottomMargin;
                     menu.animate().translationY(menu.getHeight() +
                             fab_bottomMargin).setInterpolator(new LinearInterpolator()).start();
-                } else if (dy < 0) {
+                } else if (dy < 0)
                     menu.animate().translationY(0).setInterpolator(new LinearInterpolator()).start();
-                }
             }
         });
         return recyclerView;

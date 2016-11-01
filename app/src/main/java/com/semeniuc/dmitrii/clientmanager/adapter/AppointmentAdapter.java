@@ -53,7 +53,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         // SUM
         if (appointments.get(position).getSum().isEmpty()) {
             holder.currency.setVisibility(View.INVISIBLE);
-            holder.sumStrike.setVisibility(View.GONE);
             holder.paid.setVisibility(View.GONE);
         } else {
             holder.sum.setText(appointments.get(position).getSum());
@@ -65,13 +64,17 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 Constants.DATE_TIME_FORMAT, MyApplication.getInstance().getApplicationContext()));
         // PAID
         boolean paid = appointments.get(position).isPaid();
-        if (!paid) {
-            holder.sumStrike.setVisibility(View.GONE);
-        } else {
+        if (paid) {
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
                     MyApplication.getInstance().getApplicationContext(), R.color.light_yellow));
             holder.paid.setImageDrawable(ContextCompat.getDrawable(
                     MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_yes));
+        }
+        // DONE
+        boolean done = appointments.get(position).isDone();
+        if (done || (paid && done)) {
+            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
+                    MyApplication.getInstance().getApplicationContext(), R.color.light_green));
         }
         // ADDRESS
         if (appointments.get(position).getClient().getContact().getAddress().isEmpty()) {
@@ -79,7 +82,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         } else {
             holder.address.setText(appointments.get(position).getClient().getContact().getAddress());
         }
-
         // INFO
         if (appointments.get(position).getInfo().isEmpty()) {
             holder.infoLayout.setVisibility(View.GONE);
@@ -115,18 +117,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         if (!trimmer) holder.trimmer.setVisibility(View.GONE);
         if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet && !spray && !oxy &&
                 !tube && !trimmer) holder.toolsLayout.setVisibility(View.GONE);
-        // DONE
-        boolean done = appointments.get(position).isDone();
-        if (!done) {
-            holder.done.setVisibility(View.INVISIBLE);
-        } else {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
-                    MyApplication.getInstance().getApplicationContext(), R.color.light_green));
-        }
-        if (paid && done) {
-            holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
-                    MyApplication.getInstance().getApplicationContext(), R.color.white));
-        }
         // set onClickListeners
         holder.bind(appointments.get(position), listener, phoneListener);
     }
@@ -146,11 +136,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
         AppCompatTextView client, phone, address, service, sum, currency, info, dateTime;
-        AppCompatImageView paid, done, phoneIcon, hairColoring, hairdo, haircut, brush, hairBrush,
+        AppCompatImageView paid, phoneIcon, hairColoring, hairdo, haircut, brush, hairBrush,
                 hairDryer, hairBand, cutSet, spray, oxy, tube, trimmer, infoIcon, addressIcon;
-        RelativeLayout sumStrike, serviceLayout, toolsLayout, addressLayout, infoLayout;
+        RelativeLayout serviceLayout, toolsLayout, addressLayout, infoLayout;
         CardView cardView;
-
 
         AppointmentViewHolder(View itemView) {
             super(itemView);
@@ -163,7 +152,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             sum = (AppCompatTextView) itemView.findViewById(R.id.card_sum);
             currency = (AppCompatTextView) itemView.findViewById(R.id.card_sum_currency);
             paid = (AppCompatImageView) itemView.findViewById(R.id.card_paid_icon);
-            done = (AppCompatImageView) itemView.findViewById(R.id.card_done_icon);
             infoIcon = (AppCompatImageView) itemView.findViewById(R.id.card_info_icon);
             info = (AppCompatTextView) itemView.findViewById(R.id.card_info);
             dateTime = (AppCompatTextView) itemView.findViewById(R.id.card_date_time);
@@ -180,7 +168,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             oxy = (AppCompatImageView) itemView.findViewById(R.id.card_tools_oxy);
             tube = (AppCompatImageView) itemView.findViewById(R.id.card_tools_tube);
             trimmer = (AppCompatImageView) itemView.findViewById(R.id.card_tools_trimmer);
-            sumStrike = (RelativeLayout) itemView.findViewById(R.id.card_sum_strike);
             serviceLayout = (RelativeLayout) itemView.findViewById(R.id.services);
             toolsLayout = (RelativeLayout) itemView.findViewById(R.id.tools);
             addressLayout = (RelativeLayout) itemView.findViewById(R.id.address);
@@ -189,18 +176,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         public void bind(final Appointment appointment, final OnItemClickListener listener,
                          final OnPhoneClickListener phoneListener) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    listener.onItemClick(appointment);
-                }
-            });
-            phoneIcon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    phoneListener.onPhoneClick(appointment.getClient().getContact().getPhone());
-                }
-            });
+            itemView.setOnClickListener(v -> listener.onItemClick(appointment));
+            phoneIcon.setOnClickListener(v -> phoneListener.onPhoneClick(
+                    appointment.getClient().getContact().getPhone()));
         }
     }
 
