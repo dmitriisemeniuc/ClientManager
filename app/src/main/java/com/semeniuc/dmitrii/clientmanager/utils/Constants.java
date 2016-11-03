@@ -40,4 +40,20 @@ public class Constants {
 
     // Permition
     public static final int PERMISSIONS_REQUEST_CALL_PHONE = 5555;
+
+    // Images
+    public static final int PAID = 1001;
+    public static final int DONE = 1002;
+    public static final int HAIR_COLORING = 1003;
+    public static final int HAIRDO = 1004;
+    public static final int HAIR_CUT = 1005;
+    public static final int BRUSH = 1006;
+    public static final int HAIR_BRUSH = 1007;
+    public static final int HAIR_DRAYER = 1008;
+    public static final int OXY = 1009;
+    public static final int CUT_SET = 1010;
+    public static final int HAIR_BAND = 1011;
+    public static final int SPRAY = 1012;
+    public static final int TUBE = 1013;
+    public static final int TRIMMER = 1014;
 }

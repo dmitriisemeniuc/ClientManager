@@ -212,4 +212,22 @@ public class Appointment implements Parcelable {
     public void setDone(boolean done) {
         this.done = done;
     }
+
+    public String getClientContactPhone(){
+        if(getClient() != null){
+            if(getClient().getContact() != null){
+                return getClient().getContact().getPhone();
+            }
+        }
+        return "";
+    }
+
+    public String getClientContactAddress(){
+        if(getClient() != null){
+            if(getClient().getContact() != null){
+                return getClient().getContact().getAddress();
+            }
+        }
+        return "";
+    }
 }

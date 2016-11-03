@@ -16,6 +16,18 @@ import java.util.List;
 
 public class DatabaseTaskHelper {
 
+    public User getUserByEmail(String email) {
+        UserRepository userRepo = UserRepository.getInstance();
+        List<User> users = userRepo.findByEmail(email);
+        if (users != null) return users.get(0); else return null;
+    }
+
+    public User getUserByEmailAndPassword(String email, String password) {
+        UserRepository userRepo = UserRepository.getInstance();
+        List<User> users = userRepo.findByEmailAndPassword(email, password);
+        if (users != null) return users.get(0); else return null;
+    }
+
     public Integer saveGoogleUser(User user) {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(user.getEmail());
@@ -72,7 +84,7 @@ public class DatabaseTaskHelper {
         return Constants.NO_DB_RESULT;
     }
 
-    public int saveAppointment(Appointment appointment){
+    public Integer saveAppointment(Appointment appointment){
         ServiceRepository serviceRepo = ServiceRepository.getInstance();
         serviceRepo.create(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();
@@ -85,7 +97,7 @@ public class DatabaseTaskHelper {
         return appointmentRepo.create(appointment);
     }
 
-    public int updateAppointment(Appointment appointment){
+    public Integer updateAppointment(Appointment appointment){
         ServiceRepository serviceRepo = ServiceRepository.getInstance();
         serviceRepo.update(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();
@@ -99,7 +111,7 @@ public class DatabaseTaskHelper {
         return appointmentRepo.update(appointment);
     }
 
-    public int deleteAppointment(Appointment appointment){
+    public Integer deleteAppointment(Appointment appointment){
         ServiceRepository serviceRepo = ServiceRepository.getInstance();
         serviceRepo.delete(appointment.getService());
         ToolsRepository toolsRepo = ToolsRepository.getInstance();

@@ -34,7 +34,9 @@
                     android:id="@+id/card_date_time"
                     style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toEndOf="@+id/date_time_icon"
+                    android:layout_toRightOf="@+id/date_time_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/date_text_color"
                     android:textSize="16sp" />
@@ -45,6 +47,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_alignParentEnd="true">
 
                     <android.support.v7.widget.AppCompatImageView
@@ -53,6 +56,7 @@
                         android:layout_height="20dp"
                         android:layout_centerVertical="true"
                         android:layout_toStartOf="@+id/card_services_hairdo"
+                        android:layout_toLeftOf="@+id/card_services_hairdo"
                         android:src="@mipmap/ic_paint_yes" />
 
                     <android.support.v7.widget.AppCompatImageView
@@ -61,6 +65,7 @@
                         android:layout_height="20dp"
                         android:layout_marginStart="5dp"
                         android:layout_toStartOf="@+id/card_services_haircut"
+                        android:layout_toLeftOf="@+id/card_services_haircut"
                         android:src="@mipmap/ic_womans_hair_yes" />
 
                     <android.support.v7.widget.AppCompatImageView
@@ -69,6 +74,7 @@
                         android:layout_height="20dp"
                         android:layout_alignParentEnd="true"
                         android:layout_marginStart="5dp"
+                        android:layout_marginLeft="5dp"
                         android:src="@mipmap/ic_scissors_yes" />
                 </RelativeLayout>
 
@@ -94,7 +100,9 @@
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
                     android:layout_toEndOf="@+id/card_client_icon"
+                    android:layout_toRightOf="@+id/card_client_icon"
                     android:layout_toStartOf="@+id/phone"
+                    android:layout_toLeftOf="@+id/phone"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/client_name_text_color"
                     android:textSize="16sp" />
@@ -119,6 +127,7 @@
                         style="@style/cardViewItem"
                         android:layout_height="25dp"
                         android:layout_marginStart="10dp"
+                        android:layout_marginLeft="10dp"
                         android:layout_toEndOf="@+id/card_client_phone"
                         android:src="@mipmap/ic_phone_call" />
 
@@ -144,8 +153,11 @@
                     style="@style/cardViewItem"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@+id/main_cards_service_icon"
+                    android:layout_toRightOf="@+id/main_cards_service_icon"
                     android:layout_toStartOf="@+id/card_paid_icon"
+                    android:layout_toLeftOf="@+id/card_paid_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/service_text_color"
                     android:textSize="16sp" />
@@ -155,7 +167,9 @@
                     style="@style/cardViewItem"
                     android:layout_height="20dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toStartOf="@+id/card_sum"
+                    android:layout_toLeftOf="@+id/card_sum"
                     android:src="@mipmap/ic_money_paid_yes" />
 
                 <android.support.v7.widget.AppCompatTextView
@@ -163,6 +177,7 @@
                     style="@style/cardViewItem"
                     android:layout_marginStart="5dp"
                     android:layout_toStartOf="@+id/card_sum_currency"
+                    android:layout_toLeftOf="@+id/card_sum_currency"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/money_text"
                     android:textSize="16sp" />
@@ -172,6 +187,7 @@
                     style="@style/cardViewItem"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:fontFamily="sans-serif-light"
                     android:text="@string/currency"
                     android:textColor="@color/money_text"
@@ -195,7 +211,9 @@
                     android:id="@+id/card_client_address"
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@+id/card_address_icon"
+                    android:layout_toRightOf="@+id/card_address_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/address_text_color"
                     android:textSize="16sp" />
@@ -219,7 +237,9 @@
                     android:id="@+id/card_info"
                     style="@style/cardViewItem"
                     android:layout_marginStart="10dp"
+                    android:layout_marginLeft="10dp"
                     android:layout_toEndOf="@+id/card_info_icon"
+                    android:layout_toRightOf="@+id/card_info_icon"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/info_text_color"
                     android:textSize="16sp" />
@@ -233,6 +253,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/info"
                 android:layout_marginStart="5dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:gravity="end">
 
@@ -242,6 +263,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
                     android:layout_toStartOf="@+id/card_tools_hair_brush"
+                    android:layout_toLeftOf="@+id/card_tools_hair_brush"
                     android:src="@mipmap/ic_brush_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -249,7 +271,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_hair_dryer"
+                    android:layout_toLeftOf="@+id/card_tools_hair_dryer"
                     android:src="@mipmap/ic_hair_brush_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -257,7 +281,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_hair_band"
+                    android:layout_toLeftOf="@+id/card_tools_hair_band"
                     android:src="@mipmap/ic_hair_dryer_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -265,7 +291,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_cut_set"
+                    android:layout_toLeftOf="@+id/card_tools_cut_set"
                     android:src="@mipmap/ic_hair_band_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -273,7 +301,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_spray"
+                    android:layout_toLeftOf="@+id/card_tools_spray"
                     android:src="@mipmap/ic_cutset_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -281,7 +311,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_oxy"
+                    android:layout_toLeftOf="@+id/card_tools_oxy"
                     android:src="@mipmap/ic_spray_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -289,7 +321,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_tube"
+                    android:layout_toLeftOf="@+id/card_tools_tube"
                     android:src="@mipmap/ic_soap_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -297,7 +331,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:layout_toStartOf="@+id/card_tools_trimmer"
+                    android:layout_toLeftOf="@+id/card_tools_trimmer"
                     android:src="@mipmap/ic_tube_yes" />
 
                 <android.support.v7.widget.AppCompatImageView
@@ -306,6 +342,7 @@
                     android:layout_height="20dp"
                     android:layout_alignParentEnd="true"
                     android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
                     android:src="@mipmap/ic_trimmer_yes" />
 
             </RelativeLayout>

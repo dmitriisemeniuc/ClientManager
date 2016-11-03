@@ -40,7 +40,6 @@ import java.util.List;
 public class MainActivity extends SignInActivity implements View.OnClickListener {
 
     public static String phone;
-    private DatabaseTaskHelper dbHelper;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private View navHeader;
@@ -51,11 +50,13 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setOnClickListeners();
+
         dbHelper = new DatabaseTaskHelper();
+        setOnClickListeners();
 
         initToolbar();
         initNavigationView();
+
     }
 
     @Override
@@ -66,11 +67,9 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.add_appointment_fab_menu:
-                startAppointmentActivity();
-                collapseFabMenu();
-                break;
+        if(view.getId() == R.id.add_appointment_fab_menu){
+            startAppointmentActivity();
+            collapseFabMenu();
         }
     }
 
@@ -79,13 +78,10 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
             case Constants.PERMISSIONS_REQUEST_CALL_PHONE: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted
                     callToNumber(phone);
                 } else {
-                    // permission denied
                     Toast.makeText(this, getResources().getString(R.string.grant_call_permission),
                             Toast.LENGTH_LONG).show();
                 }
@@ -135,21 +131,17 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         toggle.syncState();
 
         NavigationView navigation = (NavigationView) findViewById(R.id.navigation);
-        // Navigation view header
         navHeader = navigation.getHeaderView(0);
         txtEmail = (TextView) navHeader.findViewById(R.id.email);
         imgProfile = (ImageView) navHeader.findViewById(R.id.img_profile);
 
         navigation.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
-            switch (item.getItemId()) {
-                case R.id.action_logout:
-                    signOut();
-                    break;
+            if(item.getItemId() == R.id.action_logout){
+                signOut();
             }
             return true;
         });
-        // load nav menu header data
         loadNavHeader();
     }
 
@@ -191,7 +183,6 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     private void callToNumber(String phoneNumber) {
-        // Request permission
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE)
                 != PackageManager.PERMISSION_GRANTED) {
             phone = phoneNumber;
@@ -205,10 +196,9 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     }
 
     protected void signOut() {
-        Utils utils = new Utils();
-        String userType = utils.getUserFromPrefs(this);
+        String userType = Utils.getUserFromPrefs(this);
         if (userType.equals(Constants.GOOGLE_USER)) super.signOut();
-        utils.setUserInPrefs(Constants.NEW_USER, this);
+        Utils.setUserInPrefs(Constants.NEW_USER, this);
         backToSignInActivity();
     }
 
@@ -219,13 +209,11 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        // RecyclerView will be displayed as list
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                // Set hiding animation for fab menu
                 FloatingActionMenu menu = (FloatingActionMenu) findViewById(R.id.main_fab_menu);
                 if (dy > 0) {
                     CoordinatorLayout.LayoutParams layoutParams =
