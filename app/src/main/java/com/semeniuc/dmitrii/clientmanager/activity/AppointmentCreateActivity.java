@@ -108,100 +108,102 @@ public class AppointmentCreateActivity extends BaseActivity {
     @OnClick(R.id.appointment_paid_icon)
     void onPaidIconClicked() {
         appointment.setPaid(!appointment.isPaid());
-        changeImage(Constants.PAID, appointment, imageViewPaid);
+        super.changeImage(Constants.PAID, appointment, imageViewPaid);
     }
 
     @OnClick(R.id.appointment_done_icon)
     void onDoneIconClicked() {
         appointment.setDone(!appointment.isDone());
-        changeImage(Constants.DONE, appointment, imageViewDone);
+        super.changeImage(Constants.DONE, appointment, imageViewDone);
     }
 
     @OnClick(R.id.appointment_service_hair_coloring_icon)
     void onHairColoringIconClicked() {
         appointment.getService().setHairColoring(!appointment.getService().isHairColoring());
-        changeImage(Constants.HAIR_COLORING, appointment, imageViewHairColoring);
+        super.changeImage(Constants.HAIR_COLORING, appointment, imageViewHairColoring);
     }
 
     @OnClick(R.id.appointment_service_hairdo_icon)
     void onHairdoIconClicked() {
         appointment.getService().setHairdo(!appointment.getService().isHairdo());
-        changeImage(Constants.HAIRDO, appointment, imageViewHairdo);
+        super.changeImage(Constants.HAIRDO, appointment, imageViewHairdo);
     }
 
     @OnClick(R.id.appointment_service_haircut_icon)
     void onHaircutIconClicked() {
         appointment.getService().setHaircut(!appointment.getService().isHaircut());
-        changeImage(Constants.HAIR_CUT, appointment, imageViewHaircut);
+        super.changeImage(Constants.HAIR_CUT, appointment, imageViewHaircut);
     }
 
     @OnClick(R.id.appointment_tools_brush_icon)
     void onBrushIconClicked() {
         appointment.getTools().setBrush(!appointment.getTools().isBrush());
-        changeImage(Constants.BRUSH, appointment, imageViewBrush);
+        super.changeImage(Constants.BRUSH, appointment, imageViewBrush);
     }
 
     @OnClick(R.id.appointment_tools_hair_brush_icon)
     void onHairBrushIconClicked() {
         appointment.getTools().setHairBrush(!appointment.getTools().isHairBrush());
-        changeImage(Constants.HAIR_BRUSH, appointment, imageViewHairBrush);
+        super.changeImage(Constants.HAIR_BRUSH, appointment, imageViewHairBrush);
     }
 
     @OnClick(R.id.appointment_tools_hair_dryer_icon)
     void onHairDryerIconClicked() {
         appointment.getTools().setHairDryer(!appointment.getTools().isHairDryer());
-        changeImage(Constants.HAIR_DRAYER, appointment, imageViewHairDryer);
+        super.changeImage(Constants.HAIR_DRAYER, appointment, imageViewHairDryer);
     }
 
     @OnClick(R.id.appointment_tools_oxy_icon)
     void onOxyIconClicked() {
         appointment.getTools().setOxy(!appointment.getTools().isOxy());
-        changeImage(Constants.OXY, appointment, imageViewOxy);
+        super.changeImage(Constants.OXY, appointment, imageViewOxy);
     }
 
     @OnClick(R.id.appointment_tools_cut_set_icon)
     void onCutSetIconClicked() {
         appointment.getTools().setCutSet(!appointment.getTools().isCutSet());
-        changeImage(Constants.CUT_SET, appointment, imageViewCutSet);
+        super.changeImage(Constants.CUT_SET, appointment, imageViewCutSet);
     }
 
     @OnClick(R.id.appointment_tools_hair_band_icon)
     void onHairBandIconClicked() {
         appointment.getTools().setHairBand(!appointment.getTools().isHairBand());
-        changeImage(Constants.HAIR_BAND, appointment, imageViewHairBand);
+        super.changeImage(Constants.HAIR_BAND, appointment, imageViewHairBand);
     }
 
     @OnClick(R.id.appointment_tools_spray_icon)
     void onSprayIconClicked() {
         appointment.getTools().setSpray(!appointment.getTools().isSpray());
-        changeImage(Constants.SPRAY, appointment, imageViewSpray);
+        super.changeImage(Constants.SPRAY, appointment, imageViewSpray);
     }
 
     @OnClick(R.id.appointment_tools_tube_icon)
     void onTubeClicked() {
         appointment.getTools().setTube(!appointment.getTools().isTube());
-        changeImage(Constants.TUBE, appointment, imageViewTube);
+        super.changeImage(Constants.TUBE, appointment, imageViewTube);
     }
 
     @OnClick(R.id.appointment_tools_trimmer_icon)
     void onTrimmerIconClicked() {
         appointment.getTools().setTrimmer(!appointment.getTools().isTrimmer());
-        changeImage(Constants.TRIMMER, appointment, imageViewTrimmer);
+        super.changeImage(Constants.TRIMMER, appointment, imageViewTrimmer);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
-
         ButterKnife.bind(this);
-        initInstances();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.appointment_toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public int getMenuItem() {
+        return R.menu.appointment_toolbar_menu;
     }
 
     @Override
@@ -209,13 +211,14 @@ public class AppointmentCreateActivity extends BaseActivity {
         Utils.hideKeyboard(mainLayout, this);
         if (item.getItemId() == R.id.action_save_appointment) {
             if (!isAppointmentFormValid()) return false;
-            setDataFromFields();
+            appointment  = setDataFromFields();
             saveAppointment();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void initInstances() {
+    @Override
+    public void initInstances() {
         appointment = new Appointment();
         appointment.setClient(new Client(MyApplication.getInstance().getUser()));
         appointment.getClient().setContact(new Contact());
@@ -301,8 +304,8 @@ public class AppointmentCreateActivity extends BaseActivity {
         return valid;
     }
 
-    protected void setDataFromFields() {
-        appointment = setDataFromFields(
+    protected Appointment setDataFromFields() {
+        return super.setDataFromFields(
                 appointment,
                 editTextClientName.getText().toString(),
                 editTextClientPhone.getText().toString(),

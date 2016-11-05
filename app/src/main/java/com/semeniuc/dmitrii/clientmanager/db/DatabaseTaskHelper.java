@@ -19,13 +19,13 @@ public class DatabaseTaskHelper {
     public User getUserByEmail(String email) {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmail(email);
-        if (users != null) return users.get(0); else return null;
+        if (users != null && users.size() > 0) return users.get(0); else return null;
     }
 
     public User getUserByEmailAndPassword(String email, String password) {
         UserRepository userRepo = UserRepository.getInstance();
         List<User> users = userRepo.findByEmailAndPassword(email, password);
-        if (users != null) return users.get(0); else return null;
+        if (users != null && users.size() > 0) return users.get(0); else return null;
     }
 
     public Integer saveGoogleUser(User user) {

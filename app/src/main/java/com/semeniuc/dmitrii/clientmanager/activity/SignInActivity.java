@@ -65,11 +65,14 @@ public class SignInActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signin);
-
         ButterKnife.bind(this);
+        checkUserSignInType();
+    }
+
+    @Override
+    public void initInstances() {
         listener = this;
         dbHelper = new DatabaseTaskHelper();
-        checkUserSignInType();
     }
 
     @Override
@@ -133,13 +136,13 @@ public class SignInActivity extends BaseActivity {
         if (userType.equals(Constants.GOOGLE_USER)) {
             initGoogleAuthenticator();
             SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
-            boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
+            boolean loggedIn = settings.getBoolean(Constants.LOGGED, false);
             if (loggedIn) silentSignInWithGoogle();
             return;
         }
         if (userType.equals(Constants.REGISTERED_USER)) {
             SharedPreferences settings = getSharedPreferences(Constants.LOGIN_PREFS, MODE_PRIVATE);
-            boolean loggedIn = settings.getBoolean(Constants.LOGGED_IN, false);
+            boolean loggedIn = settings.getBoolean(Constants.LOGGED, false);
             if (loggedIn) {
                 email = settings.getString(Constants.EMAIL, Constants.EMPTY);
                 if (!email.isEmpty()) setGlobalUser();

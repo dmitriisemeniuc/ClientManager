@@ -109,31 +109,22 @@ public class Utils {
     public static String getCorrectDateFormat(int year, int month, int day) {
         String monthStr = String.valueOf(++month);
         String dayStr = String.valueOf(day);
-        if (month < 10) {
-            monthStr = "0" + monthStr;
-        }
-        if (day < 10) {
-            dayStr = "0" + dayStr;
-        }
+        if (month < 10) monthStr = "0" + monthStr;
+        if (day < 10) dayStr = "0" + dayStr;
         return dayStr + "/" + monthStr + "/" + year;
     }
 
     public static String getCorrectTimeFormat(int hour, int minute) {
         String hourStr = String.valueOf(hour);
         String minuteStr = String.valueOf(minute);
-        if (hour < 10) {
-            hourStr = "0" + hourStr;
-        }
-        if (minute < 10) {
-            minuteStr = "0" + minuteStr;
-        }
+        if (hour < 10) hourStr = "0" + hourStr;
+        if (minute < 10) minuteStr = "0" + minuteStr;
         return hourStr + ":" + minuteStr;
     }
 
     public static String getUserFromPrefs(Context context) {
         SharedPreferences settings = context.getSharedPreferences(
                 Constants.LOGIN_PREFS, Context.MODE_PRIVATE);
-        // setting.getString will return NEW_USER value in case if USER value won't be found
         return settings.getString(Constants.USER, Constants.NEW_USER);
     }
 
@@ -142,13 +133,12 @@ public class Utils {
         if (user.equals(Constants.NEW_USER)) {
             editor.putString(Constants.USER, Constants.NEW_USER);
             editor.putString(Constants.EMAIL, Constants.EMPTY);
-            editor.putBoolean(Constants.LOGGED_IN, false);
+            editor.putBoolean(Constants.LOGGED, Constants.LOGGED_OUT);
         } else {
             editor.putString(Constants.USER, user);
             editor.putString(Constants.EMAIL, MyApplication.getInstance().getUser().getEmail());
-            editor.putBoolean(Constants.LOGGED_IN, true);
+            editor.putBoolean(Constants.LOGGED, Constants.LOGGED_IN);
         }
-        // Commit the edits!
         editor.commit();
     }
 

@@ -1,8 +1,11 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
+import android.view.Menu;
 import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
@@ -21,12 +24,30 @@ public abstract class BaseActivity extends AppCompatActivity implements OnTaskCo
     protected DatabaseTaskHelper dbHelper;
     protected OnTaskCompleted listener;
 
+    public abstract void initInstances();
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initInstances();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(getMenuItem(), menu);
+        return true;
+    }
+
+    protected int getMenuItem(){
+        return R.menu.appointment_review_toolbar_menu;
+    }
+
     @Override
     public void showMessage(String msg) {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
-    public Appointment setDataFromFields(Appointment appointment, String client, String phone,
+    protected Appointment setDataFromFields(Appointment appointment, String client, String phone,
                                          String address, String service, String sum, String info,
                                          String dateTime, Context context) {
         appointment.setUser(MyApplication.getInstance().getUser());
@@ -40,7 +61,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnTaskCo
         return appointment;
     }
 
-    public void changeImage(int image, Appointment appointment, AppCompatImageView imageView) {
+    protected void changeImage(int image, Appointment appointment, AppCompatImageView imageView) {
         switch (image) {
             case Constants.PAID:
                 if (appointment.isPaid()) imageView.setImageResource(R.mipmap.ic_money_paid_yes);

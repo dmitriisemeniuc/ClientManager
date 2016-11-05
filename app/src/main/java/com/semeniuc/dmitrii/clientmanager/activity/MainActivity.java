@@ -50,13 +50,9 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dbHelper = new DatabaseTaskHelper();
-        setOnClickListeners();
-
         initToolbar();
         initNavigationView();
-
+        setOnClickListeners();
     }
 
     @Override
@@ -67,7 +63,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.add_appointment_fab_menu){
+        if (view.getId() == R.id.add_appointment_fab_menu) {
             startAppointmentActivity();
             collapseFabMenu();
         }
@@ -96,6 +92,11 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
             return;
         }
         super.onBackPressed();
+    }
+
+    @Override
+    public void initInstances() {
+        dbHelper = new DatabaseTaskHelper();
     }
 
     private void initToolbar() {
@@ -137,7 +138,7 @@ public class MainActivity extends SignInActivity implements View.OnClickListener
 
         navigation.setNavigationItemSelectedListener(item -> {
             drawerLayout.closeDrawers();
-            if(item.getItemId() == R.id.action_logout){
+            if (item.getItemId() == R.id.action_logout) {
                 signOut();
             }
             return true;

@@ -21,9 +21,6 @@ public class AppointmentReviewActivity extends AppointmentCreateActivity impleme
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        appointment = getIntent().getExtras().getParcelable(Constants.APPOINTMENT_PATH);
-        listener = this;
-        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
@@ -35,8 +32,12 @@ public class AppointmentReviewActivity extends AppointmentCreateActivity impleme
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.appointment_review_toolbar_menu, menu);
-        return true;
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public int getMenuItem() {
+        return R.menu.appointment_review_toolbar_menu;
     }
 
     @Override
@@ -44,7 +45,7 @@ public class AppointmentReviewActivity extends AppointmentCreateActivity impleme
         switch (item.getItemId()) {
             case R.id.action_update_appointment:
                 if (super.isAppointmentFormValid()) {
-                    setDataFromFields();
+                    super.setDataFromFields();
                     updateAppointment();
                 } else Utils.hideKeyboard(mainLayout, this);
                 break;
@@ -53,6 +54,13 @@ public class AppointmentReviewActivity extends AppointmentCreateActivity impleme
                 break;
         }
         return true;
+    }
+
+    @Override
+    public void initInstances(){
+        appointment = getIntent().getExtras().getParcelable(Constants.APPOINTMENT_PATH);
+        listener = this;
+        dbHelper = new DatabaseTaskHelper();
     }
 
     /**

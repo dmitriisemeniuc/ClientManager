@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.AppCompatEditText;
-import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
@@ -23,16 +22,6 @@ import rx.schedulers.Schedulers;
 
 public class SignUpActivity extends BaseActivity {
 
-    @OnClick(R.id.sign_in_btn)
-    void submitSignUp() {
-        onSignUpBtnPressed();
-    }
-
-    @OnClick(R.id.sign_in_link)
-    void submitSignIn() {
-        goToSignInActivity();
-    }
-
     @BindView(R.id.sign_up_email_et)
     AppCompatEditText editTextEmail;
     @BindView(R.id.sign_up_password_et)
@@ -40,19 +29,40 @@ public class SignUpActivity extends BaseActivity {
     @BindView(R.id.sign_up_confirm_password_et)
     AppCompatEditText editTextConfirmPassword;
 
+    @OnClick(R.id.sign_in_btn)
+    void submitSignUp() {
+        onSignUpBtnPressed();
+    }
+
+    @OnClick(R.id.sign_in_link)
+    void submitSignIn() {
+        signIn();
+    }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
-
         ButterKnife.bind(this);
-        listener = this;
-        dbHelper = new DatabaseTaskHelper();
     }
 
     @Override
     public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        super.showMessage(msg);
+    }
+
+    @Override
+    public void initInstances() {
+        listener = this;
+        dbHelper = new DatabaseTaskHelper();
+    }
+
+    private boolean isFieldsValid() {
+        boolean valid = true;
+        if (!Utils.isValidEditText(editTextEmail, this)) valid = false;
+        if (!Utils.isValidEditText(editTextPassword, this)) valid = false;
+        if (!Utils.isValidEditText(editTextConfirmPassword, this)) valid = false;
+        return valid;
     }
 
     private void onSignUpBtnPressed() {
@@ -97,7 +107,7 @@ public class SignUpActivity extends BaseActivity {
     }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
     private boolean isFormValid() {
-        if (isSignUpFieldsEmpty()) return false;
+        if (!isFieldsValid()) return false;
         if (!Utils.isEqualPasswords(editTextPassword, editTextConfirmPassword, this)) return false;
         User user = dbHelper.getUserByEmail(editTextEmail.getText().toString());
         if (user != null) {
@@ -107,28 +117,18 @@ public class SignUpActivity extends BaseActivity {
         return true;
     }
 
-    private boolean isSignUpFieldsEmpty() {
-        boolean valid = true;
-        if (!Utils.isValidEditText(editTextEmail, this)) valid = false;
-        if (!Utils.isValidEditText(editTextPassword, this)) valid = false;
-        if (!Utils.isValidEditText(editTextConfirmPassword, this)) valid = false;
-        return valid;
-    }
-
-    private void goToSignInActivity() {
-        Intent intent = new Intent(this, SignInActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    protected void updateUI(boolean update) {
+    private void updateUI(boolean update) {
         if (!update) return;
-        startMainActivity();
-        finish();
+        startActivity(MainActivity.class);
     }
 
-    private void startMainActivity() {
-        Intent intent = new Intent(SignUpActivity.this, MainActivity.class);
+    private void signIn(){
+        startActivity(SignInActivity.class);
+    }
+
+    private void startActivity(Class activity){
+        Intent intent = new Intent(this, activity);
         startActivity(intent);
+        finish();
     }
 }
