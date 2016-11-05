@@ -1,21 +1,15 @@
 package com.semeniuc.dmitrii.clientmanager.activity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
-import com.semeniuc.dmitrii.clientmanager.OnTaskCompleted;
 import com.semeniuc.dmitrii.clientmanager.R;
 import com.semeniuc.dmitrii.clientmanager.db.DatabaseTaskHelper;
 import com.semeniuc.dmitrii.clientmanager.fragment.DateDialogFragment;
@@ -29,7 +23,6 @@ import com.semeniuc.dmitrii.clientmanager.utils.Constants;
 import com.semeniuc.dmitrii.clientmanager.utils.Utils;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,212 +32,198 @@ import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class AppointmentCreateActivity extends AppCompatActivity implements OnTaskCompleted {
-
-    public static final String LOG_TAG = AppointmentCreateActivity.class.getSimpleName();
-
-    private DatabaseTaskHelper dbHelper;
-    private Appointment appointment;
-    private OnTaskCompleted listener;
-    private Utils utils;
-    private Client client;
-    private String info, date, time, sum;
-    private Service service;
-    private Tools tools;
-    private Date dateTime;
-    private boolean paid, done;
+public class AppointmentCreateActivity extends BaseActivity {
 
     @BindView(R.id.appointment_client_name)
-    AppCompatEditText etClientName;
+    AppCompatEditText editTextClientName;
     @BindView(R.id.appointment_client_phone)
-    AppCompatEditText etClientPhone;
+    AppCompatEditText editTextClientPhone;
     @BindView(R.id.appointment_client_address)
-    AppCompatEditText etAddress;
+    AppCompatEditText editTextAddress;
     @BindView(R.id.appointment_service)
-    AppCompatEditText etService;
+    AppCompatEditText editTextService;
     @BindView(R.id.appointment_info)
-    AppCompatEditText etInfo;
+    AppCompatEditText editTextInfo;
     @BindView(R.id.appointment_calendar_date)
-    AppCompatTextView tvDate;
+    AppCompatTextView textViewDate;
     @BindView(R.id.appointment_time)
-    AppCompatTextView tvTime;
+    AppCompatTextView textViewTime;
     @BindView(R.id.appointment_cash)
-    AppCompatEditText etSum;
+    AppCompatEditText editTextSum;
     @BindView(R.id.appointment_paid_icon)
-    AppCompatImageView ivPaid;
+    AppCompatImageView imageViewPaid;
     @BindView(R.id.appointment_done_icon)
-    AppCompatImageView ivDone;
+    AppCompatImageView imageViewDone;
     @BindView(R.id.appointment_service_hair_coloring_icon)
-    AppCompatImageView ivHairColoring;
+    AppCompatImageView imageViewHairColoring;
     @BindView(R.id.appointment_service_hairdo_icon)
-    AppCompatImageView ivHairdo;
+    AppCompatImageView imageViewHairdo;
     @BindView(R.id.appointment_service_haircut_icon)
-    AppCompatImageView ivHaircut;
+    AppCompatImageView imageViewHaircut;
     @BindView(R.id.appointment_tools_brush_icon)
-    AppCompatImageView ivBrush;
+    AppCompatImageView imageViewBrush;
     @BindView(R.id.appointment_tools_hair_brush_icon)
-    AppCompatImageView ivHairBrush;
+    AppCompatImageView imageViewHairBrush;
     @BindView(R.id.appointment_tools_hair_dryer_icon)
-    AppCompatImageView ivHairDryer;
+    AppCompatImageView imageViewHairDryer;
     @BindView(R.id.appointment_tools_oxy_icon)
-    AppCompatImageView ivOxy;
+    AppCompatImageView imageViewOxy;
     @BindView(R.id.appointment_tools_cut_set_icon)
-    AppCompatImageView ivSutSet;
+    AppCompatImageView imageViewCutSet;
     @BindView(R.id.appointment_tools_hair_band_icon)
-    AppCompatImageView ivHairBand;
+    AppCompatImageView imageViewHairBand;
     @BindView(R.id.appointment_tools_spray_icon)
-    AppCompatImageView ivSpray;
+    AppCompatImageView imageViewSpray;
     @BindView(R.id.appointment_tools_tube_icon)
-    AppCompatImageView ivTube;
+    AppCompatImageView imageViewTube;
     @BindView(R.id.appointment_tools_trimmer_icon)
-    AppCompatImageView ivTrimmer;
+    AppCompatImageView imageViewTrimmer;
     @BindView(R.id.appointment_layout)
     ScrollView mainLayout;
 
     @OnClick(R.id.appointment_calendar_icon)
     void onCalendarIconClicked() {
-        hideKeyboard();
+        Utils.hideKeyboard(mainLayout, this);
         showDatePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_calendar_date)
     void onCalendarDateClicked() {
-        hideKeyboard();
+        Utils.hideKeyboard(mainLayout, this);
         showDatePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_time_icon)
     void onClockIconClicked() {
-        hideKeyboard();
+        Utils.hideKeyboard(mainLayout, this);
         showTimePickerDialog(Calendar.getInstance());
     }
 
     @OnClick(R.id.appointment_time)
     void onClockClicked() {
-        hideKeyboard();
+        Utils.hideKeyboard(mainLayout, this);
         showTimePickerDialog(Calendar.getInstance());
-    }
-
-    @OnClick(R.id.appointment_paid)
-    void onPaidClicked() {
-        changePaidImage();
     }
 
     @OnClick(R.id.appointment_paid_icon)
     void onPaidIconClicked() {
-        changePaidImage();
+        appointment.setPaid(!appointment.isPaid());
+        super.changeImage(Constants.PAID, appointment, imageViewPaid);
     }
 
     @OnClick(R.id.appointment_done_icon)
     void onDoneIconClicked() {
-        changeDoneImage();
+        appointment.setDone(!appointment.isDone());
+        super.changeImage(Constants.DONE, appointment, imageViewDone);
     }
 
     @OnClick(R.id.appointment_service_hair_coloring_icon)
     void onHairColoringIconClicked() {
-        changeHairColoringImage();
+        appointment.getService().setHairColoring(!appointment.getService().isHairColoring());
+        super.changeImage(Constants.HAIR_COLORING, appointment, imageViewHairColoring);
     }
 
     @OnClick(R.id.appointment_service_hairdo_icon)
     void onHairdoIconClicked() {
-        changeHairdoImage();
+        appointment.getService().setHairdo(!appointment.getService().isHairdo());
+        super.changeImage(Constants.HAIRDO, appointment, imageViewHairdo);
     }
 
     @OnClick(R.id.appointment_service_haircut_icon)
     void onHaircutIconClicked() {
-        changeHaircutImage();
+        appointment.getService().setHaircut(!appointment.getService().isHaircut());
+        super.changeImage(Constants.HAIR_CUT, appointment, imageViewHaircut);
     }
 
     @OnClick(R.id.appointment_tools_brush_icon)
     void onBrushIconClicked() {
-        changeBrushImage();
+        appointment.getTools().setBrush(!appointment.getTools().isBrush());
+        super.changeImage(Constants.BRUSH, appointment, imageViewBrush);
     }
 
     @OnClick(R.id.appointment_tools_hair_brush_icon)
     void onHairBrushIconClicked() {
-        changeHairBrushImage();
+        appointment.getTools().setHairBrush(!appointment.getTools().isHairBrush());
+        super.changeImage(Constants.HAIR_BRUSH, appointment, imageViewHairBrush);
     }
 
     @OnClick(R.id.appointment_tools_hair_dryer_icon)
     void onHairDryerIconClicked() {
-        changeHairDryerImage();
+        appointment.getTools().setHairDryer(!appointment.getTools().isHairDryer());
+        super.changeImage(Constants.HAIR_DRAYER, appointment, imageViewHairDryer);
     }
 
     @OnClick(R.id.appointment_tools_oxy_icon)
     void onOxyIconClicked() {
-        changeOxyImage();
+        appointment.getTools().setOxy(!appointment.getTools().isOxy());
+        super.changeImage(Constants.OXY, appointment, imageViewOxy);
     }
 
     @OnClick(R.id.appointment_tools_cut_set_icon)
     void onCutSetIconClicked() {
-        changeCutSetImage();
+        appointment.getTools().setCutSet(!appointment.getTools().isCutSet());
+        super.changeImage(Constants.CUT_SET, appointment, imageViewCutSet);
     }
 
     @OnClick(R.id.appointment_tools_hair_band_icon)
     void onHairBandIconClicked() {
-        changeHairBandImage();
+        appointment.getTools().setHairBand(!appointment.getTools().isHairBand());
+        super.changeImage(Constants.HAIR_BAND, appointment, imageViewHairBand);
     }
 
     @OnClick(R.id.appointment_tools_spray_icon)
     void onSprayIconClicked() {
-        changeSprayImage();
+        appointment.getTools().setSpray(!appointment.getTools().isSpray());
+        super.changeImage(Constants.SPRAY, appointment, imageViewSpray);
     }
 
     @OnClick(R.id.appointment_tools_tube_icon)
-    void onTubeIconClicked() {
-        changeTubeImage();
+    void onTubeClicked() {
+        appointment.getTools().setTube(!appointment.getTools().isTube());
+        super.changeImage(Constants.TUBE, appointment, imageViewTube);
     }
 
     @OnClick(R.id.appointment_tools_trimmer_icon)
     void onTrimmerIconClicked() {
-        changeTrimmerImage();
+        appointment.getTools().setTrimmer(!appointment.getTools().isTrimmer());
+        super.changeImage(Constants.TRIMMER, appointment, imageViewTrimmer);
     }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_appointment);
-
         ButterKnife.bind(this);
-        initInstances();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.appointment_toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_save_appointment:
-                boolean formValid = isAppointmentFormValid();
-                if (formValid) {
-                    setDataFromFields();
-                    appointment = new Appointment(MyApplication.getInstance().getUser(), client,
-                            service, tools, info, dateTime, sum, paid, done);
-                    saveAppointment();
-                    return true;
-                }
-                hideKeyboard();
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public int getMenuItem() {
+        return R.menu.appointment_toolbar_menu;
     }
 
     @Override
-    public void showMessage(String msg) {
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Utils.hideKeyboard(mainLayout, this);
+        if (item.getItemId() == R.id.action_save_appointment) {
+            if (!isAppointmentFormValid()) return false;
+            appointment  = setDataFromFields();
+            saveAppointment();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void initInstances() {
-        utils = new Utils();
-        Contact contact = new Contact();
-        client = new Client(MyApplication.getInstance().getUser());
-        client.setContact(contact);
-        service = new Service();
-        tools = new Tools();
+    @Override
+    public void initInstances() {
+        appointment = new Appointment();
+        appointment.setClient(new Client(MyApplication.getInstance().getUser()));
+        appointment.getClient().setContact(new Contact());
+        appointment.setService(new Service());
+        appointment.setTools(new Tools());
         dbHelper = new DatabaseTaskHelper();
         listener = this;
     }
@@ -254,19 +233,14 @@ public class AppointmentCreateActivity extends AppCompatActivity implements OnTa
      */
     private void saveAppointment() {
 
-        observable.subscribe(new Subscriber() {
+        observable.subscribe(new Subscriber<Integer>() {
 
             @Override
-            public void onNext(Object o) {
-                Integer result = (Integer) o;
+            public void onNext(Integer result) {
                 if (result == Constants.CREATED) {
-                    String message = getResources().getString(R.string.appointment_saved);
-                    listener.showMessage(message);
+                    listener.showMessage(getResources().getString(R.string.appointment_saved));
                     finish();
-                    return;
-                }
-                String message = getResources().getString(R.string.saving_failed);
-                listener.showMessage(message);
+                } else listener.showMessage(getResources().getString(R.string.saving_failed));
             }
 
             @Override
@@ -275,232 +249,73 @@ public class AppointmentCreateActivity extends AppCompatActivity implements OnTa
 
             @Override
             public void onError(Throwable e) {
-                Log.e(LOG_TAG, "Error: " + e.getMessage());
+                e.getMessage();
             }
         });
     }
 
-    final Observable observable = Observable.create(new Observable.OnSubscribe() {
+    final Observable<Integer> observable = Observable.create(new Observable.OnSubscribe<Integer>() {
+
         @Override
-        public void call(Object o) {
-            Subscriber subscriber = (Subscriber) o;
-            subscriber.onNext(dbHelper.saveAppointment(appointment));
+        public void call(Subscriber<? super Integer> subscriber) {
+            Integer result = dbHelper.saveAppointment(appointment);
+            subscriber.onNext(result);
             subscriber.onCompleted();
         }
-    })
-            .subscribeOn(Schedulers.io()) // subscribeOn the I/O thread
-            .observeOn(AndroidSchedulers.mainThread()); // observeOn the UI Thread
+    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
 
     /**
      * Open time picker
      */
     protected void showDatePickerDialog(Calendar calendar) {
-        DateDialogFragment ddf = DateDialogFragment.newInstance(this, calendar);
-        ddf.setDateDialogFragmentListener(date1 -> {
-            String formattedDate = utils.getCorrectDateFormat(
+        DateDialogFragment dateDialogFragment = DateDialogFragment.newInstance(this, calendar);
+        dateDialogFragment.setDateDialogFragmentListener(date1 -> {
+            String formattedDate = Utils.getCorrectDateFormat(
                     date1.get(Calendar.YEAR),
                     date1.get(Calendar.MONTH),
                     date1.get(Calendar.DAY_OF_MONTH));
-            tvDate.setText(formattedDate);
-            tvDate.setError(null);
+            textViewDate.setText(formattedDate);
+            textViewDate.setError(null);
         });
-        ddf.show(getSupportFragmentManager(), "date picker dialog fragment");
+        dateDialogFragment.show(getSupportFragmentManager(), "date picker dialog fragment");
     }
 
     /**
      * Open time picker dialog
      */
     protected void showTimePickerDialog(Calendar calendar) {
-        TimeDialogFragment tdf = TimeDialogFragment.newInstance(this, calendar);
-        tdf.setTimeDialogFragmentListener(time1 -> {
-            String formattedTime = utils.getCorrectTimeFormat(
+        TimeDialogFragment timeDialogFragment = TimeDialogFragment.newInstance(this, calendar);
+        timeDialogFragment.setTimeDialogFragmentListener(time1 -> {
+            String formattedTime = Utils.getCorrectTimeFormat(
                     time1.get(Calendar.HOUR_OF_DAY),
                     time1.get(Calendar.MINUTE));
-            tvTime.setText(formattedTime);
-            tvTime.setError(null);
+            textViewTime.setText(formattedTime);
+            textViewTime.setError(null);
         });
-        tdf.show(getSupportFragmentManager(), "time picker dialog fragment");
+        timeDialogFragment.show(getSupportFragmentManager(), "time picker dialog fragment");
     }
 
     protected boolean isAppointmentFormValid() {
         boolean valid = true;
-        boolean empty = utils.isEditTextEmpty(etClientName);
-        if (empty) {
-            etClientName.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
-        empty = utils.isEditTextEmpty(etService);
-        if (empty) {
-            etService.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
-        empty = utils.isTextViewEmpty(tvDate);
-        if (empty) {
-            tvDate.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
-        empty = utils.isTextViewEmpty(tvTime);
-        if (empty) {
-            tvTime.setError(getResources().getString(R.string.field_is_required));
-            valid = false;
-        }
+        if (!Utils.isValidEditText(editTextClientName, this)) valid = false;
+        if (!Utils.isValidEditText(editTextService, this)) valid = false;
+        if (!Utils.isValidTextView(textViewTime, this)) valid = false;
+        if (!Utils.isValidTextView(textViewDate, this)) valid = false;
         return valid;
     }
 
-    private void setDataFromFields() {
-        client.setName(etClientName.getText().toString());
-        client.getContact().setPhone(etClientPhone.getText().toString());
-        client.getContact().setAddress(etAddress.getText().toString());
-        service.setName(etService.getText().toString());
-        sum = etSum.getText().toString();
-        info = etInfo.getText().toString();
-        date = tvDate.getText().toString();
-        time = tvTime.getText().toString();
-        String dateTimeStr = date + " " + time;
-        dateTime = utils.convertStringToDate(dateTimeStr, Constants.DATE_TIME_FORMAT, this);
-    }
-
-    protected void hideKeyboard() {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mainLayout.getWindowToken(), 0);
-    }
-
-    // ********** Methods of onClick Image changing
-    private void changePaidImage() {
-        paid = !paid;
-        if (paid) {
-            ivPaid.setImageResource(R.mipmap.ic_money_paid_yes);
-            return;
-        }
-        ivPaid.setImageResource(R.mipmap.ic_money_paid_no);
-    }
-
-    private void changeDoneImage() {
-        done = !done;
-        if (done) {
-            ivDone.setImageResource(R.mipmap.ic_ok_yes);
-            return;
-        }
-        ivDone.setImageResource(R.mipmap.ic_ok_no);
-    }
-
-    private void changeHairColoringImage() {
-        boolean hairColoring = !service.isHairColoring();
-        service.setHairColoring(hairColoring);
-        if (hairColoring) {
-            ivHairColoring.setImageResource(R.mipmap.ic_paint_yes);
-            return;
-        }
-        ivHairColoring.setImageResource(R.mipmap.ic_paint_no);
-    }
-
-    private void changeHairdoImage() {
-        boolean hairdo = !service.isHairdo();
-        service.setHairdo(hairdo);
-        if (hairdo) {
-            ivHairdo.setImageResource(R.mipmap.ic_womans_hair_yes);
-            return;
-        }
-        ivHairdo.setImageResource(R.mipmap.ic_womans_hair_no);
-    }
-
-    private void changeHaircutImage() {
-        boolean haircut = !service.isHaircut();
-        service.setHaircut(haircut);
-        if (haircut) {
-            ivHaircut.setImageResource(R.mipmap.ic_scissors_yes);
-            return;
-        }
-        ivHaircut.setImageResource(R.mipmap.ic_scissors_no);
-    }
-
-    private void changeBrushImage() {
-        boolean brush = !tools.isBrush();
-        tools.setBrush(brush);
-        if (brush) {
-            ivBrush.setImageResource(R.mipmap.ic_brush_yes);
-            return;
-        }
-        ivBrush.setImageResource(R.mipmap.ic_brush_no);
-    }
-
-    private void changeHairBrushImage() {
-        boolean hairBrush = !tools.isHairBrush();
-        tools.setHairBrush(hairBrush);
-        if (hairBrush) {
-            ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_yes);
-            return;
-        }
-        ivHairBrush.setImageResource(R.mipmap.ic_hair_brush_no);
-    }
-
-    private void changeHairDryerImage() {
-        boolean hairDryer = !tools.isHairDryer();
-        tools.setHairDryer(hairDryer);
-        if (hairDryer) {
-            ivHairDryer.setImageResource(R.mipmap.ic_hair_dryer_yes);
-            return;
-        }
-        ivHairDryer.setImageResource(R.mipmap.ic_hair_dryer_no);
-    }
-
-    private void changeOxyImage() {
-        boolean oxy = !tools.isOxy();
-        tools.setOxy(oxy);
-        if (oxy) {
-            ivOxy.setImageResource(R.mipmap.ic_soap_yes);
-            return;
-        }
-        ivOxy.setImageResource(R.mipmap.ic_soap_no);
-    }
-
-    private void changeCutSetImage() {
-        boolean cutSet = !tools.isCutSet();
-        tools.setCutSet(cutSet);
-        if (cutSet) {
-            ivSutSet.setImageResource(R.mipmap.ic_cutset_yes);
-            return;
-        }
-        ivSutSet.setImageResource(R.mipmap.ic_cutset_no);
-    }
-
-    private void changeHairBandImage() {
-        boolean hairBand = !tools.isHairBand();
-        tools.setHairBand(hairBand);
-        if (hairBand) {
-            ivHairBand.setImageResource(R.mipmap.ic_hair_band_yes);
-            return;
-        }
-        ivHairBand.setImageResource(R.mipmap.ic_hair_band_no);
-    }
-
-    private void changeSprayImage() {
-        boolean spray = !tools.isSpray();
-        tools.setSpray(spray);
-        if (spray) {
-            ivSpray.setImageResource(R.mipmap.ic_spray_yes);
-            return;
-        }
-        ivSpray.setImageResource(R.mipmap.ic_spray_no);
-    }
-
-    private void changeTubeImage() {
-        boolean tube = !tools.isTube();
-        tools.setTube(tube);
-        if (tube) {
-            ivTube.setImageResource(R.mipmap.ic_tube_yes);
-            return;
-        }
-        ivTube.setImageResource(R.mipmap.ic_tube_no);
-    }
-
-    private void changeTrimmerImage() {
-        boolean trimmer = !tools.isTrimmer();
-        tools.setTrimmer(trimmer);
-        if (trimmer) {
-            ivTrimmer.setImageResource(R.mipmap.ic_trimmer_yes);
-            return;
-        }
-        ivTrimmer.setImageResource(R.mipmap.ic_trimmer_no);
+    protected Appointment setDataFromFields() {
+        return super.setDataFromFields(
+                appointment,
+                editTextClientName.getText().toString(),
+                editTextClientPhone.getText().toString(),
+                editTextAddress.getText().toString(),
+                editTextService.getText().toString(),
+                editTextSum.getText().toString(),
+                editTextInfo.getText().toString(),
+                textViewDate.getText().toString() + " " +
+                        textViewTime.getText().toString(),
+                this
+        );
     }
 }

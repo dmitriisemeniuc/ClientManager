@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
 
 import com.semeniuc.dmitrii.clientmanager.MyApplication;
 import com.semeniuc.dmitrii.clientmanager.R;
@@ -23,7 +22,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private List<Appointment> appointments;
     private final OnItemClickListener listener;
     private final OnPhoneClickListener phoneListener;
-    private Utils utils = new Utils();
 
     public AppointmentAdapter(List<Appointment> appointments, OnItemClickListener listener,
                               OnPhoneClickListener phoneListener) {
@@ -42,15 +40,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     @Override
     public void onBindViewHolder(AppointmentAdapter.AppointmentViewHolder holder, int position) {
-        // CLIENT
         holder.client.setText(appointments.get(position).getClient().getName());
-        // PHONE ICON
-        if (appointments.get(position).getClient().getContact().getPhone().isEmpty()) {
+        if (appointments.get(position).getClientContactPhone().isEmpty())
             holder.phoneIcon.setVisibility(View.INVISIBLE);
-        }
-        // SERVICE
         holder.service.setText(appointments.get(position).getService().getName());
-        // SUM
         if (appointments.get(position).getSum().isEmpty()) {
             holder.currency.setVisibility(View.INVISIBLE);
             holder.paid.setVisibility(View.GONE);
@@ -59,65 +52,62 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.paid.setImageDrawable(ContextCompat.getDrawable(
                     MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_no));
         }
-        // DATE
-        holder.dateTime.setText(utils.convertDateToString(appointments.get(position).getDate(),
+        holder.dateTime.setText(Utils.convertDateToString(appointments.get(position).getDate(),
                 Constants.DATE_TIME_FORMAT, MyApplication.getInstance().getApplicationContext()));
-        // PAID
-        boolean paid = appointments.get(position).isPaid();
-        if (paid) {
+        if (appointments.get(position).isPaid()) {
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
                     MyApplication.getInstance().getApplicationContext(), R.color.light_yellow));
             holder.paid.setImageDrawable(ContextCompat.getDrawable(
                     MyApplication.getInstance().getApplicationContext(), R.mipmap.ic_money_paid_yes));
         }
-        // DONE
-        boolean done = appointments.get(position).isDone();
-        if (done || (paid && done)) {
+        if (appointments.get(position).isDone() ||
+                (appointments.get(position).isPaid() && appointments.get(position).isDone())) {
             holder.cardView.setCardBackgroundColor(ContextCompat.getColor(
                     MyApplication.getInstance().getApplicationContext(), R.color.light_green));
         }
-        // ADDRESS
-        if (appointments.get(position).getClient().getContact().getAddress().isEmpty()) {
+        if (appointments.get(position).getClientContactAddress().isEmpty())
             holder.addressLayout.setVisibility(View.GONE);
-        } else {
-            holder.address.setText(appointments.get(position).getClient().getContact().getAddress());
-        }
-        // INFO
-        if (appointments.get(position).getInfo().isEmpty()) {
+        else holder.address.setText(appointments.get(position).getClientContactAddress());
+
+        if (appointments.get(position).getInfo().isEmpty())
             holder.infoLayout.setVisibility(View.GONE);
-        } else {
-            holder.info.setText(appointments.get(position).getInfo());
-        }
-        // SERVICES
-        boolean hairColoring = appointments.get(position).getService().isHairColoring();
-        if (!hairColoring) holder.hairColoring.setVisibility(View.GONE);
-        boolean hairdo = appointments.get(position).getService().isHairdo();
-        if (!hairdo) holder.hairdo.setVisibility(View.GONE);
-        boolean haircut = appointments.get(position).getService().isHaircut();
-        if (!haircut) holder.haircut.setVisibility(View.GONE);
-        if (!hairColoring && !hairdo && !haircut) holder.serviceLayout.setVisibility(View.GONE);
-        // TOOLS
-        boolean brush = appointments.get(position).getTools().isBrush();
-        if (!brush) holder.brush.setVisibility(View.GONE);
-        boolean hairBrush = appointments.get(position).getTools().isHairBrush();
-        if (!hairBrush) holder.hairBrush.setVisibility(View.GONE);
-        boolean hairDryer = appointments.get(position).getTools().isHairDryer();
-        if (!hairDryer) holder.hairDryer.setVisibility(View.GONE);
-        boolean hairBand = appointments.get(position).getTools().isHairBand();
-        if (!hairBand) holder.hairBand.setVisibility(View.GONE);
-        boolean cutSet = appointments.get(position).getTools().isCutSet();
-        if (!cutSet) holder.cutSet.setVisibility(View.GONE);
-        boolean spray = appointments.get(position).getTools().isSpray();
-        if (!spray) holder.spray.setVisibility(View.GONE);
-        boolean oxy = appointments.get(position).getTools().isOxy();
-        if (!oxy) holder.oxy.setVisibility(View.GONE);
-        boolean tube = appointments.get(position).getTools().isTube();
-        if (!tube) holder.tube.setVisibility(View.GONE);
-        boolean trimmer = appointments.get(position).getTools().isTrimmer();
-        if (!trimmer) holder.trimmer.setVisibility(View.GONE);
-        if (!brush && !hairBrush && !hairDryer && !hairBand && !cutSet && !spray && !oxy &&
-                !tube && !trimmer) holder.toolsLayout.setVisibility(View.GONE);
-        // set onClickListeners
+        else holder.info.setText(appointments.get(position).getInfo());
+
+        if (!appointments.get(position).getService().isHairColoring())
+            holder.hairColoring.setVisibility(View.GONE);
+        if (!appointments.get(position).getService().isHairdo())
+            holder.hairdo.setVisibility(View.GONE);
+        if (!appointments.get(position).getService().isHaircut())
+            holder.haircut.setVisibility(View.GONE);
+        if (!appointments.get(position).getService().isHairColoring()
+                && !appointments.get(position).getService().isHairdo()
+                && !appointments.get(position).getService().isHaircut())
+            holder.serviceLayout.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isBrush()) holder.brush.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isHairBrush())
+            holder.hairBrush.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isHairDryer())
+            holder.hairDryer.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isHairBand())
+            holder.hairBand.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isCutSet())
+            holder.cutSet.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isSpray()) holder.spray.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isOxy()) holder.oxy.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isTube()) holder.tube.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isTrimmer())
+            holder.trimmer.setVisibility(View.GONE);
+        if (!appointments.get(position).getTools().isBrush()
+                && !appointments.get(position).getTools().isHairBrush()
+                && !appointments.get(position).getTools().isHairDryer()
+                && !appointments.get(position).getTools().isHairBand()
+                && !appointments.get(position).getTools().isCutSet()
+                && !appointments.get(position).getTools().isSpray()
+                && !appointments.get(position).getTools().isOxy()
+                && !appointments.get(position).getTools().isTube()
+                && !appointments.get(position).getTools().isTrimmer())
+            holder.toolsLayout.setVisibility(View.GONE);
+
         holder.bind(appointments.get(position), listener, phoneListener);
     }
 
@@ -135,10 +125,34 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     }
 
     public static class AppointmentViewHolder extends RecyclerView.ViewHolder {
-        AppCompatTextView client, phone, address, service, sum, currency, info, dateTime;
-        AppCompatImageView paid, phoneIcon, hairColoring, hairdo, haircut, brush, hairBrush,
-                hairDryer, hairBand, cutSet, spray, oxy, tube, trimmer, infoIcon, addressIcon;
-        RelativeLayout serviceLayout, toolsLayout, addressLayout, infoLayout;
+        AppCompatTextView client;
+        AppCompatTextView phone;
+        AppCompatTextView address;
+        AppCompatTextView service;
+        AppCompatTextView sum;
+        AppCompatTextView currency;
+        AppCompatTextView info;
+        AppCompatTextView dateTime;
+        AppCompatImageView paid;
+        AppCompatImageView phoneIcon;
+        AppCompatImageView hairColoring;
+        AppCompatImageView hairdo;
+        AppCompatImageView haircut;
+        AppCompatImageView brush;
+        AppCompatImageView hairBrush;
+        AppCompatImageView hairDryer;
+        AppCompatImageView hairBand;
+        AppCompatImageView cutSet;
+        AppCompatImageView spray;
+        AppCompatImageView oxy;
+        AppCompatImageView tube;
+        AppCompatImageView trimmer;
+        AppCompatImageView infoIcon;
+        AppCompatImageView addressIcon;
+        ViewGroup serviceLayout;
+        ViewGroup toolsLayout;
+        ViewGroup addressLayout;
+        ViewGroup infoLayout;
         CardView cardView;
 
         AppointmentViewHolder(View itemView) {
@@ -168,10 +182,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             oxy = (AppCompatImageView) itemView.findViewById(R.id.card_tools_oxy);
             tube = (AppCompatImageView) itemView.findViewById(R.id.card_tools_tube);
             trimmer = (AppCompatImageView) itemView.findViewById(R.id.card_tools_trimmer);
-            serviceLayout = (RelativeLayout) itemView.findViewById(R.id.services);
-            toolsLayout = (RelativeLayout) itemView.findViewById(R.id.tools);
-            addressLayout = (RelativeLayout) itemView.findViewById(R.id.address);
-            infoLayout = (RelativeLayout) itemView.findViewById(R.id.info);
+            serviceLayout = (ViewGroup) itemView.findViewById(R.id.services);
+            toolsLayout = (ViewGroup) itemView.findViewById(R.id.tools);
+            addressLayout = (ViewGroup) itemView.findViewById(R.id.address);
+            infoLayout = (ViewGroup) itemView.findViewById(R.id.info);
         }
 
         public void bind(final Appointment appointment, final OnItemClickListener listener,
